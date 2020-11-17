@@ -17,4 +17,4 @@ app.set('views', 'views');
 app.use(shopRoutes);
 
 app.use(errorHandler.render404Page);
-app.listen(3000);
+app.listen(process.env.PORT || 3000);
