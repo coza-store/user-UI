@@ -363,6 +363,10 @@ Input, textarea : 14px/1.6 '', Arial, sans-serif;
     max-height: 100%;
 }
 
+.hidden {
+    display: none;
+}
+
 
 /*------------------------------------------------------------------
 [ Menu ]*/
@@ -3352,6 +3356,8 @@ input.num-product::-webkit-inner-spin-button {
 /*---------------------------------------------*/
 
 .hov-img0 {
+    width: 270px;
+    height: 335px;
     display: block;
     overflow: hidden;
 }
