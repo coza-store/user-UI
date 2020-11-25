@@ -23,7 +23,7 @@ productList.forEach((product, index) => {
     quickView.addEventListener('click', () => {
         modal.classList.add('show-modal1');
         name.innerText = productName;
-        price.innerText = productPrice;
+        price.innerText = '$' + productPrice;
 
         for (let i = 0; i < 3; i++) {
             modalImg[i].setAttribute('src', productImg[i].getAttribute('src'));
@@ -40,4 +40,4 @@ closeModal[0].addEventListener('click', () => {
 });
 closeModal[1].addEventListener('click', () => {
     modal.classList.remove('show-modal1');
-})
+});
