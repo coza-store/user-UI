@@ -32,6 +32,11 @@ const productSchema = new Schema({
     filter: {
         type: String,
         require: true
+    },
+    userId: {
+        type: Schema.Types.ObjectId,
+        ref: 'User',
+        required: true
     }
 });
 

@@ -9,8 +9,7 @@ const modalImg = document.querySelectorAll('.modal_img');
 const dataThumb = document.querySelectorAll('.item-slick3');
 const hrefData = document.querySelectorAll('.href-data');
 const dotData = document.querySelectorAll('.dot-data');
-
-
+const product_id = document.querySelector('.product_id');
 const productList = document.querySelectorAll('.product-list');
 
 productList.forEach((product, index) => {
@@ -19,11 +18,14 @@ productList.forEach((product, index) => {
     const productImg = product.querySelectorAll('.product__img');
     const productName = product.querySelector('.product__name').innerText;
     const productPrice = product.querySelector('.product__price').innerText;
+    const productId = product.querySelector('.productId').innerText;
 
     quickView.addEventListener('click', () => {
         modal.classList.add('show-modal1');
         name.innerText = productName;
         price.innerText = '$' + productPrice;
+        product_id.setAttribute('value', productId.trim());
+        console.log(product_id);
 
         for (let i = 0; i < 3; i++) {
             modalImg[i].setAttribute('src', productImg[i].getAttribute('src'));

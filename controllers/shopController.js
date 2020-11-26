@@ -39,6 +39,20 @@ exports.getProduct = (req, res, next) => {
         .catch(err => console.log(err));
 };
 
+
+//them san pham vao gio hang
+exports.postCart = (req, res, next) => {
+    const proId = req.body.productId;
+    Product.findById(proId)
+        .then(product => {
+            return req.user.addToCart(product);
+        })
+        .then(result => {
+            console.log('Add new product to cart');
+            res.redirect('/cart');
+        });
+};
+
 //render trang dang nhap
 exports.getSignIn = (req, res, next) => {
     res.render('shop/login', {

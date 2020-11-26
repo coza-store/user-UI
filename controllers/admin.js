@@ -17,7 +17,6 @@ exports.postAddProduct = (req, res, next) => {
     const image_2 = req.body.imageUrl2;
     const image_3 = req.body.imageUrl3;
     const filter = req.body.filter;
-
     const product = new Product({
         name: name,
         price: price,
@@ -27,7 +26,8 @@ exports.postAddProduct = (req, res, next) => {
             detail_2: image_2,
             detail_3: image_3
         },
-        filter: filter
+        filter: filter,
+        userId: req.user
     });
     product
         .save()
