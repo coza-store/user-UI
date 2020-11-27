@@ -26,12 +26,12 @@ exports.getProducts = (req, res, next) => {
 
 //render trang chi tiet san pham
 exports.getProduct = (req, res, next) => {
-    const prodId = req.params.productId;
-    Product.findById(prodId)
+    const productId = req.params.productId;
+    Product.findById(productId)
         .then(product => {
             res.render('shop/product-detail', {
                 pageTitle: product.name,
-                path: '/products/prodId',
+                path: '/products/productId',
                 product: product,
                 title: product.filter[0].toUpperCase() + product.filter.substring(1)
             })
@@ -42,10 +42,14 @@ exports.getProduct = (req, res, next) => {
 
 //them san pham vao gio hang
 exports.postCart = (req, res, next) => {
-    const proId = req.body.productId;
-    Product.findById(proId)
+    const productId = req.body.productId;
+    const size = req.body.size;
+    const color = req.body.color;
+    const qty = req.body.numProduct;
+
+    Product.findById(productId)
         .then(product => {
-            return req.user.addToCart(product);
+            return req.user.addToCart(product, size, color, qty);
         })
         .then(result => {
             console.log('Add new product to cart');

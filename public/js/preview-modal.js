@@ -25,7 +25,6 @@ productList.forEach((product, index) => {
         name.innerText = productName;
         price.innerText = '$' + productPrice;
         product_id.setAttribute('value', productId.trim());
-        console.log(product_id);
 
         for (let i = 0; i < 3; i++) {
             modalImg[i].setAttribute('src', productImg[i].getAttribute('src'));

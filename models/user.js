@@ -14,26 +14,36 @@ const userSchema = new Schema({
     cart: {
         items: [{
             productId: { type: Schema.Types.ObjectId, ref: 'Product', required: true },
-            quantity: { type: Number, required: true }
+            quantity: { type: Number, required: true },
+            size: { type: String, required: true },
+            color: { type: String, required: true }
         }]
     },
 
 });
 
-userSchema.methods.addToCart = function(product) {
-    const cartProductIndex = this.cart.items.findIndex(cp => {
-        return cp.productId.toString() === product._id.toString();
+userSchema.methods.addToCart = function(product, size, color, qty) {
+    //tim index cua product can add xem co trong cart khong ?
+    const cartProductIndex = this.cart.items.findIndex(p => {
+        return p.productId.toString() === product._id.toString();
     });
-    let newQuantity = 1;
+
+    let newQuantity = qty;
     const updatedCartItems = [...this.cart.items];
 
-    if (cartProductIndex >= 0) {
-        newQuantity = this.cart.items[cartProductIndex].quantity + 1;
+    //product da co trong cart (cung size va color) nang quantity len
+    if (cartProductIndex >= 0 &&
+        this.cart.items[cartProductIndex].size == size &&
+        this.cart.items[cartProductIndex].color == color) {
+        newQuantity = this.cart.items[cartProductIndex].quantity + +qty;
         updatedCartItems[cartProductIndex].quantity = newQuantity;
     } else {
+        //product khong co trong cart tao them product moi
         updatedCartItems.push({
             productId: product._id,
-            quantity: newQuantity
+            quantity: newQuantity,
+            size: size,
+            color: color
         })
     }
     const updatedCart = { items: updatedCartItems };
