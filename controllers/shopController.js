@@ -1,4 +1,4 @@
-const Product = require('../models/product');
+const Product = require('../models/productModel');
 
 //render trang chu
 exports.getIndex = (req, res, next) => {
@@ -39,6 +39,20 @@ exports.getProduct = (req, res, next) => {
         .catch(err => console.log(err));
 };
 
+//render trang gio hang
+exports.getCart = (req, res, next) => {
+    req.user
+        .populate('cart.items.productId')
+        .execPopulate()
+        .then(user => {
+            const products = user.cart.items;
+            res.render('shop/shopping-cart', {
+                pageTitle: 'Shopping Cart',
+                path: '/cart',
+                products: products
+            })
+        })
+};
 
 //them san pham vao gio hang
 exports.postCart = (req, res, next) => {
@@ -53,7 +67,7 @@ exports.postCart = (req, res, next) => {
         })
         .then(result => {
             console.log('Add new product to cart');
-            res.redirect('/cart');
+            //res.redirect('/cart');
         });
 };
 
