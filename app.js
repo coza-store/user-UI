@@ -34,7 +34,7 @@ app.use(errorHandler.render404Page);
 
 
 mongoose
-    .connect('mongodb+srv://hhthuong:scbwwol123@cluster0.gvlcx.mongodb.net/coza-db?retryWrites=true&w=majority')
+    .connect('mongodb+srv://bkhactri:buikhacTri123@cluster0.gvlcx.mongodb.net/coza-db?retryWrites=true&w=majority')
     .then(result => {
         User.findOne()
             .then(user => {
