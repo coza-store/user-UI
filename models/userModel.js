@@ -51,4 +51,6 @@ userSchema.methods.addToCart = function(product, size, color, qty) {
     return this.save();
 }
 
+
+
 module.exports = mongoose.model('User', userSchema);

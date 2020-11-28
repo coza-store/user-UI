@@ -2021,11 +2021,11 @@ input.num-product::-webkit-inner-spin-button {
 
 .table-shopping-cart .column-1 {
     width: 133px;
-    padding-left: 50px;
+    padding-left: 20px;
 }
 
 .table-shopping-cart .column-2 {
-    width: 220px;
+    width: 240px;
     font-size: 15px;
 }
 
@@ -2036,7 +2036,7 @@ input.num-product::-webkit-inner-spin-button {
 
 .table-shopping-cart .column-4 {
     width: 145px;
-    text-align: right;
+    text-align: center;
 }
 
 .table-shopping-cart .column-5 {

@@ -12,10 +12,10 @@ const errorHandler = require('./controllers/error');
 const adminRoutes = require('./routes/admin');
 const shopRoutes = require('./routes/shopRoutes');
 
-const User = require('./models/user');
+const User = require('./models/userModel');
 
 app.use((req, res, next) => {
-    User.findById('5fbe80460ae79b017b2dc96f')
+    User.findById('5fc2007481ea3300929b972b')
         .then(user => {
             req.user = user;
             next();
