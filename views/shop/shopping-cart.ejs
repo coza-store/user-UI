@@ -66,7 +66,7 @@
                                                 <tr class="table_row">
                                                     <td class="column-1">
                                                         <form action="/cart-delete-item" method="POST">
-                                                            <input type="hidden" value="<%=p.productId._id %>" name="productId">
+                                                            <input type="hidden" value="<%=p._id %>" name="cartItemId">
                                                             <button class="how-itemcart1">
                                                                 <img src="<%=p.productId.imageUrl.detail_1%>" alt="IMG">
                                                             </button>
@@ -93,9 +93,8 @@
                                                             </div>
                                                         </div>
                                                     </td>
-                                                    <td class="column-5 totalPrice">
-                                                        $
-                                                        <%=p.productId.price * p.quantity%>
+                                                    <td class="column-5">
+                                                        $ <span class="total_price"><%=p.productId.price * p.quantity%></span>
                                                     </td>
                                                 </tr>
                                                 <% }) %>
@@ -127,14 +126,14 @@
                                     <div class="flex-w flex-t bor12 p-b-13">
                                         <div class="size-208">
                                             <span class="stext-110 cl2">
-									Subtotal:
-								</span>
+									            Subtotal:
+				                            </span>
                                         </div>
 
                                         <div class="size-209">
-                                            <span class="mtext-110 cl2">
-									$79.65
-								</span>
+                                            $ <span class="mtext-110 cl2" id="sub_total">
+									            79.65
+								            </span>
                                         </div>
                                     </div>
 
@@ -185,14 +184,14 @@
                                     <div class="flex-w flex-t p-t-27 p-b-33">
                                         <div class="size-208">
                                             <span class="mtext-101 cl2">
-									Total:
-								</span>
+									            Total:
+								            </span>
                                         </div>
 
                                         <div class="size-209 p-t-1">
-                                            <span class="mtext-110 cl2">
-									$79.65
-								</span>
+                                            $ <span class="mtext-110 cl2 " id="cart_total">
+									            79.65
+								            </span>
                                         </div>
                                     </div>
 
@@ -210,4 +209,6 @@
                         <%- include('../includes/footer.ejs') %>
                             <%- include('../includes/back-to-top.ejs') %>
                                 <%- include('../includes/preview-modal.ejs') %>
-                                    <%- include('../includes/end.ejs') %>
+                                    <%- include('../includes/script.ejs') %>
+                                        <script src="/js/cart-function.js"></script>
+                                        <%- include('../includes/end.ejs') %>

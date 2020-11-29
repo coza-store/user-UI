@@ -233,9 +233,13 @@
                     <% if (products.length > 0) { %>
                         <div class="row isotope-grid">
                             <% for (let product of products) { %>
+
                                 <div class="product-list col-sm-6 col-md-4 col-lg-3 p-b-35 isotope-item <%=product.filter %> ">
                                     <!-- Block2 -->
                                     <div class="block2">
+                                        <a class="productId hidden">
+                                            <%=product._id %>
+                                        </a>
                                         <div class="block2-pic hov-img0">
                                             <img src="<%=product.imageUrl.detail_1 %>" alt="IMG-PRODUCT" class="product__img">
                                             <img src="<%=product.imageUrl.detail_2 %>" alt="IMG-PRODUCT" class="product__img hidden">
@@ -277,4 +281,7 @@
                 <%- include('../includes/footer.ejs') %>
                     <%- include('../includes/back-to-top.ejs') %>
                         <%- include('../includes/preview-modal.ejs') %>
-                            <%- include('../includes/end.ejs') %>
+                            <%- include('../includes/script.ejs') %>
+                                <script src="/js/preview-modal.js"></script>
+                                <script src="/js/cart-function.js"></script>
+                                <%- include('../includes/end.ejs') %>
