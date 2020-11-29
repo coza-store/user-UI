@@ -67,8 +67,19 @@ exports.postCart = (req, res, next) => {
         })
         .then(result => {
             console.log('Add new product to cart');
-            //res.redirect('/cart');
+            res.redirect('/cart');
         });
+};
+
+exports.postDeleteCartItem = (req, res, next) => {
+    const productId = req.body.productId;
+    req.user
+        .deleteCartItem(productId)
+        .then(result => {
+            console.log('Remove product from cart');
+            res.redirect('/cart');
+        })
+        .catch(err => console.log(err));
 };
 
 //render trang dang nhap

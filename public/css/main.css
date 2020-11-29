@@ -367,6 +367,16 @@ Input, textarea : 14px/1.6 '', Arial, sans-serif;
     display: none;
 }
 
+.warning #warning-1 {
+    margin: 0px 0px 10px 110px;
+    color: red;
+}
+
+.warning #warning-2 {
+    margin-left: 110px;
+    color: red;
+}
+
 
 /*------------------------------------------------------------------
 [ Menu ]*/

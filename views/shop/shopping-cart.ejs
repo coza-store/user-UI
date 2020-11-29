@@ -48,7 +48,7 @@
 
             <% if (products.length > 0) { %>
                 <!-- Shopping Cart -->
-                <form class="bg0 p-t-75 p-b-85">
+                <div class="bg0 p-t-75 p-b-85">
                     <div class="container">
                         <div class="row">
                             <div class="col-lg-10 col-xl-7 m-lr-auto m-b-50">
@@ -65,12 +65,15 @@
                                             <% products.forEach(p => { %>
                                                 <tr class="table_row">
                                                     <td class="column-1">
-                                                        <div class="how-itemcart1">
-                                                            <img src="<%=p.productId.imageUrl.detail_1%>" alt="IMG">
-                                                        </div>
+                                                        <form action="/cart-delete-item" method="POST">
+                                                            <input type="hidden" value="<%=p.productId._id %>" name="productId">
+                                                            <button class="how-itemcart1">
+                                                                <img src="<%=p.productId.imageUrl.detail_1%>" alt="IMG">
+                                                            </button>
+                                                        </form>
                                                     </td>
                                                     <td class="column-2">
-                                                        <strong><%=p.productId.name  %> </strong><br>
+                                                        <strong><a style="color: #333;" href="/products/<%=p.productId._id%>"><%=p.productId.name%></a></strong><br>
                                                         <span style="font-size: 14px;">Size : <%=p.size%> </span><br>
                                                         <span style="font-size: 14px;">Color: <%=p.color%> </span>
                                                     </td>
@@ -83,14 +86,14 @@
                                                                 <i class="fs-16 zmdi zmdi-minus"></i>
                                                             </div>
 
-                                                            <input class="mtext-104 cl3 txt-center num-product" type="number" name="numnumProduct" value="<%=p.quantity%>">
+                                                            <input class="mtext-104 cl3 txt-center num-product" type="number" name="numnumProduct" min="1" value="<%=p.quantity%>">
 
                                                             <div class="btn-num-product-up cl8 hov-btn3 trans-04 flex-c-m">
                                                                 <i class="fs-16 zmdi zmdi-plus"></i>
                                                             </div>
                                                         </div>
                                                     </td>
-                                                    <td class="column-5">
+                                                    <td class="column-5 totalPrice">
                                                         $
                                                         <%=p.productId.price * p.quantity%>
                                                     </td>
@@ -169,11 +172,11 @@
                                                     <input class="stext-111 cl8 plh3 size-111 p-lr-15" type="text" name="postcode" placeholder="Postcode / Zip">
                                                 </div>
 
-                                                <div class="flex-w">
+                                                <!-- <div class="flex-w">
                                                     <div class="flex-c-m stext-101 cl2 size-115 bg8 bor13 hov-btn3 p-lr-15 trans-04 pointer">
                                                         Update Totals
                                                     </div>
-                                                </div>
+                                                </div> -->
 
                                             </div>
                                         </div>
@@ -200,7 +203,7 @@
                             </div>
                         </div>
                     </div>
-                </form>
+                </div>
                 <% } else { %>
                     <h1 style="text-align: center;margin: 63px auto;">Your Shopping Cart is empty !</h1>
                     <% } %>
