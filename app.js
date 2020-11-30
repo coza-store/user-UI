@@ -7,7 +7,6 @@ const app = express();
 
 const shopRoutes = require('./routes/shopRoutes');
 const authRoutes = require('./routes/authRoutes');
-const adminRoutes = require('./routes/admin');
 
 const User = require('./models/userModel');
 const errorHandler = require('./controllers/errorController');
