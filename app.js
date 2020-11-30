@@ -28,8 +28,6 @@ app.use((req, res, next) => {
         .catch(err => console.log(err));
 });
 
-app.use('/admin', adminRoutes); //Just for adding product will complete late in admin page
-
 app.use(shopRoutes);
 
 app.use(authRoutes);
