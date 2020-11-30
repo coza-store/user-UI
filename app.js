@@ -21,7 +21,7 @@ app.set('view engine', 'ejs');
 app.set('views', 'views');
 
 app.use((req, res, next) => {
-    User.findById('5fc2007481ea3300929b972b')
+    User.findById('5fc4e878db7796004055d26f')
         .then(user => {
             req.user = user;
             next();
@@ -39,7 +39,7 @@ app.use(errorHandler.render404Page);
 
 
 mongoose
-    .connect('mongodb+srv://bkhactri:buikhacTri123@cluster0.gvlcx.mongodb.net/coza-db?retryWrites=true&w=majority')
+    .connect('mongodb+srv://admin:admincoza@cluster0.cjf9m.mongodb.net/coza-db?retryWrites=true&w=majority')
     .then(result => {
         User.findOne()
             .then(user => {
