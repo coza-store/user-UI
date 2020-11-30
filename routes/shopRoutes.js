@@ -14,9 +14,7 @@ router.post('/cart', shopController.postCart);
 
 router.post('/cart-delete-item', shopController.postDeleteCartItem);
 
-router.get('/login', shopController.getSignIn);
 
-router.get('/register', shopController.getRegister);
 
 
 

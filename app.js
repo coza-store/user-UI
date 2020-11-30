@@ -5,14 +5,20 @@ const mongoose = require('mongoose');
 const app = express();
 
 
+const shopRoutes = require('./routes/shopRoutes');
+const authRoutes = require('./routes/authRoutes');
+const adminRoutes = require('./routes/admin');
+
+const User = require('./models/userModel');
+const errorHandler = require('./controllers/errorController');
+
+
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
 
-const errorHandler = require('./controllers/error');
-const adminRoutes = require('./routes/admin');
-const shopRoutes = require('./routes/shopRoutes');
 
-const User = require('./models/userModel');
+app.set('view engine', 'ejs');
+app.set('views', 'views');
 
 app.use((req, res, next) => {
     User.findById('5fc2007481ea3300929b972b')
@@ -23,12 +29,11 @@ app.use((req, res, next) => {
         .catch(err => console.log(err));
 });
 
-app.set('view engine', 'ejs');
-app.set('views', 'views');
-
 app.use('/admin', adminRoutes); //Just for adding product will complete late in admin page
 
 app.use(shopRoutes);
+
+app.use(authRoutes);
 
 app.use(errorHandler.render404Page);
 
