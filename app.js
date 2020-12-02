@@ -1,32 +1,45 @@
+const MONGODB_URL = 'mongodb+srv://admin:admincoza@cluster0.cjf9m.mongodb.net/coza-db';
 const path = require('path');
 const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
+const session = require('express-session');
+const MongoDBStore = require('connect-mongodb-session')(session);
+const store = new MongoDBStore({
+    uri: MONGODB_URL,
+    collection: 'sessions'
+})
 const app = express();
-
 
 const shopRoutes = require('./routes/shopRoutes');
 const authRoutes = require('./routes/authRoutes');
-
-const User = require('./models/userModel');
 const errorHandler = require('./controllers/errorController');
 
+const User = require('./models/userModel');
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
-
-
-app.set('view engine', 'ejs');
-app.set('views', 'views');
+app.use(session({
+    secret: 'coza secret',
+    resave: false,
+    saveUninitialized: false,
+    store: store
+}))
 
 app.use((req, res, next) => {
-    User.findById('5fc4e878db7796004055d26f')
+    if (!req.session.user) {
+        return next();
+    }
+    User.findById(req.session.user._id)
         .then(user => {
             req.user = user;
             next();
         })
         .catch(err => console.log(err));
-});
+})
+
+app.set('view engine', 'ejs');
+app.set('views', 'views');
 
 app.use(shopRoutes);
 
@@ -36,14 +49,14 @@ app.use(errorHandler.render404Page);
 
 
 mongoose
-    .connect('mongodb+srv://admin:admincoza@cluster0.cjf9m.mongodb.net/coza-db?retryWrites=true&w=majority')
+    .connect(MONGODB_URL)
     .then(result => {
         User.findOne()
             .then(user => {
                 if (!user) {
                     const user = new User({
-                        name: 'Thuong',
-                        email: 'hhthuonghcmus@gmail.com',
+                        name: 'user',
+                        email: 'user@gmail.com',
                         cart: {
                             item: []
                         }

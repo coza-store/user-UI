@@ -3805,3 +3805,63 @@ input.num-product::-webkit-inner-spin-button {
         padding: 20px;
     }
 }
+
+/* Style The Dropdown Button */
+
+  
+  /* The container <div> - needed to position the dropdown content */
+.dropdown {
+    position: relative;
+    display: inline-block;
+}
+  /* Dropdown Content (Hidden by Default) */
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #f9f9f9;
+    min-width: 120px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 9999999;
+}
+.dropdown-content button {
+    width: 100%;
+    font-family: Poppins-Regular;
+    font-size: 12px;
+    line-height: 1.8;
+    height: 100%;
+    color: #b2b2b2;
+    border-right: 1px solid rgba(255, 255, 255, 0.3);
+    color: black;
+    padding: 12px 0px;
+    text-decoration: none;
+    display: block;
+}
+  /* Links inside the dropdown */
+.dropdown-content a {
+    text-align: center;
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+}
+  
+  /* Change color of dropdown links on hover */
+.dropdown-content a:hover,
+.dropdown-content button:hover {
+    background-color: #f1f1f1;
+    color :#6c7ae0;
+}
+  
+  /* Show the dropdown menu on hover */
+.dropdown:hover .dropdown-content {
+    display: block;
+}
+  
+  /* Change the background color of the dropdown button when the dropdown content is shown */
+.dropdown:hover .dropbtn {
+    background-color: #3e8e41;
+}
+
+.right-top-bar .dropdown a:first-child {
+    border-left: none;
+}

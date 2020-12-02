@@ -2,12 +2,16 @@ const Product = require('../models/productModel');
 
 //render trang chu
 exports.getIndex = (req, res, next) => {
+    console.log(req.session.isLoggedIn)
     Product.find()
         .then(products => {
             res.render('shop/index', {
                 pageTitle: 'Home',
                 path: '/',
-                products: products
+                products: products,
+                user: req.user,
+                isAuthenticated: req.session.isLoggedIn
+
             })
         })
 };
@@ -19,7 +23,9 @@ exports.getProducts = (req, res, next) => {
             res.render('shop/product-list', {
                 pageTitle: 'Product',
                 path: '/products',
-                products: products
+                products: products,
+                user: req.user,
+                isAuthenticated: req.session.isLoggedIn
             })
         })
 };
@@ -33,7 +39,9 @@ exports.getProduct = (req, res, next) => {
                 pageTitle: product.name,
                 path: '/products/productId',
                 product: product,
-                title: product.filter[0].toUpperCase() + product.filter.substring(1)
+                title: product.filter[0].toUpperCase() + product.filter.substring(1),
+                user: req.user,
+                isAuthenticated: req.session.isLoggedIn
             })
         })
         .catch(err => console.log(err));
@@ -49,7 +57,9 @@ exports.getCart = (req, res, next) => {
             res.render('shop/shopping-cart', {
                 pageTitle: 'Shopping Cart',
                 path: '/cart',
-                products: products
+                products: products,
+                user: req.user,
+                isAuthenticated: req.session.isLoggedIn
             })
         })
 };

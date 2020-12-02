@@ -23,7 +23,7 @@ productList.forEach((product, index) => {
     quickView.addEventListener('click', () => {
         modal.classList.add('show-modal1');
         name.innerText = productName;
-        price.innerText = '$' + productPrice;
+        price.innerText = productPrice;
         product_id.setAttribute('value', productId.trim());
 
         for (let i = 0; i < 3; i++) {
