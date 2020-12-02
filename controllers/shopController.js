@@ -48,9 +48,6 @@ exports.getProduct = (req, res, next) => {
 
 //render trang gio hang
 exports.getCart = (req, res, next) => {
-    if (!req.session.isLoggedIn) {
-        return res.redirect('/login');
-    }
     req.user
         .populate('cart.items.productId')
         .execPopulate()
