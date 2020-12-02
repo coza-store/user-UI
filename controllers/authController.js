@@ -2,7 +2,6 @@ const bcrypt = require('bcryptjs');
 const User = require('../models/userModel');
 //render trang dang nhap
 exports.getLogIn = (req, res, next) => {
-    //console.log(req.session.isLoggedIn);
     res.render('auth/login', {
         pageTitle: 'Log in',
         path: '/login',
@@ -20,14 +19,30 @@ exports.getRegister = (req, res, next) => {
 
 //xu ly an dang nhap
 exports.postLogIn = (req, res, next) => {
-    User.findById('5fc5dfbfcb3e370129bbf717')
+    const email = req.body.email;
+    const password = req.body.password;
+    User.findOne({ email: email })
         .then(user => {
-            req.session.isLoggedIn = true;
-            req.session.user = user;
-            res.session.save((err) => {
-                console.log(err);
-                res.redirect('/')
-            })
+            if (!user) {
+                return res.redirect('/login');
+            }
+            bcrypt
+                .compare(password, user.password)
+                .then(equal => {
+                    if (equal) {
+                        req.session.isLoggedIn = true;
+                        req.session.user = user;
+                        return req.session.save((err) => {
+                            console.log(err);
+                            res.redirect('/')
+                        })
+                    }
+                    res.redirect('/login');
+                })
+                .catch(err => {
+                    console.log(err);
+                    res.redirect('/login');
+                })
         })
         .catch(err => console.log(err));
 };
