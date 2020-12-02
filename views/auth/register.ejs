@@ -9,7 +9,7 @@
         </div>
         <main class="login-bg">
             <!-- Register Area Start -->
-            <div class="register-form-area">
+            <form class="register-form-area" action="/register" method="POST">
                 <div class="container">
                     <div class="row justify-content-center">
                         <div class="col-xl-6 col-lg-8">
@@ -23,31 +23,31 @@
                                 <div class="input-box">
                                     <div class="single-input-fields">
                                         <label>Full name</label>
-                                        <input type="text" placeholder="Enter full name">
+                                        <input type="text" placeholder="Enter full name" name="name">
                                     </div>
                                     <div class="single-input-fields">
                                         <label>Email Address</label>
-                                        <input type="email" placeholder="Enter email address">
+                                        <input type="email" placeholder="Enter email address" name="email">
                                     </div>
                                     <div class="single-input-fields">
                                         <label>Password</label>
-                                        <input type="password" placeholder="Enter Password">
+                                        <input type="password" placeholder="Enter Password" name="password">
                                     </div>
                                     <div class="single-input-fields">
                                         <label>Confirm Password</label>
-                                        <input type="password" placeholder="Confirm Password">
+                                        <input type="password" placeholder="Confirm Password" name="confirmPassword">
                                     </div>
                                 </div>
                                 <!-- form Footer -->
                                 <div class="register-footer">
-                                    <p> Already have an account? <a href="login.html"> Login</a> here</p>
+                                    <p> Already have an account? <a href="/login"> Login</a> here</p>
                                     <button class="submit-btn-user">Sign Up</button>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
+            </form>
             <!-- Register Area End -->
         </main>
         <%- include('../includes/script.ejs') %>

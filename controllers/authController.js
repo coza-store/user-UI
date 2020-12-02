@@ -1,3 +1,4 @@
+const bcrypt = require('bcryptjs');
 const User = require('../models/userModel');
 //render trang dang nhap
 exports.getLogIn = (req, res, next) => {
@@ -5,6 +6,14 @@ exports.getLogIn = (req, res, next) => {
     res.render('auth/login', {
         pageTitle: 'Log in',
         path: '/login',
+        isAuthenticated: req.session.isLoggedIn
+    })
+};
+//render trang dang ky
+exports.getRegister = (req, res, next) => {
+    res.render('auth/register', {
+        pageTitle: 'Register',
+        path: '/register',
         isAuthenticated: req.session.isLoggedIn
     })
 };
@@ -31,11 +40,32 @@ exports.postLogOut = (req, res, next) => {
     })
 };
 
-//render trang dang ky
-exports.getRegister = (req, res, next) => {
-    res.render('auth/register', {
-        pageTitle: 'Register',
-        path: '/register',
-        isAuthenticated: req.session.isLoggedIn
-    })
+//xu ly an dang ky
+exports.postRegister = (req, res, next) => {
+    const name = req.body.name
+    const email = req.body.email;
+    const password = req.body.password;
+    const confirmPassword = req.body.confirmPassword;
+    User.findOne({ email: email })
+        .then(userDoc => {
+            if (userDoc) {
+                return res.redirect('/register');
+            }
+            return bcrypt
+                .hash(password, 12)
+                .then(hashedPassword => {
+                    const user = new User({
+                        name: name,
+                        email: email,
+                        password: hashedPassword,
+                        cart: { items: [] }
+                    });
+                    return user.save();
+                });
+        })
+        .then(result => {
+            console.log('Created new user');
+            res.redirect('/login');
+        })
+        .catch(err => console.log(err))
 };
