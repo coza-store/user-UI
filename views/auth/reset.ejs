@@ -1,0 +1,39 @@
+<%- include('../includes/begin.ejs') %>
+    <link rel="stylesheet" href="/css/user-auth.css" type="text/css">
+
+    </head>
+
+    <body>
+        <main class="login-bg">
+            <!-- login Area Start -->
+            <div class="login-form-area">
+                <div class="container">
+                    <div class="row justify-content-center">
+                        <div class="col-xl-7 col-lg-8">
+                            <form class="login-form" action="/reset" method="POST">
+                                <!-- Login Heading -->
+                                <div class="login-heading">
+                                    <span>Reset Password</span>
+                                    <p>Enter email to confirm</p>
+
+                                </div>
+                                <!-- Single Input Fields -->
+                                <div class="input-box" style="padding-bottom: 20px;">
+                                    <div class="single-input-fields">
+                                        <label>Email Address</label>
+                                        <input type="text" placeholder="Email address" name="email">
+                                    </div>
+                                </div>
+                                <!-- form Footer -->
+                                <div class="login-footer">
+                                    <button class="submit-btn-user" style="margin: 0px auto;">Submit</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- login Area End -->
+        </main>
+        <%- include('../includes/script.ejs') %>
+            <%- include('../includes/end.ejs') %>

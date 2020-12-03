@@ -4,16 +4,14 @@ const User = require('../models/userModel');
 exports.getLogIn = (req, res, next) => {
     res.render('auth/login', {
         pageTitle: 'Log in',
-        path: '/login',
-        isAuthenticated: req.session.isLoggedIn
+        path: '/login'
     })
 };
 //render trang dang ky
 exports.getRegister = (req, res, next) => {
     res.render('auth/register', {
         pageTitle: 'Register',
-        path: '/register',
-        isAuthenticated: req.session.isLoggedIn
+        path: '/register'
     })
 };
 
@@ -84,3 +82,14 @@ exports.postRegister = (req, res, next) => {
         })
         .catch(err => console.log(err))
 };
+
+exports.getReset = (req, res, next) => {
+    res.render('auth/reset', {
+        pageTitle: 'Reset password',
+        path: '/reset'
+    });
+}
+
+exports.postReset = (req, res, next) => {
+    res.redirect('/login');
+}
