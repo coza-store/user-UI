@@ -1,15 +1,16 @@
+const crypto = require('crypto');
 const bcrypt = require('bcryptjs');
-const nodemailer = require('nodemailer');
-const sendGrid = require('nodemailer-sendgrid-transport');
-const Mail = require('nodemailer/lib/mailer');
-
 const User = require('../models/userModel');
 
-const transporter = nodemailer.createTransport(sendGrid({
+const nodemailer = require('nodemailer');
+const transporter = nodemailer.createTransport({
+    service: 'Gmail',
     auth: {
-        api_key: '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'
+        user: 'adcoza123@gmail.com',
+        pass: 'buikhacTri123'
     }
-}));
+})
+
 
 //render trang dang nhap
 exports.getLogIn = (req, res, next) => {
@@ -89,25 +90,71 @@ exports.postRegister = (req, res, next) => {
         })
         .then(result => {
             console.log('Created new user');
-            res.redirect('/login');
-            return transporter.sendMail({
-                    to: email,
-                    from: 'adcoza123@gmail.com',
-                    subject: 'Sign up successfully',
-                    html: '<h1>You successfully signed up</h1>'
-                })
+            const msg = {
+                from: 'Coza Store Authentication',
+                to: email,
+                subject: 'Sign up successfully',
+                html: '<h1>You successfully signed up</h1>'
+            };
+            return transporter
+                .sendMail(msg)
                 .catch(err => console.log(err));
+        })
+        .then(result => {
+            return res.redirect('/login');
         })
         .catch(err => console.log(err));
 };
 
-exports.getReset = (req, res, next) => {
+exports.getResetForm = (req, res, next) => {
     res.render('auth/reset', {
         pageTitle: 'Reset password',
         path: '/reset'
     });
 }
 
-exports.postReset = (req, res, next) => {
-    res.redirect('/login');
+exports.postResetForm = (req, res, next) => {
+    crypto.randomBytes(32, (err, buffer) => {
+        if (err) {
+            console.log(err);
+        }
+        const token = buffer.toString('hex');
+        User.findOne({ email: req.body.email })
+            .then(user => {
+                if (!user) {
+                    //flash later here
+                    return res.redirect('/reset');
+                }
+                user.resetToken = token;
+                user.resetTokenExpiredTime = Date.now() + 3600000;
+                return user.save();
+            })
+            .then(result => {
+                console.log('Submit email to reset password');
+                const msg = {
+                    from: 'Coza Store Authentication',
+                    to: req.body.email,
+                    subject: 'Password reset',
+                    html: `<p>You request to reset password</p>
+                    <p>Follow this link to reset password: <a href="http://localhost:3000/reset/${token}">click me</a></p>
+                    <p>This will be expired after 1 hours</p>
+                    `
+                };
+                return transporter
+                    .sendMail(msg)
+                    .catch(err => console.log(err));
+            })
+            .then(result => {
+                res.redirect('/login');
+            })
+            .catch(err => console.log(err));
+    })
+}
+
+exports.getResetPassword = (req, res, next) => {
+    const token = req.params.token;
+    res.render('auth/reset-password', {
+        pageTitle: 'New password',
+        path: '/reset-password'
+    });
 }

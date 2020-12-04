@@ -12,8 +12,10 @@ router.post('/logout', authController.postLogOut);
 
 router.post('/register', authController.postRegister);
 
-router.get('/reset', authController.getReset);
+router.get('/reset', authController.getResetForm);
 
-router.post('/reset', authController.postReset);
+router.post('/reset', authController.postResetForm);
+
+router.get('/reset/:token', authController.getResetPassword);
 
 module.exports = router;
