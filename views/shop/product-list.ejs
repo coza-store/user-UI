@@ -9,9 +9,9 @@
                 <%- include('../includes/top-bar.ejs',{isAuthenticated:isAuthenticated,user:user}) %>
 
 
-                <div class="wrap-menu-desktop how-shadow1">
-                    <%- include('../includes/navigation.ejs') %>
-                </div>
+                    <div class="wrap-menu-desktop how-shadow1">
+                        <%- include('../includes/navigation.ejs') %>
+                    </div>
             </div>
 
             <%- include('../includes/head-mobile.ejs',{isAuthenticated:isAuthenticated,user:user}) %>
@@ -192,23 +192,23 @@
 
                                     <div class="flex-w p-t-4 m-r--5">
                                         <a href="#" class="flex-c-m stext-107 cl6 size-301 bor7 p-lr-15 hov-tag1 trans-04 m-r-5 m-b-5">
-                                Fashion
+                                Women
                             </a>
 
                                         <a href="#" class="flex-c-m stext-107 cl6 size-301 bor7 p-lr-15 hov-tag1 trans-04 m-r-5 m-b-5">
-                                Lifestyle
+                                Men
                             </a>
 
                                         <a href="#" class="flex-c-m stext-107 cl6 size-301 bor7 p-lr-15 hov-tag1 trans-04 m-r-5 m-b-5">
-                                Denim
+                                Jacket
                             </a>
 
                                         <a href="#" class="flex-c-m stext-107 cl6 size-301 bor7 p-lr-15 hov-tag1 trans-04 m-r-5 m-b-5">
-                                Streetstyle
+                                Bags
                             </a>
 
                                         <a href="#" class="flex-c-m stext-107 cl6 size-301 bor7 p-lr-15 hov-tag1 trans-04 m-r-5 m-b-5">
-                                Crafts
+                                Shoes
                             </a>
                                     </div>
                                 </div>
@@ -253,15 +253,11 @@
                                 </div>
                                 <% } %>
                         </div>
-
+                        <%- include('../includes/pagination.ejs',
+                        {currentPage:currentPage,prevPage:prevPage,hasPrevPage:hasPrevPage,hasNextPage:hasNextPage,nextPage:nextPage,lastPage:lastPage}) %>
                         <% } else { %>
                             <h1 style="text-align: center; ">No Product Found!</h1>
                             <% } %>
-
-                                <!-- Load more -->
-                                <div class="flex-c-m flex-w w-full p-t-45">
-                                    <a style="margin-bottom: 50px;" href="#" class="flex-c-m stext-101 cl5 size-103 bg2 bor1 hov-btn1 p-lr-15 trans-04">Load More</a>
-                                </div>
                 </div>
 
                 <%- include('../includes/footer.ejs') %>

@@ -10,9 +10,9 @@
                 <%- include('../includes/top-bar.ejs',{isAuthenticated:isAuthenticated,user:user}) %>
 
 
-                <div class="wrap-menu-desktop">
-                    <%- include('../includes/navigation.ejs') %>
-                </div>
+                    <div class="wrap-menu-desktop">
+                        <%- include('../includes/navigation.ejs') %>
+                    </div>
             </div>
 
             <%- include('../includes/head-mobile.ejs',{isAuthenticated:isAuthenticated,user:user}) %>
@@ -433,7 +433,7 @@
                     </div>
 
                     <% if (products.length > 0) { %>
-                        <div class="row isotope-grid">
+                        <div class="row isotope-grid" id="products">
                             <% for (let product of products) { %>
                                 <div class="product-list col-sm-6 col-md-4 col-lg-3 p-b-35 isotope-item <%=product.filter %> ">
                                     <!-- Block2 -->
@@ -468,14 +468,12 @@
                                 </div>
                                 <% } %>
                         </div>
-
+                        <%- include('../includes/pagination.ejs',
+                        {currentPage:currentPage,prevPage:prevPage,hasPrevPage:hasPrevPage,hasNextPage:hasNextPage,nextPage:nextPage,lastPage:lastPage}) %>
+                        
                         <% } else { %>
                             <h1 style="text-align: center; ">No Product Found!</h1>
                             <% } %>
-                                <!-- Load more -->
-                                <div class="flex-c-m flex-w w-full p-t-45 ">
-                                    <a href="# " class="flex-c-m stext-101 cl5 size-103 bg2 bor1 hov-btn1 p-lr-15 trans-04 ">Load More</a>
-                                </div>
                 </div>
             </section>
             <%- include('../includes/footer.ejs') %>
