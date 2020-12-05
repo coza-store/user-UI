@@ -1,5 +1,7 @@
 const crypto = require('crypto');
 const bcrypt = require('bcryptjs');
+const { validationResult } = require('express-validator/check');
+
 const User = require('../models/userModel');
 
 const nodemailer = require('nodemailer');
@@ -9,22 +11,22 @@ const transporter = nodemailer.createTransport({
         user: 'adcoza123@gmail.com',
         pass: 'buikhacTri123'
     }
-})
+});
 
 
 //render trang dang nhap
 exports.getLogIn = (req, res, next) => {
+    let message = req.flash('error');
+    if (message.length > 0) {
+        message = message[0];
+    } else {
+        message = null;
+    }
     res.render('auth/login', {
         pageTitle: 'Log in',
-        path: '/login'
-    })
-};
-//render trang dang ky
-exports.getRegister = (req, res, next) => {
-    res.render('auth/register', {
-        pageTitle: 'Register',
-        path: '/register'
-    })
+        path: '/login',
+        errorMessage: message
+    });
 };
 
 //xu ly an dang nhap
@@ -34,6 +36,7 @@ exports.postLogIn = (req, res, next) => {
     User.findOne({ email: email })
         .then(user => {
             if (!user) {
+                req.flash('error', 'Invalid email');
                 return res.redirect('/login');
             }
             bcrypt
@@ -47,12 +50,13 @@ exports.postLogIn = (req, res, next) => {
                             res.redirect('/')
                         })
                     }
+                    req.flash('error', 'Password is incorrect');
                     res.redirect('/login');
                 })
                 .catch(err => {
                     console.log(err);
                     res.redirect('/login');
-                })
+                });
         })
         .catch(err => console.log(err));
 };
@@ -65,15 +69,38 @@ exports.postLogOut = (req, res, next) => {
     })
 };
 
+//render trang dang ky
+exports.getRegister = (req, res, next) => {
+    let message = req.flash('error');
+    if (message.length > 0) {
+        message = message[0];
+    } else {
+        message = null;
+    }
+    res.render('auth/register', {
+        pageTitle: 'Register',
+        path: '/register',
+        errorMessage: message
+    })
+};
+
 //xu ly an dang ky
 exports.postRegister = (req, res, next) => {
     const name = req.body.name
     const email = req.body.email;
     const password = req.body.password;
-    const confirmPassword = req.body.confirmPassword;
+    // const errors = validationResult(req); //nhan error tra ve
+
+    // if (!errors.isEmpty()) {
+    //     return res.status(422).render('auth/register', {
+    //         pageTitle: 'Register',
+    //         path: '/register'
+    //     })
+    // }
     User.findOne({ email: email })
         .then(userDoc => {
             if (userDoc) {
+                req.flash('error', 'Email already exist, please pick another one');
                 return res.redirect('/register');
             }
             return bcrypt
@@ -121,6 +148,7 @@ exports.postRegister = (req, res, next) => {
         .catch(err => console.log(err));
 };
 
+//render trang nhap email lay lai mk
 exports.getResetForm = (req, res, next) => {
     res.render('auth/reset', {
         pageTitle: 'Reset password',
@@ -128,6 +156,7 @@ exports.getResetForm = (req, res, next) => {
     });
 };
 
+//xu ly gui mail de xac nhan lay lai mk
 exports.postResetForm = (req, res, next) => {
     let userInfo;
     crypto.randomBytes(32, (err, buffer) => {
@@ -182,6 +211,7 @@ exports.postResetForm = (req, res, next) => {
     })
 };
 
+//render trang doi mk
 exports.getResetPassword = (req, res, next) => {
     const token = req.params.token;
     User.findOne({ resetToken: token, resetTokenExpiredTime: { $gt: Date.now() } })
@@ -196,6 +226,7 @@ exports.getResetPassword = (req, res, next) => {
         .catch(err => console.log(err));
 };
 
+//cap nhat mat khau moi
 exports.postResetPassword = (req, res, next) => {
     const newPassword = req.body.password;
     const userId = req.body.userId;
