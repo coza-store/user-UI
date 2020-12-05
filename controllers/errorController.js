@@ -5,4 +5,4 @@ exports.render404Page = (req, res, next) => {
         user: req.session.user,
         isAuthenticated: req.session.isLoggedIn
     })
-}
+};

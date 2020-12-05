@@ -3,7 +3,7 @@ const ITEMS_PER_PAGE = 2;
 
 //render trang chu
 exports.getIndex = (req, res, next) => {
-    const page = + req.query.page || 1;
+    const page = +req.query.page || 1;
     let totalItems;
 
     Product.find()
@@ -36,7 +36,7 @@ exports.getIndex = (req, res, next) => {
 
 //render trang san pham
 exports.getProducts = (req, res, next) => {
-    const page = + req.query.page || 1;
+    const page = +req.query.page || 1;
     let totalItems;
 
     Product.find()

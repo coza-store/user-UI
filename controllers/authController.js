@@ -3,6 +3,7 @@ const bcrypt = require('bcryptjs');
 const User = require('../models/userModel');
 
 const nodemailer = require('nodemailer');
+const { use } = require('../routes/authRoutes');
 const transporter = nodemailer.createTransport({
     service: 'Gmail',
     auth: {
@@ -93,8 +94,23 @@ exports.postRegister = (req, res, next) => {
             const msg = {
                 from: 'Coza Store Authentication',
                 to: email,
-                subject: 'Sign up successfully',
-                html: '<h1>You successfully signed up</h1>'
+                subject: 'SIGN UP COZA STORE',
+                html: `
+                <h4>Hi ${name}</h4>
+                <p style="margin-top: 30px;">Welcome to Big Coza Family.<br>Click the button below to shop now</p>
+                <a style="background: #111;
+                    height: 60px;
+                    padding: 10px 43px;
+                    border: 0;
+                    color: #fff;
+                    text-transform: capitalize;
+                    cursor: pointer;
+                    font-size: 16px;
+                    border-radius: 0px;
+                    margin-left: 100px;
+                    text-decoration:none;" href="http://localhost:3000">Go to store</a>
+                <p style="margin-top: 40px;">Thanks.<br>Admin Coza Store</p>
+                `
             };
             return transporter
                 .sendMail(msg)
@@ -111,9 +127,10 @@ exports.getResetForm = (req, res, next) => {
         pageTitle: 'Reset password',
         path: '/reset'
     });
-}
+};
 
 exports.postResetForm = (req, res, next) => {
+    let userInfo;
     crypto.randomBytes(32, (err, buffer) => {
         if (err) {
             console.log(err);
@@ -121,6 +138,7 @@ exports.postResetForm = (req, res, next) => {
         const token = buffer.toString('hex');
         User.findOne({ email: req.body.email })
             .then(user => {
+                userInfo = user
                 if (!user) {
                     //flash later here
                     return res.redirect('/reset');
@@ -134,10 +152,24 @@ exports.postResetForm = (req, res, next) => {
                 const msg = {
                     from: 'Coza Store Authentication',
                     to: req.body.email,
-                    subject: 'Password reset',
-                    html: `<p>You request to reset password</p>
-                    <p>Follow this link to reset password: <a href="http://localhost:3000/reset/${token}">click me</a></p>
-                    <p>This will be expired after 1 hours</p>
+                    subject: 'PASSWORD RESET',
+                    html: `
+                    <h4>Hi ${userInfo.name}</h4>
+                    <p style="margin-bottom: 30px;">You recently request to reset your password for your Coza Store account.<br> Click the button below to reset it</p>
+                    <a style="background: #111;
+                        height: 60px;
+                        padding: 10px 43px;
+                        border: 0;
+                        color: #fff;
+                        text-transform: capitalize;
+                        cursor: pointer;
+                        font-size: 16px;
+                        border-radius: 0px;
+                        margin-left: 100px;
+                        text-decoration:none;" href="http://localhost:3000/reset/${token}">Reset your password</a>
+                    <p style="margin-top:30px">If you did not request a password reset, please ignore this email.<br>This password reset is only valid for the next 1 hour</p>
+                    <p style="margin-top: 40px;">Thanks.<br>Admin Coza Store</p>
+
                     `
                 };
                 return transporter
@@ -149,12 +181,46 @@ exports.postResetForm = (req, res, next) => {
             })
             .catch(err => console.log(err));
     })
-}
+};
 
 exports.getResetPassword = (req, res, next) => {
     const token = req.params.token;
-    res.render('auth/reset-password', {
-        pageTitle: 'New password',
-        path: '/reset-password'
-    });
-}
+    User.findOne({ resetToken: token, resetTokenExpiredTime: { $gt: Date.now() } })
+        .then(user => {
+            res.render('auth/reset-password', {
+                pageTitle: 'Coza Store - New password',
+                path: '/reset-password',
+                userId: user._id.toString(),
+                passwordToken: token
+            });
+        })
+        .catch(err => console.log(err));
+};
+
+exports.postResetPassword = (req, res, next) => {
+    const newPassword = req.body.password;
+    const userId = req.body.userId;
+    const pswdtoken = req.body.passwordToken;
+    let resetUser;
+
+    User.findOne({
+            resetToken: pswdtoken, //ky tu ?
+            resetTokenExpiredTime: { $gt: Date.now() }, //thoi gian cho ?
+            _id: userId // user do co phai khong ?
+        })
+        .then(user => {
+            resetUser = user;
+            return bcrypt.hash(newPassword, 12);
+        })
+        .then(hashedPassword => {
+            resetUser.password = hashedPassword;
+            resetUser.resetToken = undefined;
+            resetUser.resetTokenExpiredTime = undefined;
+            return resetUser.save();
+        })
+        .then(result => {
+            res.redirect('/login');
+        })
+        .catch(err => console.log(err));
+
+};
