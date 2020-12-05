@@ -3,7 +3,6 @@ const bcrypt = require('bcryptjs');
 const User = require('../models/userModel');
 
 const nodemailer = require('nodemailer');
-const { use } = require('../routes/authRoutes');
 const transporter = nodemailer.createTransport({
     service: 'Gmail',
     auth: {
