@@ -8,7 +8,8 @@ const MongoDBStore = require('connect-mongodb-session')(session);
 const store = new MongoDBStore({
     uri: MONGODB_URL,
     collection: 'sessions'
-})
+});
+const flash = require('connect-flash');
 const app = express();
 
 const shopRoutes = require('./routes/shopRoutes');
@@ -24,8 +25,8 @@ app.use(session({
     resave: false,
     saveUninitialized: false,
     store: store
-}))
-
+}));
+app.use(flash());
 app.use((req, res, next) => {
     if (!req.session.user) {
         return next();
@@ -36,7 +37,7 @@ app.use((req, res, next) => {
             next();
         })
         .catch(err => console.log(err));
-})
+});
 
 app.set('view engine', 'ejs');
 app.set('views', 'views');
