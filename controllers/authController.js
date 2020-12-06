@@ -80,7 +80,13 @@ exports.getRegister = (req, res, next) => {
     res.render('auth/register', {
         pageTitle: 'Register',
         path: '/register',
-        errorMessage: message
+        errorMessage: message,
+        oldInput: {
+            name: "",
+            email: "",
+            password: "",
+            confirmPassword: ""
+        }
     })
 };
 
@@ -95,27 +101,26 @@ exports.postRegister = (req, res, next) => {
         return res.status(422).render('auth/register', {
             pageTitle: 'Register',
             path: '/register',
-            errorMessage: errors.array()[0].msg
-        })
+            errorMessage: errors.array()[0].msg,
+            oldInput: {
+                name: name,
+                email: email,
+                password: password,
+                confirmPassword: req.body.confirmPassword
+            }
+        });
     }
 
-    User.findOne({ email: email })
-        .then(userDoc => {
-            if (userDoc) {
-                req.flash('signUpError', 'Email already exist, please pick another one');
-                return res.redirect('/register');
-            }
-            return bcrypt
-                .hash(password, 12)
-                .then(hashedPassword => {
-                    const user = new User({
-                        name: name,
-                        email: email,
-                        password: hashedPassword,
-                        cart: { items: [] }
-                    });
-                    return user.save();
-                });
+    bcrypt
+        .hash(password, 12)
+        .then(hashedPassword => {
+            const user = new User({
+                name: name,
+                email: email,
+                password: hashedPassword,
+                cart: { items: [] }
+            });
+            return user.save();
         })
         .then(result => {
             console.log('Created new user');

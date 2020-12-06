@@ -1,6 +1,6 @@
 const express = require('express');
 const { check, body } = require('express-validator/check');
-
+const User = require('../models/userModel');
 const authController = require('../controllers/authController');
 const router = express.Router();
 
@@ -16,7 +16,15 @@ router.post('/logout', authController.postLogOut);
 router.get('/register', authController.getRegister);
 
 router.post('/register',
-    check('email').isEmail(),
+    check('email').isEmail().custom((value, { req }) => {
+        return User.findOne({ email: value })
+            .then(userDoc => {
+                if (userDoc) {
+                    return Promise.reject('Email already exist, please pick another one');
+                }
+            });
+
+    }),
     body('password', 'Password must have upper,lower,number and at least 8 charater').matches(/^(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z]{8,}$/, "i"),
     body('confirmPassword', '').custom((value, { req }) => {
         if (value !== req.body.password) {
