@@ -16,7 +16,7 @@ const transporter = nodemailer.createTransport({
 
 //render trang dang nhap
 exports.getLogIn = (req, res, next) => {
-    let message = req.flash('error');
+    let message = req.flash('signInError');
     if (message.length > 0) {
         message = message[0];
     } else {
@@ -36,7 +36,7 @@ exports.postLogIn = (req, res, next) => {
     User.findOne({ email: email })
         .then(user => {
             if (!user) {
-                req.flash('error', 'Invalid email');
+                req.flash('signInError', 'Invalid email');
                 return res.redirect('/login');
             }
             bcrypt
@@ -50,7 +50,7 @@ exports.postLogIn = (req, res, next) => {
                             res.redirect('/')
                         })
                     }
-                    req.flash('error', 'Password is incorrect');
+                    req.flash('signInError', 'Password is incorrect');
                     res.redirect('/login');
                 })
                 .catch(err => {
@@ -71,7 +71,7 @@ exports.postLogOut = (req, res, next) => {
 
 //render trang dang ky
 exports.getRegister = (req, res, next) => {
-    let message = req.flash('error');
+    let message = req.flash('signUpError');
     if (message.length > 0) {
         message = message[0];
     } else {
@@ -89,18 +89,20 @@ exports.postRegister = (req, res, next) => {
     const name = req.body.name
     const email = req.body.email;
     const password = req.body.password;
-    // const errors = validationResult(req); //nhan error tra ve
+    const errors = validationResult(req); //nhan error tra ve
 
-    // if (!errors.isEmpty()) {
-    //     return res.status(422).render('auth/register', {
-    //         pageTitle: 'Register',
-    //         path: '/register'
-    //     })
-    // }
+    if (!errors.isEmpty()) {
+        return res.status(422).render('auth/register', {
+            pageTitle: 'Register',
+            path: '/register',
+            errorMessage: errors.array()[0].msg
+        })
+    }
+
     User.findOne({ email: email })
         .then(userDoc => {
             if (userDoc) {
-                req.flash('error', 'Email already exist, please pick another one');
+                req.flash('signUpError', 'Email already exist, please pick another one');
                 return res.redirect('/register');
             }
             return bcrypt

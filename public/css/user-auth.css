@@ -1,9 +1,9 @@
 .login-bg {
     height: 100vh;
     background-size: cover;
-    background-repeat: no-repeat;
+    background-repeat: ;
     background-position: center center;
-    background-image: url(../images/slide-07.jpg)
+    background-image: url(../images/slide-07.jpg);
 }
 
 .login-form-area {
@@ -196,7 +196,7 @@
 
 .register-form-area .register-form {
     background: #fff;
-    padding: 55px 60px 25px 50px;
+    padding: 35px 60px 35px 50px;
     box-shadow: 0px 10px 30px 0px rgba(13, 12, 13, 0.2)
 }
 
@@ -220,8 +220,8 @@
 }
 
 .register-form-area .register-form .input-box {
-    padding-top: 35px;
-    padding-bottom: 60px
+    padding-top: 15px;
+    padding-bottom: 20px
 }
 
 @media (max-width: 575px) {
@@ -311,10 +311,10 @@
 }
 
 .user-message {
-    margin: 20px auto;
+    margin: 0px auto;
     width: 90%;
     border: 1px solid #4771fa;
-    padding: 0.5rem;
+    padding: 0.4rem;
     border-radius: 3px;
     background: #b9c9ff;
     text-align: center;
