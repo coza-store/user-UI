@@ -25,7 +25,11 @@ exports.getLogIn = (req, res, next) => {
     res.render('auth/login', {
         pageTitle: 'Log in',
         path: '/login',
-        errorMessage: message
+        errorMessage: message,
+        oldInput: {
+            email: '',
+            password: ''
+        }
     });
 };
 
@@ -33,11 +37,19 @@ exports.getLogIn = (req, res, next) => {
 exports.postLogIn = (req, res, next) => {
     const email = req.body.email;
     const password = req.body.password;
+
     User.findOne({ email: email })
         .then(user => {
             if (!user) {
-                req.flash('signInError', 'Invalid email');
-                return res.redirect('/login');
+                return res.status(422).render('auth/login', {
+                    pageTitle: 'Login',
+                    path: '/login',
+                    errorMessage: 'Email does not exist',
+                    oldInput: {
+                        email: email,
+                        password: password,
+                    }
+                });
             }
             bcrypt
                 .compare(password, user.password)
@@ -50,8 +62,15 @@ exports.postLogIn = (req, res, next) => {
                             res.redirect('/')
                         })
                     }
-                    req.flash('signInError', 'Password is incorrect');
-                    res.redirect('/login');
+                    return res.status(422).render('auth/login', {
+                        pageTitle: 'Login',
+                        path: '/login',
+                        errorMessage: 'Incorrect password',
+                        oldInput: {
+                            email: email,
+                            password: password,
+                        }
+                    });
                 })
                 .catch(err => {
                     console.log(err);
@@ -85,8 +104,9 @@ exports.getRegister = (req, res, next) => {
             name: "",
             email: "",
             password: "",
-            confirmPassword: ""
-        }
+            confirmPassword: "",
+        },
+        validationCond: []
     })
 };
 
@@ -107,7 +127,8 @@ exports.postRegister = (req, res, next) => {
                 email: email,
                 password: password,
                 confirmPassword: req.body.confirmPassword
-            }
+            },
+            validationCond: errors.array()[0]
         });
     }
 
