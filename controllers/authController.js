@@ -16,20 +16,15 @@ const transporter = nodemailer.createTransport({
 
 //render trang dang nhap
 exports.getLogIn = (req, res, next) => {
-    let message = req.flash('signInError');
-    if (message.length > 0) {
-        message = message[0];
-    } else {
-        message = null;
-    }
     res.render('auth/login', {
         pageTitle: 'Log in',
         path: '/login',
-        errorMessage: message,
+        errorMessage: '',
         oldInput: {
             email: '',
             password: ''
-        }
+        },
+        validationCond: []
     });
 };
 
@@ -44,11 +39,12 @@ exports.postLogIn = (req, res, next) => {
                 return res.status(422).render('auth/login', {
                     pageTitle: 'Login',
                     path: '/login',
-                    errorMessage: 'Email does not exist',
+                    errorMessage: 'Invalid email',
                     oldInput: {
                         email: email,
                         password: password,
-                    }
+                    },
+                    validationCond: 'email'
                 });
             }
             bcrypt
@@ -69,7 +65,8 @@ exports.postLogIn = (req, res, next) => {
                         oldInput: {
                             email: email,
                             password: password,
-                        }
+                        },
+                        validationCond: 'password'
                     });
                 })
                 .catch(err => {
@@ -90,12 +87,6 @@ exports.postLogOut = (req, res, next) => {
 
 //render trang dang ky
 exports.getRegister = (req, res, next) => {
-    let message = req.flash('signUpError');
-    if (message.length > 0) {
-        message = message[0];
-    } else {
-        message = null;
-    }
     res.render('auth/register', {
         pageTitle: 'Register',
         path: '/register',
@@ -180,12 +171,21 @@ exports.postRegister = (req, res, next) => {
 exports.getResetForm = (req, res, next) => {
     res.render('auth/reset', {
         pageTitle: 'Reset password',
-        path: '/reset'
+        path: '/reset',
+        errorMessage: '',
     });
 };
 
 //xu ly gui mail de xac nhan lay lai mk
 exports.postResetForm = (req, res, next) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(422).render('auth/reset', {
+            pageTitle: 'Reset Password',
+            path: '/reset',
+            errorMessage: errors.array()[0].msg,
+        });
+    }
     let userInfo;
     crypto.randomBytes(32, (err, buffer) => {
         if (err) {
@@ -245,10 +245,11 @@ exports.getResetPassword = (req, res, next) => {
     User.findOne({ resetToken: token, resetTokenExpiredTime: { $gt: Date.now() } })
         .then(user => {
             res.render('auth/reset-password', {
-                pageTitle: 'Coza Store - New password',
+                pageTitle: 'New password',
                 path: '/reset-password',
                 userId: user._id.toString(),
-                passwordToken: token
+                passwordToken: token,
+                errorMessage: ''
             });
         })
         .catch(err => console.log(err));
@@ -259,8 +260,18 @@ exports.postResetPassword = (req, res, next) => {
     const newPassword = req.body.password;
     const userId = req.body.userId;
     const pswdtoken = req.body.passwordToken;
-    let resetUser;
 
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(422).render('auth/reset-password', {
+            pageTitle: 'New password',
+            path: '/reset/pswdtoken',
+            userId: userId,
+            passwordToken: pswdtoken,
+            errorMessage: errors.array()[0].msg,
+        });
+    }
+    let resetUser;
     User.findOne({
             resetToken: pswdtoken, //ky tu ?
             resetTokenExpiredTime: { $gt: Date.now() }, //thoi gian cho ?
