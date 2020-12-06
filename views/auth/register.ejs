@@ -32,15 +32,15 @@
                                             </div>
                                             <div class="single-input-fields">
                                                 <label>Email Address</label>
-                                                <input type="email" placeholder="Enter email address" name="email" value="<%=oldInput.email%>">
+                                                <input type="email" class="<%= validationCond.param === 'email' ? 'invalid' : '' %>" placeholder="Enter email address" name="email" value="<%=oldInput.email%>">
                                             </div>
                                             <div class="single-input-fields">
                                                 <label>Password</label>
-                                                <input type="password" placeholder="Enter Password" name="password" value="<%=oldInput.password%>">
+                                                <input type="password" class="<%= validationCond.param === 'password' ? 'invalid' : '' %>" placeholder="Enter Password" name="password" value="<%=oldInput.password%>">
                                             </div>
                                             <div class="single-input-fields">
                                                 <label>Confirm Password</label>
-                                                <input type="password" placeholder="Confirm Password" name="confirmPassword" value="<%=oldInput.confirmPassword%>">
+                                                <input type="password" class="<%= validationCond.param === 'confirmPassword' ? 'invalid' : '' %>" placeholder="Confirm Password" name="confirmPassword" value="<%=oldInput.confirmPassword%>">
                                             </div>
                                         </div>
                                         <!-- form Footer -->
