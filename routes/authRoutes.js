@@ -15,7 +15,16 @@ router.post('/logout', authController.postLogOut);
 //dang ky
 router.get('/register', authController.getRegister);
 
-router.post('/register', authController.postRegister);
+router.post('/register',
+    check('email').isEmail(),
+    body('password', 'Password must have upper,lower,number and at least 8 charater').matches(/^(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z]{8,}$/, "i"),
+    body('confirmPassword', '').custom((value, { req }) => {
+        if (value !== req.body.password) {
+            throw new Error('Confirm password is not match');
+        }
+        return true;
+    }),
+    authController.postRegister);
 
 //lay lai mat khau
 router.get('/reset', authController.getResetForm);
