@@ -15,19 +15,23 @@
                                 <div class="login-heading">
                                     <span>Reset Password</span>
                                     <p>Enter email to confirm</p>
-
                                 </div>
-                                <!-- Single Input Fields -->
-                                <div class="input-box" style="padding-bottom: 20px;">
-                                    <div class="single-input-fields">
-                                        <label>Email Address</label>
-                                        <input type="text" placeholder="Email address" name="email">
+                                <%if(errorMessage) { %>
+                                    <div class="user-message user-message--error" style="margin-top: 20px;">
+                                        <%=errorMessage%>
                                     </div>
-                                </div>
-                                <!-- form Footer -->
-                                <div class="login-footer">
-                                    <button class="submit-btn-user" style="margin: 0px auto;">Submit</button>
-                                </div>
+                                    <% }  %>
+                                        <!-- Single Input Fields -->
+                                        <div class="input-box" style="padding-bottom: 20px;">
+                                            <div class="single-input-fields">
+                                                <label>Email Address</label>
+                                                <input type="text" placeholder="Email address" name="email">
+                                            </div>
+                                        </div>
+                                        <!-- form Footer -->
+                                        <div class="login-footer">
+                                            <button class="submit-btn-user" style="margin: 0px auto;">Submit</button>
+                                        </div>
                             </form>
                         </div>
                     </div>

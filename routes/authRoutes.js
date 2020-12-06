@@ -15,16 +15,38 @@ router.post('/logout', authController.postLogOut);
 //dang ky
 router.get('/register', authController.getRegister);
 
-router.post('/register',
-    check('email').isEmail().custom((value, { req }) => {
-        return User.findOne({ email: value })
-            .then(userDoc => {
-                if (userDoc) {
-                    return Promise.reject('Email already exist, please pick another one');
-                }
-            });
+router.post('/register', [
+        check('name').isAlphanumeric().withMessage('Invalid name'),
+        check('email').isEmail().custom((value, { req }) => {
+            return User.findOne({ email: value })
+                .then(userDoc => {
+                    if (userDoc) {
+                        return Promise.reject('Email already exist, please pick another one');
+                    }
+                });
 
-    }),
+        }),
+        body('password', 'Password must have upper,lower,number and at least 8 charater').matches(/^(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z]{8,}$/, "i"),
+        body('confirmPassword', '').custom((value, { req }) => {
+            if (value !== req.body.password) {
+                throw new Error('Confirm password is not match');
+            }
+            return true;
+        })
+    ],
+    authController.postRegister);
+
+//lay lai mat khau
+router.get('/reset', authController.getResetForm);
+
+router.post('/reset',
+    body('email').isEmail().withMessage('Invalid email'),
+    authController.postResetForm);
+
+//truy cap va cap nhat mat khau moi
+router.get('/reset/:token', authController.getResetPassword);
+
+router.post('/reset-password',
     body('password', 'Password must have upper,lower,number and at least 8 charater').matches(/^(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z]{8,}$/, "i"),
     body('confirmPassword', '').custom((value, { req }) => {
         if (value !== req.body.password) {
@@ -32,16 +54,6 @@ router.post('/register',
         }
         return true;
     }),
-    authController.postRegister);
-
-//lay lai mat khau
-router.get('/reset', authController.getResetForm);
-
-router.post('/reset', authController.postResetForm);
-
-//truy cap va cap nhat mat khau moi
-router.get('/reset/:token', authController.getResetPassword);
-
-router.post('/reset-password', authController.postResetPassword);
+    authController.postResetPassword);
 
 module.exports = router;
