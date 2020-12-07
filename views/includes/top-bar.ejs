@@ -7,9 +7,11 @@
 
         <div class="right-top-bar flex-w h-full">
             <a href="/faq" class="flex-c-m trans-04 p-lr-25">Help & FAQs</a>
-            <% if(isAuthenticated == true) { %> 
+            <% if(isAuthenticated == true) { %>
                 <div class="dropdown">
-                    <a href="/setting" class="flex-c-m trans-04 p-lr-25"><%=user.name%></a>
+                    <a href="/setting" class="flex-c-m trans-04 p-lr-25">
+                        <%=user.name%>
+                    </a>
                     <div class="dropdown-content">
                         <a href="/setting" class="flex-c-m trans-04 p-lr-25"><i style="font-size: 15px;" class="fa fa-cog"></i>&emsp;Settings</a>
                         <form action="/logout" method="POST">
@@ -17,11 +19,11 @@
                         </form>
                     </div>
                 </div>
-            <% } else { %> 
-            <a href="/login" class="flex-c-m trans-04 p-lr-25">My Account</a>
-            <% } %> 
-            <a href="#" class="flex-c-m trans-04 p-lr-25">EN</a>
-            <a href="#" class="flex-c-m trans-04 p-lr-25">USD</a>
+                <% } else { %>
+                    <a href="/login" class="flex-c-m trans-04 p-lr-25">My Account</a>
+                    <% } %>
+                        <a href="#" class="flex-c-m trans-04 p-lr-25">EN</a>
+                        <a href="#" class="flex-c-m trans-04 p-lr-25">USD</a>
         </div>
     </div>
 </div>

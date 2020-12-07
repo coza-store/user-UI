@@ -293,3 +293,16 @@ exports.postResetPassword = (req, res, next) => {
         .catch(err => console.log(err));
 
 };
+
+exports.getUserSetting = (req, res, next) => {
+    res.render('auth/user-setting', {
+        pageTitle: 'Settings',
+        path: '/setting',
+        isAuthenticated: req.session.isLoggedIn,
+        user: req.user
+    });
+};
+
+exports.postUserSetting = (req, res, next) => {
+
+}

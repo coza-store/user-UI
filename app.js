@@ -2,6 +2,7 @@ const MONGODB_URL = 'mongodb+srv://admin:admincoza@cluster0.cjf9m.mongodb.net/co
 const path = require('path');
 const express = require('express');
 const bodyParser = require('body-parser');
+const multer = require('multer');
 const mongoose = require('mongoose');
 const session = require('express-session');
 const MongoDBStore = require('connect-mongodb-session')(session);
@@ -19,6 +20,7 @@ const errorHandler = require('./controllers/errorController');
 const User = require('./models/userModel');
 
 app.use(bodyParser.urlencoded({ extended: false }));
+app.use(multer().single('image'));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(session({
     secret: 'coza secret',

@@ -3,6 +3,7 @@ const { check, body } = require('express-validator/check');
 const User = require('../models/userModel');
 const authController = require('../controllers/authController');
 const router = express.Router();
+const checkAuth = require('../middleware/protect-routes');
 
 //dang nhap
 router.get('/login', authController.getLogIn);
@@ -39,9 +40,7 @@ router.post('/register', [
 //lay lai mat khau
 router.get('/reset', authController.getResetForm);
 
-router.post('/reset',
-    body('email').isEmail().withMessage('Invalid email'),
-    authController.postResetForm);
+router.post('/reset', body('email').isEmail().withMessage('Invalid email'), authController.postResetForm);
 
 //truy cap va cap nhat mat khau moi
 router.get('/reset/:token', authController.getResetPassword);
@@ -55,5 +54,10 @@ router.post('/reset-password',
         return true;
     }),
     authController.postResetPassword);
+
+
+router.get('/setting', checkAuth, authController.getUserSetting);
+
+router.post('/setting', checkAuth, authController.postUserSetting);
 
 module.exports = router;
