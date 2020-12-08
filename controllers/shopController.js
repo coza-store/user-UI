@@ -1,5 +1,5 @@
 const Product = require('../models/productModel');
-const ITEMS_PER_PAGE = 2;
+const ITEMS_PER_PAGE = 10;
 
 //render trang chu
 exports.getIndex = (req, res, next) => {
@@ -37,34 +37,66 @@ exports.getIndex = (req, res, next) => {
 //render trang san pham
 exports.getProducts = (req, res, next) => {
     const page = +req.query.page || 1;
+    console.log(page);
     let totalItems;
+    if (req.query.search) {
+        const regex = new RegExp(escapeRegex(req.query.search), 'gi');
+        console.log(regex);
+        Product.find({ name: regex })
+            .countDocuments()
+            .then(numOfProducts => {
+                totalItems = numOfProducts;
+                return Product
+                    .find({ name: regex })
+                    .skip((page - 1) * ITEMS_PER_PAGE)
+                    .limit(ITEMS_PER_PAGE);
 
-    Product.find()
-        .countDocuments()
-        .then(numOfProducts => {
-            totalItems = numOfProducts;
-            return Product
-                .find()
-                .skip((page - 1) * ITEMS_PER_PAGE)
-                .limit(ITEMS_PER_PAGE);
-
-        })
-        .then(products => {
-            res.render('shop/product-list', {
-                pageTitle: 'All products',
-                path: '/products',
-                products: products,
-                user: req.user,
-                isAuthenticated: req.session.isLoggedIn,
-                currentPage: page,
-                totaProducts: totalItems,
-                hasNextPage: ITEMS_PER_PAGE * page < totalItems,
-                hasPrevPage: page > 1,
-                nextPage: page + 1,
-                prevPage: page - 1,
-                lastPage: Math.ceil(totalItems / ITEMS_PER_PAGE)
             })
-        })
+            .then(products => {
+                console.log(products);
+                res.render('shop/product-list', {
+                    pageTitle: 'All products',
+                    path: '/products/?search=',
+                    products: products,
+                    user: req.user,
+                    isAuthenticated: req.session.isLoggedIn,
+                    currentPage: page,
+                    totaProducts: totalItems,
+                    hasNextPage: ITEMS_PER_PAGE * page < totalItems,
+                    hasPrevPage: page > 1,
+                    nextPage: page + 1,
+                    prevPage: page - 1,
+                    lastPage: Math.ceil(totalItems / ITEMS_PER_PAGE)
+                })
+            })
+    } else {
+        Product.find()
+            .countDocuments()
+            .then(numOfProducts => {
+                totalItems = numOfProducts;
+                return Product
+                    .find()
+                    .skip((page - 1) * ITEMS_PER_PAGE)
+                    .limit(ITEMS_PER_PAGE);
+
+            })
+            .then(products => {
+                res.render('shop/product-list', {
+                    pageTitle: 'All products',
+                    path: '/products',
+                    products: products,
+                    user: req.user,
+                    isAuthenticated: req.session.isLoggedIn,
+                    currentPage: page,
+                    totaProducts: totalItems,
+                    hasNextPage: ITEMS_PER_PAGE * page < totalItems,
+                    hasPrevPage: page > 1,
+                    nextPage: page + 1,
+                    prevPage: page - 1,
+                    lastPage: Math.ceil(totalItems / ITEMS_PER_PAGE)
+                })
+            })
+    }
 };
 
 //render trang chi tiet san pham
@@ -127,4 +159,8 @@ exports.postDeleteCartItem = (req, res, next) => {
             res.redirect('/cart');
         })
         .catch(err => console.log(err));
+};
+
+function escapeRegex(text) {
+    return text.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&");
 };
