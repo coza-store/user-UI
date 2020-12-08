@@ -1,5 +1,6 @@
 <%- include('../includes/begin.ejs') %>
     <link rel="stylesheet" href="/css/setting.css" type="text/css">
+    <link rel="stylesheet" href="/css/user-auth.css" type="text/css">
     </head>
 
     <body>
@@ -21,47 +22,65 @@
         <%- include('../includes/cart.ejs') %>
             <form class="setting-form" action="/setting" method="POST" enctype="multipart/form-data">
                 <div class="wrapper bg-white" style="margin-top: 70px;">
-                    <h4 class="pb-4 border-bottom">Account settings</h4>
-                    <div class="d-flex align-items-start py-3 border-bottom"> <img src="https://images.pexels.com/photos/1037995/pexels-photo-1037995.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500" class="img" alt="">
-                        <div class="pl-sm-4 pl-2" id="img-section"> <b>Profile Photo</b>
-                            <p>Accepted file type .png. Less than 1MB</p>
-                            <input type="file" name="image" id="image" class="btn button border" style="cursor: pointer;">
+                    <%if(errorMessage) { %>
+                        <div class="user-message user-message--error" style="margin-bottom: 40px;">
+                            <%=errorMessage%>
                         </div>
-                    </div>
-                    <div class="py-2">
-                        <div class="row py-2">
-                            <div class="col-md-12"> <label for="firstname">Your Name</label> <input type="text" class="bg-light form-control" name="name"> </div>
-                        </div>
-                        <div class="row py-2">
-                            <div class="col-md-6"> <label for="email">Email Address</label> <input type="text" class="bg-light form-control" placeholder="example@email.com" name="email"> </div>
-                            <div class="col-md-6 pt-md-0 pt-3"> <label for="phone">Phone Number</label> <input type="tel" class="bg-light form-control" placeholder="(+84)" name="phone"> </div>
-                        </div>
-                        <div class="row py-2">
-                            <div class="col-md-12"> <label for="email">Address</label> <input type="text" class="bg-light form-control" name="address"> </div>
-                        </div>
-                        <div class="row py-2">
-                            <div class="col-md-6">
-                                <label for="country">City</label>
-                                <select name="country" id="country" class="bg-light" name="city">
+                        <% }  %>
+                            <h4 class="pb-4 border-bottom">Account settings</h4>
+                            <div class="d-flex align-items-start py-3 border-bottom">
+                                <%if(user.userImage) { %>
+                                    <img src="/<%= user.userImage %>" class="img" alt="">
+                                    <% } else { %>
+                                        <img src="/images/user/default-user.jpg" class="img" alt="">
+                                        <% }  %>
+                                            <div class="pl-sm-4 pl-2" id="img-section"> <b>Profile Photo</b>
+                                                <p>Accepted file type .png. Less than 1MB</p>
+                                                <input type="file" name="image" id="image" class="btn button border" style="cursor: pointer;">
+                                            </div>
+                            </div>
+                            <div class="py-2">
+                                <div class="row py-2">
+                                    <div class="col-md-12"> <label for="firstname">Your Name</label>
+                                        <input type="text" class="bg-light form-control" name="name" value="<%= user.name %>">
+                                    </div>
+                                </div>
+                                <div class="row py-2">
+                                    <div class="col-md-6"> <label for="email">Email Address</label>
+                                        <input type="text" class="bg-light form-control" placeholder="example@email.com" name="email" value="<%= user.email %>">
+                                    </div>
+                                    <div class="col-md-6 pt-md-0 pt-3"> <label for="phone">Phone Number</label>
+                                        <input type="tel" class="bg-light form-control" placeholder="(+84)" name="phone">
+                                    </div>
+                                </div>
+                                <div class="row py-2">
+                                    <div class="col-md-12"> <label for="email">Address</label>
+                                        <input type="text" class="bg-light form-control" name="address">
+                                    </div>
+                                </div>
+                                <div class="row py-2">
+                                    <div class="col-md-6">
+                                        <label for="country">City</label>
+                                        <select name="country" id="country" class="bg-light" name="city">
                                     <option value="india" selected>Ho Chi Minh</option>
                                     <option value="usa">Ha Noi</option>
                                     <option value="uk">Da Nang</option>
                                     <option value="uae">Vung Tau</option>
                                 </select>
-                            </div>
-                            <div class="col-md-6 pt-md-0 pt-3" id="lang"> <label for="language">Language</label>
-                                <div class="arrow">
-                                    <select name="language" id="language" class="bg-light" name="language">
+                                    </div>
+                                    <div class="col-md-6 pt-md-0 pt-3" id="lang"> <label for="language">Language</label>
+                                        <div class="arrow">
+                                            <select name="language" id="language" class="bg-light" name="language">
                                         <option value="english" selected>English</option>
                                         <option value="english_us">English (United States)</option>
                                         <option value="enguk">English UK</option>
                                         <option value="arab">Arabic</option>
                                     </select>
+                                        </div>
+                                    </div>
                                 </div>
+                                <div class="py-3 pb-4 border-bottom"> <button class="save-button">Save Changes</button> <button class="btn border button">Cancel</button> </div>
                             </div>
-                        </div>
-                        <div class="py-3 pb-4 border-bottom"> <button class="save-button">Save Changes</button> <button class="btn border button">Cancel</button> </div>
-                    </div>
                 </div>
             </form>
             <%- include('../includes/footer.ejs') %>

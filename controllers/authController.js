@@ -299,10 +299,29 @@ exports.getUserSetting = (req, res, next) => {
         pageTitle: 'Settings',
         path: '/setting',
         isAuthenticated: req.session.isLoggedIn,
-        user: req.user
+        user: req.user,
+        errorMessage: ''
     });
 };
 
 exports.postUserSetting = (req, res, next) => {
-
+    const image = req.file;
+    console.log(image);
+    if (!image) {
+        return res.status(422).render('auth/user-setting', {
+            pageTitle: 'Settings',
+            path: '/setting',
+            isAuthenticated: req.session.isLoggedIn,
+            user: req.user,
+            errorMessage: 'Attached file is not an image',
+        });
+    }
+    const imageUrl = image.path;
+    req.user.userImage = imageUrl;
+    req.user.save()
+        .then(result => {
+            console.log('Update user setting');
+            res.redirect('/setting');
+        })
+        .catch(err => console.log(err));
 }

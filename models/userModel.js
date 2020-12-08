@@ -15,6 +15,10 @@ const userSchema = new Schema({
         type: String,
         required: true
     },
+    userImage: {
+        type: String,
+        required: false
+    },
     resetToken: String,
     resetTokenExpiredTime: Date,
     cart: {
