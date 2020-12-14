@@ -7,9 +7,9 @@
             <!-- Header desktop -->
             <div class="container-menu-desktop">
                 <%- include('../includes/top-bar.ejs',{isAuthenticated:isAuthenticated,user:user}) %>
-                <div class="wrap-menu-desktop how-shadow1">
-                    <%- include('../includes/navigation.ejs') %>
-                </div>
+                    <div class="wrap-menu-desktop how-shadow1">
+                        <%- include('../includes/navigation.ejs') %>
+                    </div>
             </div>
 
             <%- include('../includes/head-mobile.ejs',{isAuthenticated:isAuthenticated,user:user}) %>
@@ -179,9 +179,11 @@
                                         </div>
                                     </div>
 
-                                    <button class="flex-c-m stext-101 cl0 size-116 bg3 bor14 hov-btn3 p-lr-15 trans-04 pointer">
-							            Proceed to Checkout
-						            </button>
+                                    <form action="/checkout" method="POST">
+                                        <button class="flex-c-m stext-101 cl0 size-116 bg3 bor14 hov-btn3 p-lr-15 trans-04 pointer">
+                                        Proceed to Check Out
+                                        </button>
+                                    </form>
                                 </div>
                             </div>
                         </div>

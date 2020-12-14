@@ -151,6 +151,7 @@ exports.postCart = (req, res, next) => {
         });
 };
 
+//xoa 1 sp khoi gio hang
 exports.postDeleteCartItem = (req, res, next) => {
     const cartItemId = req.body.cartItemId;
     req.user
@@ -161,6 +162,32 @@ exports.postDeleteCartItem = (req, res, next) => {
         })
         .catch(err => console.log(err));
 };
+
+//render trang thanh toan
+exports.getCheckOut = (req, res, next) => {
+    // req.user
+    //     .getOrders()
+    //     .then(orders => {
+    res.render('shop/checkout', {
+        pageTitle: 'Check Out',
+        path: '/checkout',
+        user: req.user,
+        isAuthenticated: req.session.isLoggedIn
+            // orders: orders
+    });
+    // })
+};
+
+//xu ly thanh toan
+exports.postCheckOut = (req, res, next) => {
+    // req.user
+    //     .addOrder()
+    //     .then(result => {
+    res.redirect('/checkout')
+        // })
+        // .catch(err => console.log(err));
+};
+
 
 function escapeRegex(text) {
     return text.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&");
