@@ -29,7 +29,8 @@ exports.getIndex = (req, res, next) => {
                 hasPrevPage: page > 1,
                 nextPage: page + 1,
                 prevPage: page - 1,
-                lastPage: Math.ceil(totalItems / ITEMS_PER_PAGE)
+                lastPage: Math.ceil(totalItems / ITEMS_PER_PAGE),
+                query: ''
             })
         })
 };
@@ -37,11 +38,10 @@ exports.getIndex = (req, res, next) => {
 //render trang san pham
 exports.getProducts = (req, res, next) => {
     const page = +req.query.page || 1;
-    console.log(page);
     let totalItems;
+    console.log(req.query);
     if (req.query.search) {
         const regex = new RegExp(escapeRegex(req.query.search), 'gi');
-        console.log(regex);
         Product.find({ name: regex })
             .countDocuments()
             .then(numOfProducts => {
@@ -53,10 +53,9 @@ exports.getProducts = (req, res, next) => {
 
             })
             .then(products => {
-                console.log(products);
                 res.render('shop/product-list', {
                     pageTitle: 'All products',
-                    path: '/products/?search=',
+                    path: '/products',
                     products: products,
                     user: req.user,
                     isAuthenticated: req.session.isLoggedIn,
@@ -66,7 +65,8 @@ exports.getProducts = (req, res, next) => {
                     hasPrevPage: page > 1,
                     nextPage: page + 1,
                     prevPage: page - 1,
-                    lastPage: Math.ceil(totalItems / ITEMS_PER_PAGE)
+                    lastPage: Math.ceil(totalItems / ITEMS_PER_PAGE),
+                    query: req.query.search
                 })
             })
     } else {
@@ -93,7 +93,8 @@ exports.getProducts = (req, res, next) => {
                     hasPrevPage: page > 1,
                     nextPage: page + 1,
                     prevPage: page - 1,
-                    lastPage: Math.ceil(totalItems / ITEMS_PER_PAGE)
+                    lastPage: Math.ceil(totalItems / ITEMS_PER_PAGE),
+                    query: ''
                 })
             })
     }
