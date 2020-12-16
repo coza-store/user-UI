@@ -90,42 +90,51 @@
                                         <h4 class="order__title">Your order</h4>
                                         <div class="checkout__order__products">
                                             <div class="row">
-                                                <div class="col-lg-6">
+                                                <div class="col-lg-4">
                                                     <strong>Product</strong>
                                                 </div>
-                                                <div class="col-lg-2">
+                                                <div class="col-lg-2" style="text-align: center;">
                                                     <strong>Size</strong>
                                                 </div>
-                                                <div class="col-lg-2">
+                                                <div class="col-lg-2" style="text-align: center;">
                                                     <strong>Color</strong>
                                                 </div>
-                                                <div class="col-lg-2">
+                                                <div class="col-lg-2" style="text-align: center;">
+                                                    <strong>Qty</strong>
+                                                </div>
+                                                <div class="col-lg-2" style="text-align: center;">
                                                     <strong>Total</strong>
                                                 </div>
                                             </div>
                                         </div>
                                         <ul class="checkout__total__products">
-                                            <li>
-                                                <div class="row">
-                                                    <div class="col-lg-6">
-                                                        Vanilla salted caramel
+                                            <% products.forEach(p => { %>
+                                                <li>
+                                                    <div class="row">
+                                                        <div class="col-lg-4">
+                                                            <%= p.productId.name %>
+                                                        </div>
+                                                        <div class="col-lg-2" style="text-align: center;">
+                                                            <%= p.size %>
+                                                        </div>
+                                                        <div class="col-lg-2" style="text-align: center;">
+                                                            <%= p.color %>
+                                                        </div>
+                                                        <div class="col-lg-2" style="text-align: center;">
+                                                            <%= p.quantity %>
+                                                        </div>
+                                                        <div class="col-lg-2" style="text-align: center;">
+                                                            $
+                                                            <%= p.productId.price %>
+                                                        </div>
                                                     </div>
-                                                    <div class="col-lg-2">
-                                                        S
-                                                    </div>
-                                                    <div class="col-lg-2">
-                                                        Red
-                                                    </div>
-                                                    <div class="col-lg-2">
-                                                        $ 110
-                                                    </div>
-                                                </div>
-                                            </li>
+                                                </li>
+                                                <% }) %>
                                         </ul>
                                         <ul class="checkout__total__all">
-                                            <li>Subtotal <span>$750.99</span></li>
-                                            <li>Coupon <span>- $20.99</span></li>
-                                            <li>Total <span>$750.99</span></li>
+                                            <li>Subtotal <span>$ <%= totalOrder %> </span></li>
+                                            <li>Coupon <span>- $ 20.99</span></li>
+                                            <li>Total <span>$ <%= totalOrder %></span></li>
                                         </ul>
                                         <h6 class="checkout__title" style="border: none;padding: 0;margin-bottom: 20px;">Payment methods</h6>
                                         <div class="checkout__input__checkbox">
@@ -149,8 +158,18 @@
                                                 <span class="checkmark"></span>
                                             </label>
                                         </div>
-                                        <button style="margin-top: 35px;" class="flex-c-m stext-101 cl0 size-116 bg3 bor14 hov-btn3 p-lr-15 trans-04 pointer" type="submit">
+                                        <button id="order-button" style="margin-top: 35px;" class="flex-c-m stext-101 cl0 size-116 bg3 bor14 hov-btn3 p-lr-15 trans-04 pointer" type="submit">
                                             Place Order
+                                            <script src="https://js.stripe.com/v3/"></script>
+                                            <script>
+                                                var stripe = Stripe('pk_test_51HyteKG8oVt195nhRCjiFshG5hjbAUcFfOlOMs9nHtLzadlAQc6Hb88V9tC2zV8hqwnzuPnn33quLuzxebpZvc9H00i3qAPQgR');
+                                                var orderBtn =document.getElementById('order-button');
+                                                orderBtn.addEventListener('click',function(){
+                                                    stripe.redirectToCheckout({
+                                                        sessionId:'<%= sessionId %>'
+                                                    })
+                                                });
+                                            </script>
                                         </button>
                                     </div>
                                 </div>

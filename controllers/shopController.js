@@ -1,4 +1,8 @@
 const Product = require('../models/productModel');
+const Order = require('../models/orderModel');
+
+const stripe = require('stripe')('sk_test_51HyteKG8oVt195nhn3Q8SwnvKDqhHiYIMzhzuw2GmMRthWC4si5JZ109hu3kdMnrfeo8NnHC426xtpT4toc59kQP00gY9tJQ5D');
+
 const ITEMS_PER_PAGE = 10;
 
 //render trang chu
@@ -165,29 +169,46 @@ exports.postDeleteCartItem = (req, res, next) => {
 
 //render trang thanh toan
 exports.getCheckOut = (req, res, next) => {
-    // req.user
-    //     .getOrders()
-    //     .then(orders => {
-    res.render('shop/checkout', {
-        pageTitle: 'Check Out',
-        path: '/checkout',
-        user: req.user,
-        isAuthenticated: req.session.isLoggedIn
-            // orders: orders
-    });
-    // })
-};
+    let products;
+    let total = 0;
+    req.user
+        .populate('cart.items.productId')
+        .execPopulate()
+        .then(user => {
+            products = user.cart.items;
+            total = 0;
+            products.forEach(p => {
+                total += p.quantity * p.productId.price;
+            })
 
-//xu ly thanh toan
-exports.postCheckOut = (req, res, next) => {
-    // req.user
-    //     .addOrder()
-    //     .then(result => {
-    res.redirect('/checkout')
-        // })
-        // .catch(err => console.log(err));
+            return stripe.checkout.sessions.create({
+                payment_method_types: ['card'],
+                line_items: products.map(p => {
+                    return {
+                        name: p.productId.name,
+                        description: p.productId.description,
+                        amount: p.productId.price * 100,
+                        currency: 'usd',
+                        quantity: p.quantity
+                    };
+                }),
+                success_url: req.protocol + '://' + req.get('host') + '/checkout/success',
+                cancel_url: req.protocol + '://' + req.get('host') + '/checkout/cancel'
+            });
+        })
+        .then(session => {
+            res.render('shop/checkout', {
+                pageTitle: 'Checkout',
+                path: '/checkout',
+                user: req.user,
+                isAuthenticated: req.session.isLoggedIn,
+                products: products,
+                totalOrder: total,
+                sessionId: session.id
+            })
+        })
+        .catch(err => console.log(err));
 };
-
 
 function escapeRegex(text) {
     return text.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&");
