@@ -1,3 +1,4 @@
+const bcrypt = require('bcryptjs');
 const mongoose = require('mongoose');
 
 const Schema = mongoose.Schema;
@@ -31,6 +32,14 @@ const userSchema = new Schema({
     },
 
 });
+
+userSchema.methods.encryptPassword = function(password) {
+    return bcrypt.hashSync(password, bcrypt.genSaltSync(12), null);
+}
+
+userSchema.methods.validPassword = function(password) {
+    return bcrypt.compareSync(password, this.password);
+}
 
 userSchema.methods.addToCart = function(product, size, color, qty) {
     //tim index cua product can add xem co trong cart khong ?

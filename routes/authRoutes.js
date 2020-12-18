@@ -4,6 +4,7 @@ const User = require('../models/userModel');
 const authController = require('../controllers/authController');
 const router = express.Router();
 const checkAuth = require('../middleware/protect-routes');
+const passport = require('passport');
 
 //dang nhap
 router.get('/login', authController.getLogIn);
@@ -17,7 +18,7 @@ router.post('/logout', authController.postLogOut);
 router.get('/register', authController.getRegister);
 
 router.post('/register', [
-        check('name').isAlphanumeric().withMessage('Invalid name'),
+        check('name').notEmpty().withMessage('Invalid name'),
         check('email').isEmail().custom((value, { req }) => {
             return User.findOne({ email: value })
                 .then(userDoc => {
@@ -35,7 +36,14 @@ router.post('/register', [
             return true;
         })
     ],
-    authController.postRegister);
+    authController.postRegister,
+    passport.authenticate('local.signup', {
+        successRedirect: '/',
+        failureRedirect: '/register',
+        failureFlash: true
+    })
+);
+
 
 //lay lai mat khau
 router.get('/reset', authController.getResetForm);

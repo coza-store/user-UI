@@ -4,19 +4,23 @@ const app = express();
 const bodyParser = require('body-parser');
 const multer = require('multer');
 const mongoose = require('mongoose');
+const session = require('express-session');
 const flash = require('connect-flash');
+const MongoDBStore = require('connect-mongodb-session')(session);
+const passport = require('passport');
+
 const shopRoutes = require('./routes/shopRoutes');
 const authRoutes = require('./routes/authRoutes');
 const errorHandler = require('./controllers/errorController');
 const User = require('./models/userModel');
 
 const MONGODB_URL = 'mongodb+srv://admin:admincoza@cluster0.cjf9m.mongodb.net/coza-db';
-const session = require('express-session');
-const MongoDBStore = require('connect-mongodb-session')(session);
 const store = new MongoDBStore({
     uri: MONGODB_URL,
     collection: 'sessions'
 });
+
+require('./config/passport');
 
 //storage image for user
 const imageStorage = multer.diskStorage({
@@ -35,24 +39,21 @@ const imageFilter = (req, file, callback) => {
     }
 };
 
+app.use(passport.initialize());
+app.use(passport.session());
 app.use(multer({ storage: imageStorage, fileFilter: imageFilter }).single('image'));
-
+app.use('/images', express.static(path.join(__dirname, 'images')));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
-app.use('/images', express.static(path.join(__dirname, 'images')));
-app.use(session({
-    secret: 'coza secret',
-    resave: false,
-    saveUninitialized: false,
-    store: store
-}));
-
+app.use(session({ secret: 'coza secret', resave: false, saveUninitialized: false, store: store }));
 app.use(flash());
+
+
 app.use((req, res, next) => {
-    if (!req.session.user) {
+    if (!req.session.passport) {
         return next();
     }
-    User.findById(req.session.user._id)
+    User.findById(req.session.passport.user)
         .then(user => {
             req.user = user;
             next();

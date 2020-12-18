@@ -26,7 +26,7 @@ exports.getIndex = (req, res, next) => {
                 path: '/',
                 products: products,
                 user: req.user,
-                isAuthenticated: req.session.isLoggedIn,
+                isAuthenticated: req.isAuthenticated(),
                 currentPage: page,
                 totaProducts: totalItems,
                 hasNextPage: ITEMS_PER_PAGE * page < totalItems,
@@ -62,7 +62,7 @@ exports.getProducts = (req, res, next) => {
                     path: '/products',
                     products: products,
                     user: req.user,
-                    isAuthenticated: req.session.isLoggedIn,
+                    isAuthenticated: req.isAuthenticated(),
                     currentPage: page,
                     totaProducts: totalItems,
                     hasNextPage: ITEMS_PER_PAGE * page < totalItems,
@@ -90,7 +90,7 @@ exports.getProducts = (req, res, next) => {
                     path: '/products',
                     products: products,
                     user: req.user,
-                    isAuthenticated: req.session.isLoggedIn,
+                    isAuthenticated: req.isAuthenticated(),
                     currentPage: page,
                     totaProducts: totalItems,
                     hasNextPage: ITEMS_PER_PAGE * page < totalItems,
@@ -115,7 +115,7 @@ exports.getProduct = (req, res, next) => {
                 product: product,
                 title: product.filter[0].toUpperCase() + product.filter.substring(1),
                 user: req.user,
-                isAuthenticated: req.session.isLoggedIn
+                isAuthenticated: req.isAuthenticated()
             })
         })
         .catch(err => console.log(err));
@@ -133,7 +133,7 @@ exports.getCart = (req, res, next) => {
                 path: '/cart',
                 products: products,
                 user: req.user,
-                isAuthenticated: req.session.isLoggedIn
+                isAuthenticated: req.isAuthenticated()
             })
         })
 };
@@ -201,7 +201,7 @@ exports.getCheckOut = (req, res, next) => {
                 pageTitle: 'Checkout',
                 path: '/checkout',
                 user: req.user,
-                isAuthenticated: req.session.isLoggedIn,
+                isAuthenticated: req.isAuthenticated(),
                 products: products,
                 totalOrder: total,
                 sessionId: session.id

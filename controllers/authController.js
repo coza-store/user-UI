@@ -1,9 +1,8 @@
 const crypto = require('crypto');
 const bcrypt = require('bcryptjs');
 const { validationResult } = require('express-validator/check');
-
 const User = require('../models/userModel');
-
+const passport = require('passport');
 const nodemailer = require('nodemailer');
 const transporter = nodemailer.createTransport({
     service: 'Gmail',
@@ -28,18 +27,18 @@ exports.getLogIn = (req, res, next) => {
     });
 };
 
-//xu ly an dang nhap
+// xu ly an dang nhap
 exports.postLogIn = (req, res, next) => {
     const email = req.body.email;
     const password = req.body.password;
-
-    User.findOne({ email: email })
-        .then(user => {
-            if (!user) {
+    passport.authenticate('local.signin', function(err, user, info) {
+        if (info) {
+            let message = info.message;
+            if (message == 'User Not Found') {
                 return res.status(422).render('auth/login', {
                     pageTitle: 'Login',
                     path: '/login',
-                    errorMessage: 'Invalid email',
+                    errorMessage: message,
                     oldInput: {
                         email: email,
                         password: password,
@@ -47,34 +46,30 @@ exports.postLogIn = (req, res, next) => {
                     validationCond: 'email'
                 });
             }
-            bcrypt
-                .compare(password, user.password)
-                .then(equal => {
-                    if (equal) {
-                        req.session.isLoggedIn = true;
-                        req.session.user = user;
-                        return req.session.save((err) => {
-                            console.log(err);
-                            res.redirect('/')
-                        })
-                    }
-                    return res.status(422).render('auth/login', {
-                        pageTitle: 'Login',
-                        path: '/login',
-                        errorMessage: 'Incorrect password',
-                        oldInput: {
-                            email: email,
-                            password: password,
-                        },
-                        validationCond: 'password'
-                    });
-                })
-                .catch(err => {
-                    console.log(err);
-                    res.redirect('/login');
+            if (message == 'Incorrect Password') {
+                return res.status(422).render('auth/login', {
+                    pageTitle: 'Login',
+                    path: '/login',
+                    errorMessage: message,
+                    oldInput: {
+                        email: email,
+                        password: password,
+                    },
+                    validationCond: 'password'
                 });
-        })
-        .catch(err => console.log(err));
+            }
+        }
+        // req / res held in closure
+        req.logIn(user, function(err) {
+            if (err) { return next(err); }
+            req.session.user = user;
+            return req.session.save((err) => {
+                console.log(err);
+                res.redirect('/')
+            });
+        });
+
+    })(req, res, next);
 };
 
 //xu ly an dang xuat
@@ -90,7 +85,7 @@ exports.getRegister = (req, res, next) => {
     res.render('auth/register', {
         pageTitle: 'Register',
         path: '/register',
-        errorMessage: message,
+        errorMessage: '',
         oldInput: {
             name: "",
             email: "",
@@ -103,68 +98,24 @@ exports.getRegister = (req, res, next) => {
 
 //xu ly an dang ky
 exports.postRegister = (req, res, next) => {
-    const name = req.body.name
-    const email = req.body.email;
-    const password = req.body.password;
     const errors = validationResult(req); //nhan error tra ve
-
     if (!errors.isEmpty()) {
         return res.status(422).render('auth/register', {
             pageTitle: 'Register',
             path: '/register',
             errorMessage: errors.array()[0].msg,
             oldInput: {
-                name: name,
-                email: email,
-                password: password,
+                name: req.body.name,
+                email: req.body.email,
+                password: req.body.password,
                 confirmPassword: req.body.confirmPassword
             },
             validationCond: errors.array()[0]
         });
-    }
 
-    bcrypt
-        .hash(password, 12)
-        .then(hashedPassword => {
-            const user = new User({
-                name: name,
-                email: email,
-                password: hashedPassword,
-                cart: { items: [] }
-            });
-            return user.save();
-        })
-        .then(result => {
-            console.log('Created new user');
-            const msg = {
-                from: 'Coza Store Authentication',
-                to: email,
-                subject: 'SIGN UP COZA STORE',
-                html: `
-                <h4>Hi ${name}</h4>
-                <p style="margin-top: 30px;">Welcome to Big Coza Family.<br>Click the button below to shop now</p>
-                <a style="background: #111;
-                    height: 60px;
-                    padding: 10px 43px;
-                    border: 0;
-                    color: #fff;
-                    text-transform: capitalize;
-                    cursor: pointer;
-                    font-size: 16px;
-                    border-radius: 0px;
-                    margin-left: 100px;
-                    text-decoration:none;" href="http://localhost:3000">Go to store</a>
-                <p style="margin-top: 40px;">Thanks.<br>Admin Coza Store</p>
-                `
-            };
-            return transporter
-                .sendMail(msg)
-                .catch(err => console.log(err));
-        })
-        .then(result => {
-            return res.redirect('/login');
-        })
-        .catch(err => console.log(err));
+    } else {
+        next();
+    }
 };
 
 //render trang nhap email lay lai mk
