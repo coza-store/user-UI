@@ -154,10 +154,11 @@ exports.postRegister = (req, res, next) => {
                         return transporter
                             .sendMail(msg)
                             .then(result => {
-                                res.status(200).render('auth/confirm-route', {
-                                    pageTitle: 'Verify Email',
+                                res.render('auth/confirm-route', {
+                                    pageTitle: 'Verify email',
                                     path: '/confirm-route',
-                                    user: req.cookies.name
+                                    user: req.cookies.name,
+                                    role: 'verify'
                                 });
                             })
                             .catch(err => console.log(err));
@@ -233,7 +234,12 @@ exports.postResetForm = (req, res, next) => {
                     .catch(err => console.log(err));
             })
             .then(result => {
-                res.redirect('/login');
+                return res.status(200).render('auth/confirm-route', {
+                    pageTitle: 'Reset password',
+                    path: '/confirm-route',
+                    user: req.cookies.name,
+                    role: 'reset'
+                });
             })
             .catch(err => console.log(err));
     })
