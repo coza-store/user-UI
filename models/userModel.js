@@ -20,8 +20,12 @@ const userSchema = new Schema({
         type: String,
         required: false
     },
-    resetToken: String,
-    resetTokenExpiredTime: Date,
+    active: {
+        type: Boolean,
+        required: true
+    },
+    token: String,
+    tokenExpiredTime: Date,
     cart: {
         items: [{
             productId: { type: Schema.Types.ObjectId, ref: 'Product', required: true },

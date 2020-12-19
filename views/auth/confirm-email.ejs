@@ -1,0 +1,31 @@
+<%- include('../includes/begin.ejs') %>
+    <link rel="stylesheet" href="/css/user-auth.css" type="text/css">
+
+    </head>
+
+    <body>
+        <main class="login-bg">
+            <!-- login Area Start -->
+            <div class="login-form-area">
+                <div class="container">
+                    <div class="row justify-content-center">
+                        <div class="col-xl-7 col-lg-8">
+                            <form class="login-form" action="/verify-email" method="POST">
+                                <!-- Login Heading -->
+                                <div class="login-heading">
+                                    <span>Verify Email</span>
+                                    <p>Please click on the button below to verify your email</p>
+                                </div>
+                                <div class="login-footer" style="margin-top: 30px; justify-content: center !important;">
+                                    <input type="hidden" name="userId" value="<%=userId%>">
+                                    <input type="hidden" name="verifyToken" value="<%=verifyToken%>">
+                                    <button class="submit-btn-user" style="justify-content: center !important;">Verify</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <!-- login Area End -->
+        </main>
+        <%- include('../includes/script.ejs') %>
+            <%- include('../includes/end.ejs') %>

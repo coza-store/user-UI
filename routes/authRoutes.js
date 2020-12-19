@@ -36,12 +36,7 @@ router.post('/register', [
             return true;
         })
     ],
-    authController.postRegister,
-    passport.authenticate('local.signup', {
-        successRedirect: '/',
-        failureRedirect: '/register',
-        failureFlash: true
-    })
+    authController.postRegister
 );
 
 
@@ -63,7 +58,14 @@ router.post('/reset-password',
     }),
     authController.postResetPassword);
 
+//xac nhan email dang ky
+router.get('/confirm-route', authController.getConfirmRoute);
 
+router.get('/verify/:token', authController.getConfirmForm);
+
+router.post('/verify-email', authController.postConfirm);
+
+//quan ly thong tin nguoi dung
 router.get('/setting', checkAuth, authController.getUserSetting);
 
 router.post('/setting', checkAuth, authController.postUserSetting);

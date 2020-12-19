@@ -1,0 +1,47 @@
+<%- include('../includes/begin.ejs') %>
+    <link rel="stylesheet" href="/css/user-auth.css" type="text/css">
+
+    </head>
+
+    <body>
+        <main class="login-bg">
+            <!-- login Area Start -->
+            <div class="login-form-area">
+                <div class="container">
+                    <div class="row justify-content-center">
+                        <div class="col-xl-7 col-lg-8">
+                            <form class="login-form" action="/login" method="POST">
+                                <!-- Login Heading -->
+                                <div class="login-heading">
+                                    <span>Verify Email</span>
+                                    <p>Hey
+                                        <%= user.name %>, you're almost ready to start enjoying shopping in Coza Store<br> Please check your email to verify account</p>
+                                    <!-- form Footer -->
+                                    <div class="login-footer" style="margin-top: 30px; justify-content: center !important;">
+                                        <ul>
+                                            <li>
+                                                <a href="https://gmail.com"><img class="img-mail" src="/images/gmail.png"></a>
+                                            </li>
+                                            <li>
+                                                <a href="https://outlook.live.com"><img class="img-mail" src="/images/hotmail.png"></a>
+                                            </li>
+                                            <li>
+                                                <a href="https://www.gmx.com"><img class="img-mail" src="/images/gmx.png"></a>
+                                            </li>
+                                            <li>
+                                                <a href="https://www.icloud.com/mail"><img class="img-mail" src="/images/icloud.png"></a>
+                                            </li>
+                                            <li>
+                                                <a href="https://outlook.live.com"><img class="img-mail" src="/images/outlook.png"></a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <!-- login Area End -->
+        </main>
+        <%- include('../includes/script.ejs') %>
+            <%- include('../includes/end.ejs') %>

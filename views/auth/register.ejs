@@ -36,7 +36,8 @@
                                             </div>
                                             <div class="single-input-fields">
                                                 <label>Password</label>
-                                                <input type="password" class="<%= validationCond.param === 'password' ? 'invalid' : '' %>" placeholder="Enter Password" name="password" value="<%=oldInput.password%>">
+                                                <input style="margin-bottom: 5px;" type="password" class="<%= validationCond.param === 'password' ? 'invalid' : '' %>" placeholder="Enter Password" name="password" value="<%=oldInput.password%>">
+                                                <p class="hint-password">*Password must have upper, lower letter, number and at least 8 characters</p>
                                             </div>
                                             <div class="single-input-fields">
                                                 <label>Confirm Password</label>

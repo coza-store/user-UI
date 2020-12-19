@@ -112,9 +112,58 @@ exports.postRegister = (req, res, next) => {
             },
             validationCond: errors.array()[0]
         });
-
     } else {
-        next();
+        passport.authenticate('local.signup', function(err, user, info) {
+            res.cookie('name', user.name);
+            console.log('Created new user');
+            crypto.randomBytes(32, (err, buffer) => {
+                if (err) {
+                    console.log(err);
+                }
+                const token = buffer.toString('hex');
+                User.findOne({ email: req.body.email })
+                    .then(user => {
+                        userInfo = user
+                        user.token = token;
+                        user.tokenExpiredTime = Date.now() + 3600000;
+                        return user.save();
+                    })
+                    .then(result => {
+                        const msg = {
+                            from: 'Coza Store Authentication',
+                            to: user.email,
+                            subject: 'Verify account COZA STORE',
+                            html: `
+                            <h4>Verify your email to finish signing up for Coza Store</h4>
+                            <p style="margin-top: 30px;">Thanks yor for choosing Coza.
+                            <br>Please confirm that ${user.email} is your email address by clicking on the button below
+                            <br>This link will expire after 1 hour</p>
+                            <a style="background: #111;
+                                height: 60px;
+                                padding: 10px 43px;
+                                border: 0;
+                                color: #fff;
+                                text-transform: capitalize;
+                                cursor: pointer;
+                                font-size: 16px;
+                                border-radius: 0px;
+                                margin-left: 100px;
+                                text-decoration:none;" href="http://localhost:3000/verify/${token}">Verify now</a>
+                            <p style="margin-top: 40px;">Thanks.<br>Admin Coza Store</p>`
+                        };
+                        return transporter
+                            .sendMail(msg)
+                            .then(result => {
+                                res.status(200).render('auth/confirm-route', {
+                                    pageTitle: 'Verify Email',
+                                    path: '/confirm-route',
+                                    user: req.cookies.name
+                                });
+                            })
+                            .catch(err => console.log(err));
+                    })
+            });
+        })(req, res, next);
     }
 };
 
@@ -150,8 +199,8 @@ exports.postResetForm = (req, res, next) => {
                     //flash later here
                     return res.redirect('/reset');
                 }
-                user.resetToken = token;
-                user.resetTokenExpiredTime = Date.now() + 3600000;
+                user.token = token;
+                user.tokenExpiredTime = Date.now() + 3600000;
                 return user.save();
             })
             .then(result => {
@@ -193,7 +242,7 @@ exports.postResetForm = (req, res, next) => {
 //render trang doi mk
 exports.getResetPassword = (req, res, next) => {
     const token = req.params.token;
-    User.findOne({ resetToken: token, resetTokenExpiredTime: { $gt: Date.now() } })
+    User.findOne({ token: token, tokenExpiredTime: { $gt: Date.now() } })
         .then(user => {
             res.render('auth/reset-password', {
                 pageTitle: 'New password',
@@ -224,8 +273,8 @@ exports.postResetPassword = (req, res, next) => {
     }
     let resetUser;
     User.findOne({
-            resetToken: pswdtoken, //ky tu ?
-            resetTokenExpiredTime: { $gt: Date.now() }, //thoi gian cho ?
+            token: pswdtoken, //ky tu ?
+            tokenExpiredTime: { $gt: Date.now() }, //thoi gian cho ?
             _id: userId // user do co phai khong ?
         })
         .then(user => {
@@ -234,8 +283,8 @@ exports.postResetPassword = (req, res, next) => {
         })
         .then(hashedPassword => {
             resetUser.password = hashedPassword;
-            resetUser.resetToken = undefined;
-            resetUser.resetTokenExpiredTime = undefined;
+            resetUser.token = undefined;
+            resetUser.tokenExpiredTime = undefined;
             return resetUser.save();
         })
         .then(result => {
@@ -245,19 +294,72 @@ exports.postResetPassword = (req, res, next) => {
 
 };
 
+//render trang thong bao nguoi dang nhap mail de xac nhan email
+exports.getConfirmRoute = (req, res, next) => {
+    res.render('auth/confirm-route', {
+        pageTitle: 'Verify Email',
+        path: '/confirm-route',
+        user: req.cookies.name
+    });
+};
+
+//render trang xac nhan email
+exports.getConfirmForm = (req, res, next) => {
+    const token = req.params.token;
+    User.findOne({ token: token, tokenExpiredTime: { $gt: Date.now() } })
+        .then(user => {
+            res.render('auth/confirm-email', {
+                pageTitle: 'Verify Email',
+                path: '/confirm-email',
+                userId: user._id.toString(),
+                verifyToken: token,
+            });
+        })
+        .catch(err => console.log(err));
+};
+//xu ly xac nhan email nguoi dung
+exports.postConfirm = (req, res, next) => {
+    let userInfo;
+    const userId = req.body.userId;
+    const token = req.body.verifyToken;
+    User.findOne({
+            token: token, //ky tu ?
+            tokenExpiredTime: { $gt: Date.now() }, //thoi gian cho ?
+            _id: userId // user do co phai khong ?
+        })
+        .then(user => {
+            userInfo = user;
+            user.active = true;
+            user.token = undefined;
+            user.tokenExpiredTime = undefined;
+            return user.save();
+        })
+        .then(result => {
+            req.logIn(userInfo, function(err) {
+                if (err) { return next(err); }
+                req.session.user = userInfo;
+                return req.session.save((err) => {
+                    console.log(err);
+                    res.redirect('/')
+                });
+            });
+        })
+        .catch(err => console.log(err));
+};
+
+//render trang chinh sua thong tin nguoi dung
 exports.getUserSetting = (req, res, next) => {
     res.render('auth/user-setting', {
         pageTitle: 'Settings',
         path: '/setting',
-        isAuthenticated: req.session.isLoggedIn,
+        isAuthenticated: req.isAuthenticated(),
         user: req.user,
-        errorMessage: ''
     });
 };
 
+//xu ly chinh sua thong tin nguoi dung
 exports.postUserSetting = (req, res, next) => {
     const image = req.file;
-    console.log(image);
     if (!image) {
         return res.status(422).render('auth/user-setting', {
             pageTitle: 'Settings',
