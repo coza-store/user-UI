@@ -123,7 +123,6 @@ exports.postRegister = (req, res, next) => {
                 const token = buffer.toString('hex');
                 User.findOne({ email: req.body.email })
                     .then(user => {
-                        userInfo = user
                         user.token = token;
                         user.tokenExpiredTime = Date.now() + 3600000;
                         return user.save();
@@ -226,7 +225,6 @@ exports.postResetForm = (req, res, next) => {
                         text-decoration:none;" href="http://localhost:3000/reset/${token}">Reset your password</a>
                     <p style="margin-top:30px">If you did not request a password reset, please ignore this email.<br>This password reset is only valid for the next 1 hour</p>
                     <p style="margin-top: 40px;">Thanks.<br>Admin Coza Store</p>
-
                     `
                 };
                 return transporter
@@ -361,6 +359,7 @@ exports.getUserSetting = (req, res, next) => {
         path: '/setting',
         isAuthenticated: req.isAuthenticated(),
         user: req.user,
+        errorMessage: ''
     });
 };
 

@@ -9,7 +9,14 @@
             <a href="/faq" class="flex-c-m trans-04 p-lr-25">Help & FAQs</a>
             <% if(isAuthenticated == true) { %>
                 <div class="dropdown">
-                    <a href="/setting" class="flex-c-m trans-04 p-lr-25">
+                    <div class="nav-ava">
+                        <%if(user.userImage) { %>
+                            <img src="/<%= user.userImage %>" class="img" alt="">
+                            <% } else { %>
+                                <img src="/images/user/guest-user.jpg" class="img" alt="">
+                                <% }  %>
+                    </div>
+                    <a style="padding-left: 20px;" href="/setting" class="flex-c-m trans-04 p-lr-25">
                         <%=user.name%>
                     </a>
                     <div class="dropdown-content">

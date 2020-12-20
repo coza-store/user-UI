@@ -4101,3 +4101,18 @@ input.num-product::-webkit-inner-spin-button {
         margin-top: 20px;
     }
 }
+
+.nav-ava {
+    float: left;
+    width: 30px;
+    height: 30px;
+}
+
+.nav-ava img {
+    margin-top: 5px;
+    margin-left: 10px;
+    width: 30px;
+    height: 30px;
+    border-radius: 100%;
+    width: 100%;
+}
