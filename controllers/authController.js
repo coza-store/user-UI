@@ -155,7 +155,7 @@ exports.postRegister = (req, res, next) => {
                             .catch(err => console.log(err));
                     })
                     .then(result => {
-                        res.render('auth/confirm-route', {
+                        return res.render('auth/confirm-route', {
                             pageTitle: 'Verify email',
                             path: '/confirm-route',
                             user: req.cookies.name,
