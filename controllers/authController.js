@@ -161,7 +161,8 @@ exports.postRegister = (req, res, next) => {
                             user: req.cookies.name,
                             role: 'verify'
                         });
-                    });
+                    })
+                    .catch(err => console.log(err));
             });
         })(req, res, next);
     }
