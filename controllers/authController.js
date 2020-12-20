@@ -152,16 +152,16 @@ exports.postRegister = (req, res, next) => {
                         };
                         return transporter
                             .sendMail(msg)
-                            .then(result => {
-                                return res.render('auth/confirm-route', {
-                                    pageTitle: 'Verify email',
-                                    path: '/confirm-route',
-                                    user: req.cookies.name,
-                                    role: 'verify'
-                                });
-                            })
                             .catch(err => console.log(err));
                     })
+                    .then(result => {
+                        res.render('auth/confirm-route', {
+                            pageTitle: 'Verify email',
+                            path: '/confirm-route',
+                            user: req.cookies.name,
+                            role: 'verify'
+                        });
+                    });
             });
         })(req, res, next);
     }
