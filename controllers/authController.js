@@ -153,7 +153,7 @@ exports.postRegister = (req, res, next) => {
                         return transporter
                             .sendMail(msg)
                             .then(result => {
-                                res.render('auth/confirm-route', {
+                                return res.render('auth/confirm-route', {
                                     pageTitle: 'Verify email',
                                     path: '/confirm-route',
                                     user: req.cookies.name,
