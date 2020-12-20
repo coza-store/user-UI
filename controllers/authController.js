@@ -346,6 +346,7 @@ exports.postConfirm = (req, res, next) => {
                 req.session.user = userInfo;
                 return req.session.save((err) => {
                     console.log(err);
+                    alert('Email has been verified');
                     res.redirect('/')
                 });
             });
