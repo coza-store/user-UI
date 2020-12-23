@@ -8,7 +8,7 @@
             <div class="container-menu-desktop">
                 <%- include('../includes/top-bar.ejs',{isAuthenticated:isAuthenticated,user:user}) %>
                     <div class="wrap-menu-desktop how-shadow1">
-                        <%- include('../includes/navigation.ejs') %>
+                        <%- include('../includes/navigation.ejs',{user:user}) %>
                     </div>
             </div>
 
@@ -51,6 +51,7 @@
                                                     <td class="column-1">
                                                         <form action="/cart-delete-item" method="POST">
                                                             <input type="hidden" value="<%=p._id %>" name="cartItemId">
+                                                            <input type="hidden" value="<%=p.productId._id%>" name="productId">
                                                             <button class="how-itemcart1">
                                                                 <img src="<%=p.productId.imageUrl.detail_1%>" alt="IMG">
                                                             </button>

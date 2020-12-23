@@ -23,6 +23,7 @@ const store = new MongoDBStore({
 
 require('./config/passport');
 
+
 //storage image for user
 const imageStorage = multer.diskStorage({
     destination: (req, file, callback) => {
@@ -40,6 +41,8 @@ const imageFilter = (req, file, callback) => {
     }
 };
 
+
+
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(multer({ storage: imageStorage, fileFilter: imageFilter }).single('image'));
@@ -47,11 +50,18 @@ app.use('/images', express.static(path.join(__dirname, 'images')));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
-app.use(session({ secret: 'coza secret', resave: false, saveUninitialized: false, store: store }));
 app.use(flash());
 
+app.use(session({
+    secret: 'coza secret',
+    resave: false,
+    saveUninitialized: false,
+    store: store,
+    cookie: { maxAge: 180 * 60 * 1000 }
+}));
 
 app.use((req, res, next) => {
+    res.locals.session = req.session;
     if (!req.session.passport) {
         return next();
     }

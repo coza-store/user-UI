@@ -9,7 +9,7 @@
                 <%- include('includes/top-bar.ejs',{isAuthenticated:isAuthenticated,user:user}) %>
 
                     <div class="wrap-menu-desktop">
-                        <%- include('includes/navigation.ejs') %>
+                        <%- include('/includes/navigation.ejs',{user:user}) %>
                     </div>
             </div>
 

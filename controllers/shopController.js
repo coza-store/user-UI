@@ -1,6 +1,6 @@
 const Product = require('../models/productModel');
 const Order = require('../models/orderModel');
-
+const Cart = require('../models/cartModel');
 const stripe = require('stripe')('sk_test_51HyteKG8oVt195nhn3Q8SwnvKDqhHiYIMzhzuw2GmMRthWC4si5JZ109hu3kdMnrfeo8NnHC426xtpT4toc59kQP00gY9tJQ5D');
 
 const ITEMS_PER_PAGE = 10;
@@ -122,20 +122,34 @@ exports.getProduct = (req, res, next) => {
 };
 
 //render trang gio hang
-exports.getCart = (req, res, next) => {
-    req.user
-        .populate('cart.items.productId')
-        .execPopulate()
-        .then(user => {
-            const products = user.cart.items;
-            res.render('shop/shopping-cart', {
-                pageTitle: 'Shopping Cart',
-                path: '/cart',
-                products: products,
-                user: req.user,
-                isAuthenticated: req.isAuthenticated()
-            })
+exports.getCart = async(req, res, next) => {
+    if (req.user) {
+        req.user
+            .populate('cart.items.productId')
+            .execPopulate()
+            .then(user => {
+                const products = user.cart.items;
+                res.render('shop/shopping-cart', {
+                    pageTitle: 'Shopping Cart',
+                    path: '/cart',
+                    products: products,
+                    user: req.user,
+                    isAuthenticated: req.isAuthenticated()
+                })
+            });
+    } else {
+        if (!req.session.cart) {
+            req.session.cart = { items: [] }
+        }
+        const productsInCart = req.session.cart;
+        res.render('shop/shopping-cart', {
+            pageTitle: 'Shopping Cart',
+            path: '/cart',
+            products: productsInCart.items,
+            user: req.user,
+            isAuthenticated: req.isAuthenticated()
         })
+    }
 };
 
 //them san pham vao gio hang
@@ -144,27 +158,48 @@ exports.postCart = (req, res, next) => {
     const size = req.body.size;
     const color = req.body.color;
     const qty = req.body.numProduct;
-
     Product.findById(productId)
         .then(product => {
-            return req.user.addToCart(product, size, color, qty);
+            if (req.user) {
+                const cart = new Cart(req.user.cart ? req.user.cart : { items: [] });
+                cart.addToCart(product, size, color, qty);
+                req.user.cart = cart;
+                return req.user.save();
+            }
+            const cart = new Cart(req.session.cart ? req.session.cart : { items: [] });
+            cart.addToCart(product, size, color, qty);
+            req.session.cart = cart;
         })
         .then(result => {
             console.log('Add new product to cart');
-            res.redirect('/cart');
-        });
+            res.redirect('/products');
+        })
+        .catch(err => console.log(err));
 };
 
 //xoa 1 sp khoi gio hang
 exports.postDeleteCartItem = (req, res, next) => {
     const cartItemId = req.body.cartItemId;
-    req.user
-        .deleteCartItem(cartItemId)
-        .then(result => {
-            console.log('Remove product from cart');
-            res.redirect('/cart');
-        })
-        .catch(err => console.log(err));
+    const productId = req.body.productId;
+    if (req.user) {
+        const cart = new Cart(req.user.cart ? req.user.cart : { items: [] });
+        Product.findById(productId)
+            .then(product => {
+                req.user
+                    .deleteCartItem(cartItemId, product)
+                    .then(result => {
+                        console.log('Remove product from cart');
+                        res.redirect('/cart');
+                    })
+                    .catch(err => console.log(err));
+            })
+            .catch(err => console.log(err));
+    } else {
+        const cart = new Cart(req.session.cart ? req.session.cart : { items: [] });
+        cart.deleteCartItem(cartItemId);
+        req.session.cart = cart;
+        return res.redirect('/cart');
+    }
 };
 
 //render trang thanh toan

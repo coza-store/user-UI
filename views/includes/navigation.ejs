@@ -22,9 +22,18 @@
         <div class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 js-show-modal-search">
             <i class="zmdi zmdi-search"></i>
         </div>
-
-        <div class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-noti js-show-cart" data-notify="3">
-            <i class="zmdi zmdi-shopping-cart"></i>
+        <div class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-noti js-show-cart" <% if(session.cart) { %>
+            data-notify="
+            <%= session.cart.totalQty%>"
+                <% } else if(user) { %>
+                    <% if(!user.cart.totalQty) { %>
+                        data-notify="0"
+                        <% } else { %> data-notify="
+                            <%= user.cart.totalQty %>"
+                                <% } %>
+                                    <% } else { %>data-notify="0"
+                                        <% } %> >
+                                            <i class="zmdi zmdi-shopping-cart"></i>
         </div>
 
         <a href="#" class="dis-block icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-noti" data-notify="0">

@@ -62,11 +62,16 @@ exports.postLogIn = (req, res, next) => {
         // req / res held in closure
         req.logIn(user, function(err) {
             if (err) { return next(err); }
-            req.session.user = user;
-            return req.session.save((err) => {
-                console.log(err);
-                res.redirect('/')
-            });
+            req.user.cart = req.session.cart;
+            req.session.cart = undefined;
+            req.user.save()
+                .then(result => {
+                    return req.session.save((err) => {
+                        console.log(err);
+                        res.redirect('/')
+                    });
+                })
+                .catch(err => console.log(err));
         });
 
     })(req, res, next);
@@ -236,7 +241,6 @@ exports.postResetForm = (req, res, next) => {
                 return res.status(200).render('auth/confirm-route', {
                     pageTitle: 'Reset password',
                     path: '/confirm-route',
-                    user: req.cookies.name,
                     role: 'reset'
                 });
             })
@@ -342,10 +346,9 @@ exports.postConfirm = (req, res, next) => {
         .then(result => {
             req.logIn(userInfo, function(err) {
                 if (err) { return next(err); }
-                req.session.user = userInfo;
                 return req.session.save((err) => {
                     console.log(err);
-                    alert('Email has been verified');
+                    console.log('Email has been verified');
                     res.redirect('/')
                 });
             });

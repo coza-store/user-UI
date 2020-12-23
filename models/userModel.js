@@ -1,40 +1,26 @@
 const bcrypt = require('bcryptjs');
 const mongoose = require('mongoose');
-
+const Product = require('../models/productModel');
 const Schema = mongoose.Schema;
 
 const userSchema = new Schema({
-    name: {
-        type: String,
-        required: true
-    },
-    email: {
-        type: String,
-        required: true
-    },
-    password: {
-        type: String,
-        required: true
-    },
-    userImage: {
-        type: String,
-        required: false
-    },
-    active: {
-        type: Boolean,
-        required: true
-    },
+    name: { type: String, require: true },
+    email: { type: String, require: true },
+    password: { type: String, require: true },
+    userImage: { type: String, require: false },
+    active: { type: Boolean, require: true },
     token: String,
     tokenExpiredTime: Date,
     cart: {
         items: [{
-            productId: { type: Schema.Types.ObjectId, ref: 'Product', required: true },
-            quantity: { type: Number, required: true },
-            size: { type: String, required: true },
-            color: { type: String, required: true }
-        }]
-    },
-
+            productId: { type: Schema.Types.ObjectId, ref: 'Product', require: true },
+            quantity: { type: Number, require: true },
+            size: { type: String, require: true },
+            color: { type: String, require: true }
+        }],
+        totalQty: { type: Number, require: true },
+        totalPrice: { type: Number, require: true }
+    }
 });
 
 userSchema.methods.encryptPassword = function(password) {
@@ -45,45 +31,21 @@ userSchema.methods.validPassword = function(password) {
     return bcrypt.compareSync(password, this.password);
 }
 
-userSchema.methods.addToCart = function(product, size, color, qty) {
-    //tim index cua product can add xem co trong cart khong ?
-    const cartProductIndex = this.cart.items.findIndex(p => {
-        return p.productId.toString() === product._id.toString();
+userSchema.methods.deleteCartItem = function(cartItemId, product) {
+    const cartItemIndex = this.cart.items.findIndex(item => {
+        return item._id.toString() === cartItemId.toString();
     });
-
-    let newQuantity = qty;
-    const updatedCartItems = [...this.cart.items];
-
-    //product da co trong cart (cung size va color) nang quantity len
-    if (cartProductIndex >= 0 &&
-        this.cart.items[cartProductIndex].size == size &&
-        this.cart.items[cartProductIndex].color == color) {
-        newQuantity = this.cart.items[cartProductIndex].quantity + +qty;
-        updatedCartItems[cartProductIndex].quantity = newQuantity;
-    } else {
-        //product khong co trong cart tao them product moi
-        updatedCartItems.push({
-            productId: product._id,
-            quantity: newQuantity,
-            size: size,
-            color: color
-        })
-    }
-    const updatedCart = { items: updatedCartItems };
-    this.cart = updatedCart;
-    return this.save();
-}
-
-userSchema.methods.deleteCartItem = function(cartItemId) {
     const updatedCartItems = this.cart.items.filter(item => {
         return item._id.toString() !== cartItemId.toString();
     });
+    this.cart.totalQty = this.cart.totalQty - +(this.cart.items[cartItemIndex].quantity);
+    this.cart.totalPrice = this.cart.totalPrice - +(this.cart.items[cartItemIndex].quantity * product.price);
     this.cart.items = updatedCartItems;
     return this.save();
 }
 
 userSchema.methods.clearCart = function() {
-    this.cart = { items: [] };
+    this.cart = { items: [], totalQty: 0, totalPrice: 0 };
     return this.save();
 }
 
