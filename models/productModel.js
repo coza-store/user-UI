@@ -32,7 +32,8 @@ const productSchema = new Schema({
     filter: {
         type: String,
         require: true
-    }
+    },
+    viewCount: { type: Number }
 });
 
 module.exports = mongoose.model('Product', productSchema);
