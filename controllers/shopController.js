@@ -6,28 +6,70 @@ const stripe = require('stripe')('sk_test_51HyteKG8oVt195nhn3Q8SwnvKDqhHiYIMzhzu
 const ITEMS_PER_PAGE = 10;
 
 //render trang chu
-exports.getIndex = (req, res, next) => {
+exports.getIndex = async(req, res, next) => {
+    let cartProds;
+    if (req.user) {
+        const cartFetch = await req.user
+            .populate('cart.items.productId')
+            .execPopulate()
+            .then(user => {
+                cartProds = { items: user.cart.items, totalQty: req.user.cart.totalQty, totalPrice: req.user.cart.totalPrice };
+            })
+            .catch(err => console.log(err));
+    } else if (req.session.cart) {
+        cartProds = req.session.cart
+    } else {
+        cartProds = { items: [], totalQty: 0, totalPrice: 0 };
+    }
     let topView;
-
+    let menProducts;
     Product.find()
         .sort({ viewCount: -1 })
         .limit(3)
         .exec()
         .then(products => {
             topView = products;
-            res.render('shop/index', {
-                pageTitle: 'Home',
-                path: '/',
-                topView: topView,
-                user: req.user,
-                isAuthenticated: req.isAuthenticated(),
-                query: ''
-            })
+            Product.find({ filter: { "$regex": "men", "$options": "i" } })
+                .limit(2)
+                .exec()
+                .then(menProds => {
+                    menProducts = menProds;
+                    Product.find({ filter: { "$regex": "woman", "$options": "i" } })
+                        .limit(2)
+                        .exec()
+                        .then(womenProds => {
+                            res.render('shop/index', {
+                                pageTitle: 'Home',
+                                path: '/',
+                                topView: topView,
+                                menProds: menProducts,
+                                womenProds: womenProds,
+                                cartProds: cartProds,
+                                user: req.user,
+                                isAuthenticated: req.isAuthenticated(),
+                                query: ''
+                            });
+                        });
+                });
         });
 };
 
 //render trang san pham
-exports.getProducts = (req, res, next) => {
+exports.getProducts = async(req, res, next) => {
+    let cartProds;
+    if (req.user) {
+        const cartFetch = await req.user
+            .populate('cart.items.productId')
+            .execPopulate()
+            .then(user => {
+                cartProds = { items: user.cart.items, totalQty: req.user.cart.totalQty, totalPrice: req.user.cart.totalPrice };
+            })
+            .catch(err => console.log(err));
+    } else if (req.session.cart) {
+        cartProds = req.session.cart
+    } else {
+        cartProds = { items: [], totalQty: 0, totalPrice: 0 };
+    }
     const page = +req.query.page || 1;
     let totalItems;
     console.log(req.query);
@@ -49,6 +91,7 @@ exports.getProducts = (req, res, next) => {
                     path: '/products',
                     products: products,
                     user: req.user,
+                    cartProds: cartProds,
                     isAuthenticated: req.isAuthenticated(),
                     currentPage: page,
                     totaProducts: totalItems,
@@ -77,6 +120,7 @@ exports.getProducts = (req, res, next) => {
                     path: '/products',
                     products: products,
                     user: req.user,
+                    cartProds: cartProds,
                     isAuthenticated: req.isAuthenticated(),
                     currentPage: page,
                     totaProducts: totalItems,
@@ -92,7 +136,21 @@ exports.getProducts = (req, res, next) => {
 };
 
 //render trang chi tiet san pham
-exports.getProduct = (req, res, next) => {
+exports.getProduct = async(req, res, next) => {
+    let cartProds;
+    if (req.user) {
+        const cartFetch = await req.user
+            .populate('cart.items.productId')
+            .execPopulate()
+            .then(user => {
+                cartProds = { items: user.cart.items, totalQty: req.user.cart.totalQty, totalPrice: req.user.cart.totalPrice };
+            })
+            .catch(err => console.log(err));
+    } else if (req.session.cart) {
+        cartProds = req.session.cart
+    } else {
+        cartProds = { items: [], totalQty: 0, totalPrice: 0 };
+    }
     const productId = req.params.productId;
     Product.findById(productId)
         .then(product => {
@@ -102,6 +160,7 @@ exports.getProduct = (req, res, next) => {
                 product: product,
                 title: product.filter[0].toUpperCase() + product.filter.substring(1),
                 user: req.user,
+                cartProds: cartProds,
                 isAuthenticated: req.isAuthenticated()
             });
             if (!product.viewCount) {
@@ -115,17 +174,20 @@ exports.getProduct = (req, res, next) => {
 
 //render trang gio hang
 exports.getCart = async(req, res, next) => {
+    let cartProds;
     if (req.user) {
-        req.user
+        const cartFetch = await req.user
             .populate('cart.items.productId')
             .execPopulate()
             .then(user => {
                 const products = user.cart.items;
+                cartProds = { items: user.cart.items, totalQty: req.user.cart.totalQty, totalPrice: req.user.cart.totalPrice };
                 res.render('shop/shopping-cart', {
                     pageTitle: 'Shopping Cart',
                     path: '/cart',
                     products: products,
                     user: req.user,
+                    cartProds: cartProds,
                     isAuthenticated: req.isAuthenticated()
                 })
             });
@@ -139,6 +201,7 @@ exports.getCart = async(req, res, next) => {
             path: '/cart',
             products: productsInCart.items,
             user: req.user,
+            cartProds: req.session.cart,
             isAuthenticated: req.isAuthenticated()
         })
     }

@@ -16,10 +16,11 @@
             <%- include('includes/head-mobile.ejs',{isAuthenticated:isAuthenticated,user:user}) %>
 
         </header>
-        <%- include('includes/cart.ejs') %>
+        <%- include('includes/cart.ejs',{cartProds:cartProds}) %>
             <div class="container centered">
                 <h1>Page Not Found</h1>
                 <i class="fa fa-frown-o" style="font-size:48px;"></i>
             </div>
             <%- include('includes/footer.ejs') %>
-                <%- include('includes/end.ejs') %>
+                <%- include('includes/script.ejs') %>
+                    <%- include('includes/end.ejs') %>

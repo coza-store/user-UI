@@ -16,7 +16,7 @@
 
             <%- include('../includes/head-mobile.ejs',{isAuthenticated:isAuthenticated,user:user}) %>
         </header>
-        <%- include('../includes/cart.ejs') %>
+        <%- include('../includes/cart.ejs',{cartProds:cartProds}) %>
 
             <!-- Product -->
             <div class="bg0 m-t-23">
@@ -249,10 +249,9 @@
                                                 <span class="stext-105 cl3 product__price">$<%=product.price  %></span>
                                             </div>
                                             <div class="block2-txt-child2 flex-r p-t-3 ">
-                                                <a href="# " class="btn-addwish-b2 dis-block pos-relative js-addwish-b2 ">
-                                                    <img class="icon-heart1 dis-block trans-04 " src="images/icons/icon-heart-01.png " alt="ICON ">
-                                                    <img class="icon-heart2 dis-block trans-04 ab-t-l " src="images/icons/icon-heart-02.png " alt="ICON ">
-                                                </a>
+                                                <div class="block2-txt-child2 flex-r p-t-3">
+                                                    <p><i class="fa fa-eye"></i>&nbsp;<span style="font-size: 13px;"><%=product.viewCount %></span></p>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
