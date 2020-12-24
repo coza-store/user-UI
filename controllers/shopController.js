@@ -7,36 +7,23 @@ const ITEMS_PER_PAGE = 10;
 
 //render trang chu
 exports.getIndex = (req, res, next) => {
-    const page = +req.query.page || 1;
-    let totalItems;
+    let topView;
 
     Product.find()
-        .countDocuments()
-        .then(numOfProducts => {
-            totalItems = numOfProducts;
-            return Product
-                .find()
-                .skip((page - 1) * ITEMS_PER_PAGE)
-                .limit(ITEMS_PER_PAGE);
-
-        })
+        .sort({ viewCount: -1 })
+        .limit(3)
+        .exec()
         .then(products => {
+            topView = products;
             res.render('shop/index', {
                 pageTitle: 'Home',
                 path: '/',
-                products: products,
+                topView: topView,
                 user: req.user,
                 isAuthenticated: req.isAuthenticated(),
-                currentPage: page,
-                totaProducts: totalItems,
-                hasNextPage: ITEMS_PER_PAGE * page < totalItems,
-                hasPrevPage: page > 1,
-                nextPage: page + 1,
-                prevPage: page - 1,
-                lastPage: Math.ceil(totalItems / ITEMS_PER_PAGE),
                 query: ''
             })
-        })
+        });
 };
 
 //render trang san pham
@@ -116,7 +103,12 @@ exports.getProduct = (req, res, next) => {
                 title: product.filter[0].toUpperCase() + product.filter.substring(1),
                 user: req.user,
                 isAuthenticated: req.isAuthenticated()
-            })
+            });
+            if (!product.viewCount) {
+                product.viewCount = 0;
+            }
+            product.viewCount++;
+            return product.save();
         })
         .catch(err => console.log(err));
 };

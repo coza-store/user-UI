@@ -229,16 +229,20 @@
                                             <%=product._id %>
                                         </a>
                                         <div class="block2-pic hov-img0">
-                                            <img src="<%=product.imageUrl.detail_1 %>" alt="IMG-PRODUCT" class="product__img">
-                                            <img src="<%=product.imageUrl.detail_2 %>" alt="IMG-PRODUCT" class="product__img hidden">
-                                            <img src="<%=product.imageUrl.detail_3 %>" alt="IMG-PRODUCT" class="product__img hidden">
+                                            <img style="border: 0.5px solid rgb(216, 216, 216);" src="<%=product.imageUrl.detail_1 %>" alt="IMG-PRODUCT" class="product__img">
+                                            <p class="product__img hidden">
+                                                <%=product.imageUrl.detail_2 %>
+                                            </p>
+                                            <p class="product__img hidden">
+                                                <%=product.imageUrl.detail_3 %>
+                                            </p>
                                             <span class="block2-btn flex-c-m stext-103 cl2 size-102 bg0 bor2 hov-btn1 p-lr-15 
                                             trans-04 js-show-modal1">
                                                 Quick View</span>
                                         </div>
                                         <div class="block2-txt flex-w flex-t p-t-14">
                                             <div class="block2-txt-child1 flex-col-l ">
-                                                <a href="/products/<%=product._id %> " class="stext-104 cl4 hov-cl1 
+                                                <a href="/products/<%=product._id %>" class="stext-104 cl4 hov-cl1 
                                                 trans-04 js-name-b2 p-b-6 product__name">
                                                     <%=product.name  %>
                                                 </a>

@@ -2,7 +2,7 @@ const modal = document.querySelector('.js-modal1');
 const closeModal = document.querySelectorAll('.js-hide-modal1');
 
 //modal data
-const name = document.querySelector('.detail__name');
+const pname = document.querySelector('.detail__name');
 const price = document.querySelector('.detail__price');
 const description = document.querySelector('.detail_description');
 const modalImg = document.querySelectorAll('.modal_img');
@@ -22,15 +22,20 @@ productList.forEach((product, index) => {
 
     quickView.addEventListener('click', () => {
         modal.classList.add('show-modal1');
-        name.innerText = productName;
+        pname.innerText = productName;
         price.innerText = productPrice;
         product_id.setAttribute('value', productId.trim());
-
         for (let i = 0; i < 3; i++) {
-            modalImg[i].setAttribute('src', productImg[i].getAttribute('src'));
-            dataThumb[i].setAttribute('data-thumb', productImg[i].getAttribute('src'));
-            hrefData[i].setAttribute('href', productImg[i].getAttribute('src'));
-            dotData[i].setAttribute('src', productImg[i].getAttribute('src'));
+            let img;
+            if (i == 0) {
+                img = productImg[i].getAttribute('src');
+            } else {
+                img = productImg[i].innerText.trim();
+            }
+            modalImg[i].setAttribute('src', img);
+            dataThumb[i].setAttribute('data-thumb', img);
+            hrefData[i].setAttribute('href', img);
+            dotData[i].setAttribute('src', img);
         }
 
     });

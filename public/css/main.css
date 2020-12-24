@@ -2185,11 +2185,11 @@ input.num-product::-webkit-inner-spin-button {
 /*---------------------------------------------*/
 
 .block2-txt-child1 {
-    width: calc(100% - 30px);
+    width: calc(100% - 100px);
 }
 
 .block2-txt-child2 {
-    width: 30px;
+    width: 100px;
 }
 
 .btn-addwish-b2 .icon-heart2 {
