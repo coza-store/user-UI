@@ -13,6 +13,9 @@ exports.getIndex = async(req, res, next) => {
             .populate('cart.items.productId')
             .execPopulate()
             .then(user => {
+                if (user.cart == null) {
+                    cartProds = { items: [], totalQty: 0, totalPrice: 0 };
+                }
                 cartProds = { items: user.cart.items, totalQty: req.user.cart.totalQty, totalPrice: req.user.cart.totalPrice };
             })
             .catch(err => console.log(err));

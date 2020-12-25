@@ -357,26 +357,45 @@ exports.postConfirm = (req, res, next) => {
 };
 
 //render trang chinh sua thong tin nguoi dung
-exports.getUserSetting = (req, res, next) => {
-    res.render('auth/user-setting', {
-        pageTitle: 'Settings',
-        path: '/setting',
-        isAuthenticated: req.isAuthenticated(),
-        user: req.user,
-        errorMessage: ''
-    });
+exports.getUserSetting = async(req, res, next) => {
+    let cartProds;
+    const cartFetch = await req.user
+        .populate('cart.items.productId')
+        .execPopulate()
+        .then(user => {
+            cartProds = { items: user.cart.items, totalQty: req.user.cart.totalQty, totalPrice: req.user.cart.totalPrice };
+            res.render('auth/user-setting', {
+                pageTitle: 'Settings',
+                path: '/setting',
+                isAuthenticated: req.isAuthenticated(),
+                user: req.user,
+                cartProds: cartProds,
+                errorMessage: '',
+                errorMessage2: ''
+            });
+        })
+        .catch(err => console.log(err));
 };
 
 //xu ly chinh sua thong tin nguoi dung
-exports.postUserSetting = (req, res, next) => {
+exports.postUserSetting = async(req, res, next) => {
+    let cartProds;
+    const cartFetch = await req.user
+        .populate('cart.items.productId')
+        .execPopulate()
+        .then(user => {
+            cartProds = { items: user.cart.items, totalQty: req.user.cart.totalQty, totalPrice: req.user.cart.totalPrice };
+        });
     const image = req.file;
     if (!image) {
         return res.status(422).render('auth/user-setting', {
             pageTitle: 'Settings',
             path: '/setting',
-            isAuthenticated: req.session.isLoggedIn,
+            isAuthenticated: req.isAuthenticated(),
             user: req.user,
+            cartProds: cartProds,
             errorMessage: 'Attached file is not an image',
+            errorMessage2: ''
         });
     }
     const imageUrl = image.path;
@@ -387,4 +406,44 @@ exports.postUserSetting = (req, res, next) => {
             res.redirect('/setting');
         })
         .catch(err => console.log(err));
-}
+};
+
+exports.postResetSetting = async(req, res, next) => {
+    let cartProds;
+    const cartFetch = await req.user
+        .populate('cart.items.productId')
+        .execPopulate()
+        .then(user => {
+            cartProds = { items: user.cart.items, totalQty: req.user.cart.totalQty, totalPrice: req.user.cart.totalPrice };
+        });
+    const currentPassword = req.body.currentPswd;
+    const newPassword = req.body.newPswd;
+    const confirmPassword = req.body.confirmPswd;
+    let errors = validationResult(req);;
+    if (!req.user.validPassword(currentPassword)) {
+        errors.array()[0].msg = 'Current Password is incorrect';
+    }
+    if (newPassword == currentPassword) {
+        errors.array()[0].msg = 'New password must be different from current'
+    }
+    if (!errors.isEmpty()) {
+        return res.status(422).render('auth/user-setting', {
+            pageTitle: 'Settings',
+            path: '/setting',
+            isAuthenticated: req.isAuthenticated(),
+            user: req.user,
+            cartProds: cartProds,
+            errorMessage: '',
+            errorMessage2: errors.array()[0].msg,
+        });
+    }
+    bcrypt.hash(newPassword, 12)
+        .then(hashedPassword => {
+            req.user.password = hashedPassword;
+            return req.user.save();
+        })
+        .then(result => {
+            res.redirect('/setting');
+        })
+        .catch(err => console.log(err));
+};

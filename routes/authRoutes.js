@@ -4,7 +4,7 @@ const User = require('../models/userModel');
 const authController = require('../controllers/authController');
 const router = express.Router();
 const checkAuth = require('../middleware/protect-routes');
-const passport = require('passport');
+
 
 //dang nhap
 router.get('/login', authController.getLogIn);
@@ -69,5 +69,15 @@ router.post('/verify-email', authController.postConfirm);
 router.get('/setting', checkAuth, authController.getUserSetting);
 
 router.post('/setting', checkAuth, authController.postUserSetting);
+
+router.post('/setting-password', checkAuth,
+    body('newPswd', 'Password must have upper,lower,number and at least 8 charater').matches(/^(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z]{8,}$/, "i"),
+    body('confirmPswd', '').custom((value, { req }) => {
+        if (value !== req.body.newPswd) {
+            throw new Error('Confirm password is not match');
+        }
+        return true;
+    }),
+    authController.postResetSetting);
 
 module.exports = router;

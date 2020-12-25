@@ -10,20 +10,21 @@
         <div class="icon-header-item cl2 hov-cl1 trans-04 p-r-11 js-show-modal-search">
             <i class="zmdi zmdi-search"></i>
         </div>
-
-        <div class="icon-header-item cl2 hov-cl1 trans-04 p-r-11 p-l-10 icon-header-noti js-show-cart" <% if(session.cart!=null) { %>
-            data-notify="
-            <%= session.cart.totalQty%>"
-                <% } else if(user) { %>
-                    <% if(!user.cart.totalQty) { %>
-                        data-notify="0"
-                        <% } else { %> data-notify="
-                            <%= user.cart.totalQty %>"
-                                <% } %>
-                                    <% } else { %>data-notify="0"
-                                        <% } %> >
-                                            <i class="zmdi zmdi-shopping-cart"></i>
-        </div>
+        <% if(path !== '/checkout'){ %>
+            <div class="icon-header-item cl2 hov-cl1 trans-04 p-r-11 p-l-10 icon-header-noti js-show-cart" <% if(session.cart!=null) { %>
+                data-notify="
+                <%= session.cart.totalQty%>"
+                    <% } else if(user) { %>
+                        <% if(!user.cart.totalQty) { %>
+                            data-notify="0"
+                            <% } else { %> data-notify="
+                                <%= user.cart.totalQty %>"
+                                    <% } %>
+                                        <% } else { %>data-notify="0"
+                                            <% } %> >
+                                                <i class="zmdi zmdi-shopping-cart"></i>
+            </div>
+            <% } %>
     </div>
 
     <!-- Button show menu -->
@@ -60,6 +61,7 @@
                             <%=user.name%>
                         </a>
                         <div class="dropdown-content">
+                            <a href="/order" class="flex-c-m trans-04 p-lr-25">My Order</a>
                             <a href="/setting" class="flex-c-m trans-04 p-lr-25">Settings</a>
                             <form action="/logout" method="POST">
                                 <button class="flex-c-m trans-04 p-lr-25">Log out</button>
