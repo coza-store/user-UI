@@ -326,6 +326,7 @@ exports.getConfirmForm = (req, res, next) => {
         })
         .catch(err => console.log(err));
 };
+
 //xu ly xac nhan email nguoi dung
 exports.postConfirm = (req, res, next) => {
     let userInfo;
@@ -379,6 +380,10 @@ exports.getUserSetting = async(req, res, next) => {
 
 //xu ly chinh sua thong tin nguoi dung
 exports.postUserSetting = async(req, res, next) => {
+    const image = req.file;
+    const email = req.body.email;
+    const fullname = req.body.name;
+    const username = req.body.username;
     let cartProds;
     const cartFetch = await req.user
         .populate('cart.items.productId')
@@ -386,21 +391,20 @@ exports.postUserSetting = async(req, res, next) => {
         .then(user => {
             cartProds = { items: user.cart.items, totalQty: req.user.cart.totalQty, totalPrice: req.user.cart.totalPrice };
         });
-    const image = req.file;
-    if (!image) {
-        return res.status(422).render('auth/user-setting', {
-            pageTitle: 'Settings',
-            path: '/setting',
-            isAuthenticated: req.isAuthenticated(),
-            user: req.user,
-            cartProds: cartProds,
-            errorMessage: 'Attached file is not an image',
-            errorMessage2: ''
-        });
+    if (image) {
+        req.user.userImage = image.path;
     }
-    const imageUrl = image.path;
-    req.user.userImage = imageUrl;
-    req.user.save()
+    if (email != req.user.email) {
+        req.user.email = email;
+        req.user.active = false;
+    }
+    if (fullname) {
+        req.user.name = fullname;
+    }
+    if (username) {
+        req.user.username = username;
+    }
+    return req.user.save()
         .then(result => {
             console.log('Update user setting');
             res.redirect('/setting');
@@ -408,6 +412,7 @@ exports.postUserSetting = async(req, res, next) => {
         .catch(err => console.log(err));
 };
 
+//xu ly doi mat khau trong tranng setting
 exports.postResetSetting = async(req, res, next) => {
     let cartProds;
     const cartFetch = await req.user
@@ -446,4 +451,55 @@ exports.postResetSetting = async(req, res, next) => {
             res.redirect('/setting');
         })
         .catch(err => console.log(err));
+};
+
+exports.getSettingVerify = async(req, res, next) => {
+    crypto.randomBytes(32, (err, buffer) => {
+        if (err) {
+            console.log(err);
+        }
+        const token = buffer.toString('hex');
+        User.findOne({ email: req.user.email })
+            .then(user => {
+                user.token = token;
+                user.tokenExpiredTime = Date.now() + 3600000;
+                return user.save();
+            })
+            .then(result => {
+                const msg = {
+                    from: 'Coza Store Authentication',
+                    to: req.user.email,
+                    subject: 'Verify account COZA STORE',
+                    html: `
+                    <h4>Verify your email to finish signing up for Coza Store</h4>
+                    <p style="margin-top: 30px;">Thanks yor for choosing Coza.
+                    <br>Please confirm that ${req.user.email} is your email address by clicking on the button below
+                    <br>This link will expire after 1 hour</p>
+                    <a style="background: #111;
+                        height: 60px;
+                        padding: 10px 43px;
+                        border: 0;
+                        color: #fff;
+                        text-transform: capitalize;
+                        cursor: pointer;
+                        font-size: 16px;
+                        border-radius: 0px;
+                        margin-left: 100px;
+                        text-decoration:none;" href="http://localhost:3000/verify/${token}">Verify now</a>
+                    <p style="margin-top: 40px;">Thanks.<br>Admin Coza Store</p>`
+                };
+                return transporter
+                    .sendMail(msg)
+                    .catch(err => console.log(err));
+            })
+            .then(result => {
+                return res.render('auth/confirm-route', {
+                    pageTitle: 'Verify email',
+                    path: '/confirm-route',
+                    user: req.user.name,
+                    role: 'verify'
+                });
+            })
+            .catch(err => console.log(err));
+    });
 };

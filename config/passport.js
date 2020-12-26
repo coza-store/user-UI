@@ -40,7 +40,7 @@ passport.use('local.signin', new LocalStrategy({
     passwordField: 'password',
     passReqToCallback: true
 }, function(req, email, password, done) {
-    User.findOne({ 'email': email }, function(err, user) {
+    User.findOne({ $or: [{ 'email': email }, { 'username': email }] }, function(err, user) {
         if (err) {
             return done(err);
         }

@@ -80,4 +80,6 @@ router.post('/setting-password', checkAuth,
     }),
     authController.postResetSetting);
 
+router.get('/setting-verify', checkAuth, authController.getSettingVerify);
+
 module.exports = router;

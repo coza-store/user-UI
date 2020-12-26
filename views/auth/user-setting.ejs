@@ -43,12 +43,24 @@
                                     </div>
                                     <div class="py-2">
                                         <div class="row py-2">
-                                            <div class="col-md-12"> <label for="firstname">Your Name</label>
+                                            <div class="col-md-12">
+                                                <label for="firstname">User name</label>
+                                                <input <% if(!user.active) {%> disabled placeholder="Please verify your email to set username"
+                                                <% } %> type="text" class="bg-light form-control" name="username" value="<%= user.username %>">
+                                            </div>
+                                        </div>
+                                        <div class="row py-2">
+                                            <div class="col-md-12"> <label for="firstname">Your Full Name</label>
                                                 <input type="text" class="bg-light form-control" name="name" value="<%= user.name %>">
                                             </div>
                                         </div>
                                         <div class="row py-2">
-                                            <div class="col-md-12"> <label for="email">Email Address</label>
+                                            <div class="col-md-12">
+                                                <label for="email">Email Address &nbsp;
+                                                <% if(!user.active) {%> 
+                                                    <a style="color: red;" href="/setting-verify">Verify Email Now</a>
+                                                    <% } %> 
+                                            </label>
                                                 <input type="text" class="bg-light form-control" placeholder="example@email.com" name="email" value="<%= user.email %>">
                                             </div>
                                         </div>

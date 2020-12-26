@@ -3849,7 +3849,7 @@ input.num-product::-webkit-inner-spin-button {
 .dropdown-content a {
     text-align: center;
     color: black;
-    padding: 12px 16px;
+    padding: 12px 30px;
     text-decoration: none;
     display: block;
 }
