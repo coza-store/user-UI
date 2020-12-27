@@ -1,0 +1,60 @@
+<%- include('../includes/begin.ejs') %>
+    <link rel="stylesheet" href="/css/order.css" type="text/css">
+    </head>
+
+    <body>
+        <!-- Header -->
+        <header class="header-v4">
+            <!-- Header desktop -->
+            <div class="container-menu-desktop">
+                <%- include('../includes/top-bar.ejs',{isAuthenticated:isAuthenticated,user:user}) %>
+                    <div class="wrap-menu-desktop how-shadow1">
+                        <%- include('../includes/navigation.ejs',{user:user}) %>
+                    </div>
+            </div>
+
+            <%- include('../includes/head-mobile.ejs',{isAuthenticated:isAuthenticated,user:user}) %>
+        </header>
+
+        <!-- breadcrumb -->
+        <div class="container">
+            <div class="bread-crumb flex-w p-l-25 p-r-15 p-t-30 p-lr-0-lg">
+                <a href="/" class="stext-109 cl8 hov-cl1 trans-04">
+                        Home
+                        <i class="fa fa-angle-right m-l-9 m-r-10" aria-hidden="true"></i>
+                    </a>
+
+                <span class="stext-109 cl4">
+                        <%=pageTitle  %> 
+                    </span>
+            </div>
+        </div>
+
+        <main>
+            <% if (orders.length <= 0) { %>
+                <h1 style="text-align: center;margin: 103px auto;">Nothing there!</h1>
+                <% } else { %>
+                    <ul class="orders">
+                        <% orders.forEach(order => { %>
+                            <li class="orders__item">
+                                <h1>Order - #
+                                    <%= order._id %>
+                                </h1>
+                                <ul class="orders__products">
+                                    <% order.products.forEach(p => { %>
+                                        <li class="orders__products-item">
+                                            <%= p.product.title %> (
+                                                <%= p.quantity %>)</li>
+                                        <% }); %>
+                                </ul>
+                            </li>
+                            <% }); %>
+                    </ul>
+                    <% } %>
+        </main>
+
+        <%- include('../includes/footer.ejs') %>
+            <%- include('../includes/back-to-top.ejs') %>
+                <%- include('../includes/preview-modal.ejs') %>
+                    <%- include('../includes/script.ejs') %>
+                        <%- include('../includes/end.ejs') %>

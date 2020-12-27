@@ -45,8 +45,11 @@
                                         <div class="row py-2">
                                             <div class="col-md-12">
                                                 <label for="firstname">User name</label>
-                                                <input <% if(!user.active) {%> disabled placeholder="Please verify your email to set username"
-                                                <% } %> type="text" class="bg-light form-control" name="username" value="<%= user.username %>">
+                                                <% if(!user.active) {%>
+                                                    <input placeholder="Please verify your email to set username" disabled name="username" type="text" class="bg-light form-control">
+                                                    <% } else { %>
+                                                        <input value="<%=user.username %>" name="username" type="text" class="bg-light form-control">
+                                                        <% } %>
                                             </div>
                                         </div>
                                         <div class="row py-2">

@@ -1,4 +1,5 @@
 const express = require('express');
+const { check } = require('express-validator');
 const shopController = require('../controllers/shopController');
 const router = express.Router();
 const checkAuth = require('../middleware/protect-routes');
@@ -18,9 +19,11 @@ router.post('/cart-delete-item', shopController.postDeleteCartItem);
 
 router.get('/checkout', checkAuth, shopController.getCheckOut);
 
-router.get('/checkout/success', shopController.getCheckOut);
+router.get('/checkout/success', shopController.getOrders);
 
 router.get('/checkout/cancel', shopController.getCheckOut);
 
+router.post('/create-order', checkAuth, shopController.postOrder);
 
+router.get('/orders', checkAuth, shopController.getOrders);
 module.exports = router;

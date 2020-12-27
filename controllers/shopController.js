@@ -260,6 +260,44 @@ exports.postDeleteCartItem = (req, res, next) => {
     }
 };
 
+exports.getOrders = (req, res, next) => {
+    Order.find({ "user.userId": req.user._id })
+        .then(orders => {
+            res.render('shop/order', {
+                pageTitle: 'My Orders',
+                path: '/orders',
+                isAuthenticated: req.isAuthenticated(),
+                user: req.user,
+                orders: orders
+            });
+        })
+};
+
+exports.postOrder = (req, res, next) => {
+    req.user
+        .populate('cart.items.productId')
+        .execPopulate()
+        .then(user => {
+            const products = user.cart.items.map(i => {
+                return { product: {...i.productId._doc }, quantity: i.quantity, size: i.size, color: i.color };
+            });
+            console.log(products);
+            const order = new Order({
+                user: {
+                    name: req.user.name,
+                    userId: req.user
+                },
+                products: products
+            });
+            return order.save();
+        })
+        .then(result => {
+            return req.user.clearCart();
+        })
+        .catch(err => console.log(err));
+};
+
+
 //render trang thanh toan
 exports.getCheckOut = (req, res, next) => {
     let products;

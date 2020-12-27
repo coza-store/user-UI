@@ -33,7 +33,7 @@
         <section class="checkout spad">
             <div class="container">
                 <div class="checkout__form">
-                    <form action="#">
+                    <form id="order-form" action="/create-order" method="POST">
                         <div class="row">
                             <div class="col-lg-6 col-md-6">
                                 <h6 class="checkout__title">Billing Details</h6>
@@ -164,10 +164,13 @@
                                             <script>
                                                 var stripe = Stripe('pk_test_51HyteKG8oVt195nhRCjiFshG5hjbAUcFfOlOMs9nHtLzadlAQc6Hb88V9tC2zV8hqwnzuPnn33quLuzxebpZvc9H00i3qAPQgR');
                                                 var orderBtn =document.getElementById('order-button');
-                                                orderBtn.addEventListener('click',function(){
+                                                var form = document.getElementById('order-form');
+                                                orderBtn.addEventListener('click',function(e){
+                                                    e.preventDefault();
                                                     stripe.redirectToCheckout({
                                                         sessionId:'<%= sessionId %>'
                                                     })
+                                                    form.submit();
                                                 });
                                             </script>
                                         </button>

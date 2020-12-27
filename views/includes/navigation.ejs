@@ -22,7 +22,7 @@
             <i class="zmdi zmdi-search"></i>
         </div>
 
-        <% if(path !== '/checkout'){ %>
+        <% if(path !== '/checkout' && path !== '/orders'){ %>
             <div class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-noti js-show-cart" <% if(session.cart) { %>
                 data-notify="
                 <%= session.cart.totalQty%>"
