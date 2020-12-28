@@ -26,6 +26,7 @@ exports.getIndex = async(req, res, next) => {
     }
     let topView;
     let menProducts;
+    let womenProducts;
     Product.find()
         .sort({ viewCount: -1 })
         .limit(3)
@@ -41,17 +42,25 @@ exports.getIndex = async(req, res, next) => {
                         .limit(2)
                         .exec()
                         .then(womenProds => {
-                            res.render('shop/index', {
-                                pageTitle: 'Home',
-                                path: '/',
-                                topView: topView,
-                                menProds: menProducts,
-                                womenProds: womenProds,
-                                cartProds: cartProds,
-                                user: req.user,
-                                isAuthenticated: req.isAuthenticated(),
-                                query: ''
-                            });
+                            womenProducts = womenProds;
+                            Product.find()
+                                .sort({ hasSold: -1 })
+                                .limit(3)
+                                .exec()
+                                .then(bestSold => {
+                                    res.render('shop/index', {
+                                        pageTitle: 'Home',
+                                        path: '/',
+                                        topView: topView,
+                                        menProds: menProducts,
+                                        womenProds: womenProducts,
+                                        cartProds: cartProds,
+                                        bestSold: bestSold,
+                                        user: req.user,
+                                        isAuthenticated: req.isAuthenticated(),
+                                        query: ''
+                                    });
+                                })
                         });
                 });
         });
@@ -316,7 +325,7 @@ exports.getOrders = (req, res, next) => {
         })
 };
 
-exports.postOrder = (req, res, next) => {
+exports.postOrder = async(req, res, next) => {
     const city = req.body.calc_shipping_provinces;
     const district = req.body.calc_shipping_district;
     const address = req.body.address;
@@ -326,11 +335,12 @@ exports.postOrder = (req, res, next) => {
     const today = new Date();
     const create_moment =
         `${today.getHours()}:${today.getMinutes()}:${today.getSeconds()} - T${today.getDay() + +1} ${today.getDate()}/${today.getMonth()}/${today.getFullYear()}`
+    let products;
     req.user
         .populate('cart.items.productId')
         .execPopulate()
         .then(user => {
-            const products = user.cart.items.map(i => {
+            products = user.cart.items.map(i => {
                 return { product: {...i.productId._doc }, quantity: i.quantity, size: i.size, color: i.color };
             });
             const order = new Order({
@@ -351,9 +361,19 @@ exports.postOrder = (req, res, next) => {
             });
             return order.save();
         })
-        // .then(result => {
-        //     return req.user.clearCart();
-        // })
+        .then(result => {
+            products.forEach(async p => {
+                const update = await Product.findById(p.product._id)
+                    .then(product => {
+                        if (!product.hasSold) {
+                            product.hasSold = 0;
+                        }
+                        product.hasSold++;
+                        product.save();
+                    });
+            })
+            return req.user.clearCart();
+        })
         .catch(err => console.log(err));
 };
 

@@ -33,7 +33,8 @@ const productSchema = new Schema({
         type: String,
         require: true
     },
-    viewCount: { type: Number }
+    viewCount: { type: Number },
+    hasSold: { type: Number }
 });
 
 module.exports = mongoose.model('Product', productSchema);
