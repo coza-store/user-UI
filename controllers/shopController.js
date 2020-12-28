@@ -1,9 +1,10 @@
+const queryString = require('query-string');
 const Product = require('../models/productModel');
 const Order = require('../models/orderModel');
 const Cart = require('../models/cartModel');
 const stripe = require('stripe')('sk_test_51HyteKG8oVt195nhn3Q8SwnvKDqhHiYIMzhzuw2GmMRthWC4si5JZ109hu3kdMnrfeo8NnHC426xtpT4toc59kQP00gY9tJQ5D');
 
-const ITEMS_PER_PAGE = 10;
+const ITEMS_PER_PAGE = 12;
 
 //render trang chu
 exports.getIndex = async(req, res, next) => {
@@ -12,58 +13,33 @@ exports.getIndex = async(req, res, next) => {
         const cartFetch = await req.user
             .populate('cart.items.productId')
             .execPopulate()
-            .then(user => {
-                if (user.cart == null) {
-                    cartProds = { items: [], totalQty: 0, totalPrice: 0 };
-                }
-                cartProds = { items: user.cart.items, totalQty: req.user.cart.totalQty, totalPrice: req.user.cart.totalPrice };
-            })
-            .catch(err => console.log(err));
+        if (cartFetch.cart == null) {
+            cartProds = { items: [], totalQty: 0, totalPrice: 0 };
+        }
+        cartProds = { items: cartFetch.cart.items, totalQty: req.user.cart.totalQty, totalPrice: req.user.cart.totalPrice };
+
     } else if (req.session.cart) {
         cartProds = req.session.cart
     } else {
         cartProds = { items: [], totalQty: 0, totalPrice: 0 };
     }
-    let topView;
-    let menProducts;
-    let womenProducts;
-    Product.find()
-        .sort({ viewCount: -1 })
-        .limit(3)
-        .exec()
-        .then(products => {
-            topView = products;
-            Product.find({ filter: { "$regex": "men", "$options": "i" } })
-                .limit(2)
-                .exec()
-                .then(menProds => {
-                    menProducts = menProds;
-                    Product.find({ filter: { "$regex": "woman", "$options": "i" } })
-                        .limit(2)
-                        .exec()
-                        .then(womenProds => {
-                            womenProducts = womenProds;
-                            Product.find()
-                                .sort({ hasSold: -1 })
-                                .limit(3)
-                                .exec()
-                                .then(bestSold => {
-                                    res.render('shop/index', {
-                                        pageTitle: 'Home',
-                                        path: '/',
-                                        topView: topView,
-                                        menProds: menProducts,
-                                        womenProds: womenProducts,
-                                        cartProds: cartProds,
-                                        bestSold: bestSold,
-                                        user: req.user,
-                                        isAuthenticated: req.isAuthenticated(),
-                                        query: ''
-                                    });
-                                })
-                        });
-                });
-        });
+
+    const topView = await Product.find().sort({ viewCount: -1 }).limit(10).exec();
+    const menProducts = await Product.find({ filter: { "$regex": "men", "$options": "i" } }).limit(10).exec();
+    const womenProducts = await Product.find({ filter: { "$regex": "woman", "$options": "i" } }).limit(10).exec();
+    const bestSold = await Product.find().sort({ hasSold: -1 }).limit(10).exec();
+    return res.render('shop/index', {
+        pageTitle: 'Home',
+        path: '/',
+        topView: topView,
+        menProds: menProducts,
+        womenProds: womenProducts,
+        cartProds: cartProds,
+        bestSold: bestSold,
+        user: req.user,
+        isAuthenticated: req.isAuthenticated(),
+    });
+
 };
 
 //render trang san pham
@@ -73,10 +49,11 @@ exports.getProducts = async(req, res, next) => {
         const cartFetch = await req.user
             .populate('cart.items.productId')
             .execPopulate()
-            .then(user => {
-                cartProds = { items: user.cart.items, totalQty: req.user.cart.totalQty, totalPrice: req.user.cart.totalPrice };
-            })
-            .catch(err => console.log(err));
+        if (cartFetch.cart == null) {
+            cartProds = { items: [], totalQty: 0, totalPrice: 0 };
+        }
+        cartProds = { items: cartFetch.cart.items, totalQty: req.user.cart.totalQty, totalPrice: req.user.cart.totalPrice };
+
     } else if (req.session.cart) {
         cartProds = req.session.cart
     } else {
@@ -84,7 +61,13 @@ exports.getProducts = async(req, res, next) => {
     }
     const page = +req.query.page || 1;
     let totalItems;
-    console.log(req.query);
+    const nextQuery = {...req.query, page: page + 1 };
+    const prevQuery = {...req.query, page: page - 1 };
+    const currentQuery = {...req.query, page: page };
+    const qC = queryString.stringify(currentQuery);
+    const qN = queryString.stringify(nextQuery);
+    const qP = queryString.stringify(prevQuery);
+
     if (req.query.search) {
         const regex = new RegExp(escapeRegex(req.query.search), 'gi');
         Product.find({ name: regex })
@@ -105,14 +88,15 @@ exports.getProducts = async(req, res, next) => {
                     user: req.user,
                     cartProds: cartProds,
                     isAuthenticated: req.isAuthenticated(),
-                    currentPage: page,
                     totaProducts: totalItems,
+                    currentPage: page,
+                    currentPageQuery: qC,
                     hasNextPage: ITEMS_PER_PAGE * page < totalItems,
                     hasPrevPage: page > 1,
                     nextPage: page + 1,
+                    nextPageQuery: qN,
                     prevPage: page - 1,
-                    lastPage: Math.ceil(totalItems / ITEMS_PER_PAGE),
-                    query: req.query.search
+                    prevPageQuery: qP
                 })
             })
     } else {
@@ -134,14 +118,15 @@ exports.getProducts = async(req, res, next) => {
                     user: req.user,
                     cartProds: cartProds,
                     isAuthenticated: req.isAuthenticated(),
-                    currentPage: page,
                     totaProducts: totalItems,
+                    currentPage: page,
+                    currentPageQuery: qC,
                     hasNextPage: ITEMS_PER_PAGE * page < totalItems,
                     hasPrevPage: page > 1,
                     nextPage: page + 1,
+                    nextPageQuery: qN,
                     prevPage: page - 1,
-                    lastPage: Math.ceil(totalItems / ITEMS_PER_PAGE),
-                    query: ''
+                    prevPageQuery: qP
                 })
             })
     }
@@ -154,34 +139,34 @@ exports.getProduct = async(req, res, next) => {
         const cartFetch = await req.user
             .populate('cart.items.productId')
             .execPopulate()
-            .then(user => {
-                cartProds = { items: user.cart.items, totalQty: req.user.cart.totalQty, totalPrice: req.user.cart.totalPrice };
-            })
-            .catch(err => console.log(err));
+        if (cartFetch.cart == null) {
+            cartProds = { items: [], totalQty: 0, totalPrice: 0 };
+        }
+        cartProds = { items: cartFetch.cart.items, totalQty: req.user.cart.totalQty, totalPrice: req.user.cart.totalPrice };
+
     } else if (req.session.cart) {
         cartProds = req.session.cart
     } else {
         cartProds = { items: [], totalQty: 0, totalPrice: 0 };
     }
     const productId = req.params.productId;
-    Product.findById(productId)
-        .then(product => {
-            res.render('shop/product-detail', {
-                pageTitle: product.name,
-                path: '/products/productId',
-                product: product,
-                title: product.filter[0].toUpperCase() + product.filter.substring(1),
-                user: req.user,
-                cartProds: cartProds,
-                isAuthenticated: req.isAuthenticated()
-            });
-            if (!product.viewCount) {
-                product.viewCount = 0;
-            }
-            product.viewCount++;
-            return product.save();
-        })
-        .catch(err => console.log(err));
+    const product = await Product.findById(productId)
+    const relatedProducts = await Product.find({ $and: [{ filter: { "$regex": product.filter, "$options": "i" } }, { _id: { $ne: product._id } }] }).limit(10).exec();
+    res.render('shop/product-detail', {
+        pageTitle: product.name,
+        path: '/products/productId',
+        product: product,
+        relatedProducts: relatedProducts,
+        title: product.filter[0].toUpperCase() + product.filter.substring(1),
+        user: req.user,
+        cartProds: cartProds,
+        isAuthenticated: req.isAuthenticated()
+    });
+    if (!product.viewCount) {
+        product.viewCount = 0;
+    }
+    product.viewCount++;
+    return product.save();
 };
 
 //render trang gio hang
