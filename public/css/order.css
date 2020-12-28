@@ -6,13 +6,27 @@
 
 .orders__item h1 {
     margin: 0;
-    font-size: 1rem;
+    font-size: 20px;
+    font-weight: bold;
 }
 
 .orders__item {
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.26);
     padding: 1rem;
     margin-bottom: 1rem;
+}
+
+.orders__item .btn {
+    float: right;
+    border: 2px solid #000;
+    padding: 10px;
+    font-weight: bold;
+    color: white;
+    background-color: #000;
+}
+
+.orders__item .btn:hover {
+    background-color: #666;
 }
 
 .orders__products {
@@ -26,4 +40,8 @@
     padding: 0.5rem;
     border: 1px solid #00695c;
     color: #00695c;
+}
+
+.shipping-info {
+    margin-top: 5px;
 }

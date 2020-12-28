@@ -57,14 +57,14 @@
                                     <img src="/images/user/guest-user.jpg" class="img" alt="">
                                     <% }  %>
                         </div>
-                        <a href="/setting" class="flex-c-m trans-04 p-lr-25">
+                        <a href="/setting" class="flex-c-m trans-04 p-r-35 p-l-10">
                             <%=user.name%>
                         </a>
                         <div class="dropdown-content">
-                            <a href="/orders" class="flex-c-m trans-04 p-lr-25">My Order</a>
-                            <a href="/setting" class="flex-c-m trans-04 p-lr-25">Settings</a>
+                            <a href="/orders" class="flex-c-m trans-04 p-lr-25"><i style="font-size: 15px;" class="fa fa-reorder"></i>&emsp;My Order</a>
+                            <a href="/setting" class="flex-c-m trans-04 p-lr-25"><i style="font-size: 15px;" class="fa fa-cog"></i>&emsp;Settings</a>
                             <form action="/logout" method="POST">
-                                <button class="flex-c-m trans-04 p-lr-25">Log out</button>
+                                <button class="flex-c-m trans-04 p-lr-25"><i style="font-size: 15px;" class="fa fa-sign-out"></i>&emsp;Log out</button>
                             </form>
                         </div>
                     </div>

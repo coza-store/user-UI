@@ -260,44 +260,6 @@ exports.postDeleteCartItem = (req, res, next) => {
     }
 };
 
-exports.getOrders = (req, res, next) => {
-    Order.find({ "user.userId": req.user._id })
-        .then(orders => {
-            res.render('shop/order', {
-                pageTitle: 'My Orders',
-                path: '/orders',
-                isAuthenticated: req.isAuthenticated(),
-                user: req.user,
-                orders: orders
-            });
-        })
-};
-
-exports.postOrder = (req, res, next) => {
-    req.user
-        .populate('cart.items.productId')
-        .execPopulate()
-        .then(user => {
-            const products = user.cart.items.map(i => {
-                return { product: {...i.productId._doc }, quantity: i.quantity, size: i.size, color: i.color };
-            });
-            console.log(products);
-            const order = new Order({
-                user: {
-                    name: req.user.name,
-                    userId: req.user
-                },
-                products: products
-            });
-            return order.save();
-        })
-        .then(result => {
-            return req.user.clearCart();
-        })
-        .catch(err => console.log(err));
-};
-
-
 //render trang thanh toan
 exports.getCheckOut = (req, res, next) => {
     let products;
@@ -323,7 +285,7 @@ exports.getCheckOut = (req, res, next) => {
                         quantity: p.quantity
                     };
                 }),
-                success_url: req.protocol + '://' + req.get('host') + '/checkout/success',
+                success_url: req.protocol + '://' + req.get('host') + '/orders',
                 cancel_url: req.protocol + '://' + req.get('host') + '/checkout/cancel'
             });
         })
@@ -340,6 +302,74 @@ exports.getCheckOut = (req, res, next) => {
         })
         .catch(err => console.log(err));
 };
+
+exports.getOrders = (req, res, next) => {
+    Order.find({ "user.userId": req.user._id })
+        .then(orders => {
+            res.render('shop/order', {
+                pageTitle: 'My Orders',
+                path: '/orders',
+                isAuthenticated: req.isAuthenticated(),
+                user: req.user,
+                orders: orders
+            });
+        })
+};
+
+exports.postOrder = (req, res, next) => {
+    const city = req.body.calc_shipping_provinces;
+    const district = req.body.calc_shipping_district;
+    const address = req.body.address;
+    const detail_address = req.body.address_detail;
+    const note = req.body.notes;
+    const shipping_address = address + ', ' + district + ', ' + city;
+    const today = new Date();
+    const create_moment =
+        `${today.getHours()}:${today.getMinutes()}:${today.getSeconds()} - T${today.getDay() + +1} ${today.getDate()}/${today.getMonth()}/${today.getFullYear()}`
+    req.user
+        .populate('cart.items.productId')
+        .execPopulate()
+        .then(user => {
+            const products = user.cart.items.map(i => {
+                return { product: {...i.productId._doc }, quantity: i.quantity, size: i.size, color: i.color };
+            });
+            const order = new Order({
+                products: products,
+                user: {
+                    name: req.body.name,
+                    email: req.body.email,
+                    phone: req.body.phone,
+                    userId: req.user
+                },
+                shipping: {
+                    address: shipping_address,
+                    detail_address: detail_address,
+                    note: note
+                },
+                totalPrice: user.cart.totalPrice,
+                createDate: create_moment
+            });
+            return order.save();
+        })
+        // .then(result => {
+        //     return req.user.clearCart();
+        // })
+        .catch(err => console.log(err));
+};
+
+exports.getOrderDetail = (req, res, next) => {
+    const orderId = req.params.orderId;
+    Order.findById(orderId)
+        .then(order => {
+            res.render('shop/order-detail', {
+                pageTitle: `Detail #${orderId}`,
+                path: '/orders/orderId',
+                isAuthenticated: req.isAuthenticated(),
+                user: req.user,
+                order: order
+            })
+        })
+}
 
 function escapeRegex(text) {
     return text.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&");

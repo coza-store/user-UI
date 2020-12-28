@@ -54,7 +54,7 @@
                                         <input class="billing_address_1" name="" type="hidden" value="">
                                     </div>
                                     <div class="col-md-6 pt-md-0 pt-3">
-                                        <label for="calc_shipping_provinces" style="margin-bottom: 10px;">District<span style="color: red;">*</span></label>
+                                        <label for="calc_shipping_district" style="margin-bottom: 10px;">District<span style="color: red;">*</span></label>
                                         <select name="calc_shipping_district" id="district" class="bg-light" required="">
                                                     <option value=""></option>
                                                 </select>
@@ -64,13 +64,13 @@
                                 <div class="checkout__input">
                                     <label for="address" style="margin-bottom: 10px;">Address<span style="color: red;">*</span></label>
                                     <input type="text" name="address" placeholder="Street Address" class="checkout__input__add">
-                                    <input type="text" name="address-detail" placeholder="Apartment, suite, unite ect (optinal)">
+                                    <input type="text" name="address_detail" placeholder="Apartment, suite, unite ect (optinal)">
                                 </div>
                                 <div class="row">
                                     <div class="col-lg-6">
                                         <div class="checkout__input">
                                             <label for="name" style="margin-bottom: 10px;">Phone<span style="color: red;">*</span></label>
-                                            <input type="text" name="phone">
+                                            <input type="text" name="phone" value="<%= user.phone %>">
                                         </div>
                                     </div>
                                     <div class="col-lg-6">
@@ -218,7 +218,7 @@
                                             stc = ''
                                         c.forEach(function(i, e) {
                                             e += +1
-                                            stc += '<option value=' + e + '>' + i + '</option>'
+                                            stc += '<option value="' + i + '">' + i + '</option>'
                                             $this.html('<option value="">City</option>' + stc)
                                             if (address_1 = localStorage.getItem('address_1_saved')) {
                                                 $('select[name="calc_shipping_provinces"] option').each(function() {

@@ -1,0 +1,125 @@
+<%- include('../includes/begin.ejs') %>
+    <link rel="stylesheet" href="/css/order-detail.css" type="text/css">
+    </head>
+
+    <body>
+        <!-- Header -->
+        <header class="header-v4">
+            <!-- Header desktop -->
+            <div class="container-menu-desktop">
+                <%- include('../includes/top-bar.ejs',{isAuthenticated:isAuthenticated,user:user}) %>
+                    <div class="wrap-menu-desktop how-shadow1">
+                        <%- include('../includes/navigation.ejs',{user:user}) %>
+                    </div>
+            </div>
+
+            <%- include('../includes/head-mobile.ejs',{isAuthenticated:isAuthenticated,user:user}) %>
+        </header>
+
+        <!-- breadcrumb -->
+        <div class="container">
+            <div class="bread-crumb flex-w p-l-25 p-r-15 p-t-30 p-lr-0-lg">
+                <a href="/" class="stext-109 cl8 hov-cl1 trans-04">
+                        Home
+                        <i class="fa fa-angle-right m-l-9 m-r-10" aria-hidden="true"></i>
+                    </a>
+
+                <span class="stext-109 cl4">
+                        My Orders
+                        <i class="fa fa-angle-right m-l-9 m-r-10" aria-hidden="true"></i>
+                    </span>
+                <span class="stext-109 cl4">
+                        <%=pageTitle %> 
+                    </span>
+            </div>
+        </div>
+
+        <!-- Order detail begin -->
+        <div class="container" style="margin-top: 40px; margin-bottom: 70px;">
+            <article class="card">
+                <header class="card-header"> My Orders / Tracking </header>
+                <div class="card-body">
+                    <h6 style="margin-bottom: 10px;">Order ID: #
+                        <%=order._id %>
+                    </h6>
+                    <h6 style="margin-top: 10px;font-weight: bold;">Shipping Infomation</h6>
+                    <div class="shipping-detail-info">
+                        <p>Total order: $
+                            <%=order.totalPrice %>
+                        </p>
+                        <p>Recipent Name:
+                            <%=order.user.name %>
+                        </p>
+                        <p>Email:
+                            <%=order.user.email  %>
+                        </p>
+                        <p>Phone:
+                            <%=order.user.phone  %>
+                        </p>
+                        <p>Address:
+                            <%=order.shipping.address  %>
+                        </p>
+                        <p>Note for shipper:
+                            <%= order.shipping.note %>
+                        </p>
+                    </div>
+                    <article class="card">
+                        <div class="card-body row">
+                            <div class="col"> <strong>Order date time:</strong> <br>
+                                <%=order.createDate  %>
+                            </div>
+                            <div class="col"> <strong>Shipping BY:</strong> <br> Grab Express </div>
+                            <div class="col"> <strong>Status:</strong> <br> Picked by the courier </div>
+                            <div class="col"> <strong>Payment Method:</strong> <br> Stripe / Paypal </div>
+                        </div>
+                    </article>
+                    <div class="track">
+                        <div class="step active"> <span class="icon"> <i class="fa fa-check"></i> </span> <span class="text">Order confirmed</span> </div>
+                        <div class="step active"> <span class="icon"> <i class="fa fa-user"></i> </span> <span class="text"> Picked by courier</span> </div>
+                        <div class="step"> <span class="icon"> <i class="fa fa-truck"></i> </span> <span class="text"> On the way </span> </div>
+                        <div class="step"> <span class="icon"> <i class="fa fa-dropbox "></i> </span> <span class="text">Ready for pickup</span> </div>
+                    </div>
+                    <hr>
+                    <h6 class="big_tag">Products in Order</h6>
+                    <table class="table-shopping-cart">
+                        <tr class="table_head">
+                            <th class="column-1">Product</th>
+                            <th class="column-2"></th>
+                            <th class="column-3">Price</th>
+                            <th class="column-4">Quantity</th>
+                            <th class="column-5">Total</th>
+                        </tr>
+                        <% order.products.forEach(p => { %>
+                            <tr class="table_row">
+                                <td class="column-1">
+                                    <div class="how-itemcart_detail">
+                                        <img src="<%=p.product.imageUrl.detail_1%>" alt="IMG">
+                                    </div>
+                                </td>
+                                <td class="column-2">
+                                    <strong><a style="color: #333;" href="/products/<%=p.product._id%>"><%=p.product.name%></a></strong><br>
+                                    <span style="font-size: 14px;">Size : <%=p.size%> </span><br>
+                                    <span style="font-size: 14px;">Color: <%=p.color%> </span>
+                                </td>
+                                <td class="column-3">$
+                                    <%=p.product.price%>
+                                </td>
+                                <td class="column-4">
+                                    <%=p.quantity %>
+                                </td>
+                                <td class="column-5">
+                                    $ <span class="total_price"><%=p.product.price * p.quantity%></span>
+                                </td>
+                            </tr>
+                            <% }) %>
+                    </table>
+                    <a href="/oders" class="btn btn-warning" data-abc="true"> <i class="fa fa-chevron-left"></i> Back to orders</a>
+                </div>
+            </article>
+        </div>
+        <!-- Order detail end -->
+        <%- include('../includes/footer.ejs') %>
+            <%- include('../includes/back-to-top.ejs') %>
+                <%- include('../includes/preview-modal.ejs') %>
+                    <%- include('../includes/script.ejs') %>
+                        <%- include('../includes/end.ejs') %>

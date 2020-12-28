@@ -384,6 +384,7 @@ exports.postUserSetting = async(req, res, next) => {
     const email = req.body.email;
     const fullname = req.body.name;
     const username = req.body.username;
+    const phone = req.body.phone;
     let cartProds;
     const cartFetch = await req.user
         .populate('cart.items.productId')
@@ -403,6 +404,9 @@ exports.postUserSetting = async(req, res, next) => {
     }
     if (username) {
         req.user.username = username;
+    }
+    if (phone) {
+        req.user.phone = phone;
     }
     return req.user.save()
         .then(result => {

@@ -3847,7 +3847,6 @@ input.num-product::-webkit-inner-spin-button {
 /* Links inside the dropdown */
 
 .dropdown-content a {
-    text-align: center;
     color: black;
     padding: 12px 30px;
     text-decoration: none;
@@ -4106,13 +4105,31 @@ input.num-product::-webkit-inner-spin-button {
     float: left;
     width: 30px;
     height: 30px;
+    margin-top: 5px;
+    margin-left: 10px;
 }
 
 .nav-ava img {
-    margin-top: 5px;
-    margin-left: 10px;
+    border-radius: 100%;
     width: 30px;
     height: 30px;
-    border-radius: 100%;
     width: 100%;
+}
+
+@media only screen and (max-width: 991px) {
+    .nav-ava {
+        margin-top: 0px;
+        width: 25px;
+        height: 25px;
+    }
+    .nav-ava img {
+        width: 25px;
+        height: 25px;
+    }
+    .dropdown-content {
+        margin-top: 8px;
+    }
+    .dropdown-content a {
+        padding: 12px 32px;
+    }
 }

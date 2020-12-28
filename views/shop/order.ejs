@@ -30,23 +30,38 @@
             </div>
         </div>
 
-        <main>
+        <main class="container" style="margin-top: 30px;margin-bottom: 90px;">
             <% if (orders.length <= 0) { %>
                 <h1 style="text-align: center;margin: 103px auto;">Nothing there!</h1>
                 <% } else { %>
                     <ul class="orders">
                         <% orders.forEach(order => { %>
                             <li class="orders__item">
-                                <h1>Order - #
+                                <a href="/orders/<%=order._id%>" class="btn">Order detail</a>
+                                <h1>Order ID - #
                                     <%= order._id %>
                                 </h1>
-                                <ul class="orders__products">
-                                    <% order.products.forEach(p => { %>
-                                        <li class="orders__products-item">
-                                            <%= p.product.title %> (
-                                                <%= p.quantity %>)</li>
-                                        <% }); %>
-                                </ul>
+                                <h6 style="font-style: italic;margin-top: 7px;">Order time:
+                                    <%=order.createDate %>
+                                </h6>
+                                <h6 style="margin-top: 10px;font-weight: bold;">Shipping Infomation</h6>
+                                <div class="shipping-info">
+                                    <p>Recipent Name:
+                                        <%=order.user.name %>
+                                    </p>
+                                    <p>Email:
+                                        <%=order.user.email  %>
+                                    </p>
+                                    <p>Phone:
+                                        <%=order.user.phone  %>
+                                    </p>
+                                    <p>Address:
+                                        <%=order.shipping.address  %>
+                                    </p>
+                                    <p>Note for shipper:
+                                        <%= order.shipping.note %>
+                                    </p>
+                                </div>
                             </li>
                             <% }); %>
                     </ul>
