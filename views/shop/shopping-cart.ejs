@@ -63,23 +63,25 @@
                                                         <span style="font-size: 14px;">Color: <%=p.color%> </span>
                                                     </td>
                                                     <td class="column-3">$
-                                                        <%=p.productId.price%>
+                                                        <span id="product_price_<%=p._id %>"><%=p.productId.price%></span>
                                                     </td>
-                                                    <td class="column-4">
+                                                    <td class="column-4" id="pointMark">
                                                         <div class="wrap-num-product flex-w m-l-auto m-r-0">
-                                                            <div class="btn-num-product-down cl8 hov-btn3 trans-04 flex-c-m">
+                                                            <input type="hidden" value="<%=p._id %>" name="cartItemId">
+                                                            <input type="hidden" value="<%=p.productId._id%>" name="productId">
+                                                            <button class="btn-num-product-down cl8 hov-btn3 trans-04 flex-c-m" onclick="changeQuantityDown(this)">
                                                                 <i class="fs-16 zmdi zmdi-minus"></i>
-                                                            </div>
+                                                            </button>
 
-                                                            <input class="mtext-104 cl3 txt-center num-product" type="number" name="numnumProduct" min="1" value="<%=p.quantity%>">
+                                                            <input class="mtext-104 cl3 txt-center num-product" type="number" name="quantity" min="1" value="<%=p.quantity%>">
 
-                                                            <div class="btn-num-product-up cl8 hov-btn3 trans-04 flex-c-m">
+                                                            <button class="btn-num-product-up cl8 hov-btn3 trans-04 flex-c-m" onclick="changeQuantityUp(this)">
                                                                 <i class="fs-16 zmdi zmdi-plus"></i>
-                                                            </div>
+                                                            </button>
                                                         </div>
                                                     </td>
                                                     <td class="column-5">
-                                                        $ <span class="total_price"><%=p.productId.price * p.quantity%></span>
+                                                        $ <span class="total_price" id="product_total_<%=p._id %>"><%=p.productId.price * p.quantity%></span>
                                                     </td>
                                                 </tr>
                                                 <% }) %>

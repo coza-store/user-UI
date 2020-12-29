@@ -233,16 +233,44 @@ exports.postCart = (req, res, next) => {
 exports.deleteCartItem = async(req, res, next) => {
     const cartItemId = req.params.cartId;
     const productId = req.params.productId;
+    const product = await Product.findById(productId);
     if (req.user) {
-        const product = await Product.findById(productId);
-        req.user.deleteCartItem(cartItemId, product);
+        const cart = new Cart(req.user.cart ? req.user.cart : { items: [] });
+        cart.deleteCartItem(cartItemId, product);
+        req.user.cart = cart;
+        req.user.save();
         res.status(200).json({
             message: 'Success !',
             cartTotal: req.user.cart.totalPrice
         });
     } else {
         const cart = new Cart(req.session.cart ? req.session.cart : { items: [] });
-        cart.deleteCartItem(cartItemId);
+        cart.deleteCartItem(cartItemId, product);
+        req.session.cart = cart;
+        res.status(200).json({
+            message: 'Success !',
+            cartTotal: req.session.cart.totalPrice
+        });
+    }
+};
+
+exports.changeQuantityCartItem = async(req, res, next) => {
+    const cartItemId = req.params.cartId;
+    const quantity = req.params.quantity;
+    const productId = req.params.productId;
+    const product = await Product.findById(productId);
+    if (req.user) {
+        const cart = new Cart(req.user.cart ? req.user.cart : { items: [] });
+        cart.changeQuantity(cartItemId, quantity, product);
+        req.user.cart = cart;
+        req.user.save();
+        res.status(200).json({
+            message: 'Success !',
+            cartTotal: req.user.cart.totalPrice
+        });
+    } else {
+        const cart = new Cart(req.session.cart ? req.session.cart : { items: [] });
+        cart.changeQuantity(cartItemId, quantity, product);
         req.session.cart = cart;
         res.status(200).json({
             message: 'Success !',

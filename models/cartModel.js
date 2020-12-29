@@ -36,7 +36,20 @@ class Cart {
         this.items = updatedCartItems;
     }
 
-    deleteCartItem(cartItemId) {
+    changeQuantity(cartItemId, quantity, product) {
+        const cartItemIndex = this.items.findIndex(item => {
+            return item._id.toString() === cartItemId.toString();
+        });
+        this.totalQty = this.totalQty - +(this.items[cartItemIndex].quantity);
+        this.totalPrice = this.totalPrice - +(this.items[cartItemIndex].quantity * product.price);
+
+        this.items[cartItemIndex].quantity = quantity;
+
+        this.totalQty = this.totalQty + +(this.items[cartItemIndex].quantity);
+        this.totalPrice = this.totalPrice + +(this.items[cartItemIndex].quantity * product.price);
+    }
+
+    deleteCartItem(cartItemId, product) {
         const cartItemIndex = this.items.findIndex(item => {
             return item._id.toString() === cartItemId.toString();
         });
@@ -44,7 +57,7 @@ class Cart {
             return item._id.toString() !== cartItemId.toString();
         });
         this.totalQty = this.totalQty - +(this.items[cartItemIndex].quantity);
-        this.totalPrice = this.totalPrice - +(this.items[cartItemIndex].quantity * this.items[cartItemIndex].productId.price);
+        this.totalPrice = this.totalPrice - +(this.items[cartItemIndex].quantity * product.price);
         this.items = updatedCartItems;
     }
 }

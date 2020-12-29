@@ -33,19 +33,6 @@ userSchema.methods.validPassword = function(password) {
     return bcrypt.compareSync(password, this.password);
 }
 
-userSchema.methods.deleteCartItem = function(cartItemId, product) {
-    const cartItemIndex = this.cart.items.findIndex(item => {
-        return item._id.toString() === cartItemId.toString();
-    });
-    const updatedCartItems = this.cart.items.filter(item => {
-        return item._id.toString() !== cartItemId.toString();
-    });
-    this.cart.totalQty = this.cart.totalQty - +(this.cart.items[cartItemIndex].quantity);
-    this.cart.totalPrice = this.cart.totalPrice - +(this.cart.items[cartItemIndex].quantity * product.price);
-    this.cart.items = updatedCartItems;
-    return this.save();
-}
-
 userSchema.methods.clearCart = function() {
     this.cart = { items: [], totalQty: 0, totalPrice: 0 };
     return this.save();
