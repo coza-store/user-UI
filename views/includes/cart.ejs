@@ -17,14 +17,10 @@
                 <ul class="header-cart-wrapitem w-full">
                     <% for(let p of cartProds.items) { %>
                         <li class="header-cart-item flex-w flex-t m-b-12">
-                            <div class="header-cart-item-img">
-                                <form action="/cart-delete-item" method="POST">
-                                    <input type="hidden" value="<%=p._id %>" name="cartItemId">
-                                    <input type="hidden" value="<%=p.productId._id%>" name="productId">
-                                    <button class="how-itemcart1">
+                            <div class="img-cart">
+                                <button class="how-itemcart_cart">
                                     <img src="<%=p.productId.imageUrl.detail_1%>" alt="IMG">
                                 </button>
-                                </form>
                             </div>
 
                             <div class="header-cart-item-txt p-t-8">

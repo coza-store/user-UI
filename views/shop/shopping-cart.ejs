@@ -49,13 +49,13 @@
                                             <% products.forEach(p => { %>
                                                 <tr class="table_row">
                                                     <td class="column-1">
-                                                        <form action="/cart-delete-item" method="POST">
-                                                            <input type="hidden" value="<%=p._id %>" name="cartItemId">
-                                                            <input type="hidden" value="<%=p.productId._id%>" name="productId">
-                                                            <button class="how-itemcart1">
-                                                                <img src="<%=p.productId.imageUrl.detail_1%>" alt="IMG">
-                                                            </button>
-                                                        </form>
+                                                        <!-- <form action="/cart-delete-item" method="POST"> -->
+                                                        <input type="hidden" value="<%=p._id %>" name="cartItemId">
+                                                        <input type="hidden" value="<%=p.productId._id%>" name="productId">
+                                                        <button class="how-itemcart1" onclick="deleteProduct(this)">
+                                                            <img src="<%=p.productId.imageUrl.detail_1%>" alt="IMG">
+                                                        </button>
+                                                        <!-- </form> -->
                                                     </td>
                                                     <td class="column-2">
                                                         <strong><a style="color: #333;" href="/products/<%=p.productId._id%>"><%=p.productId.name%></a></strong><br>
@@ -94,10 +94,6 @@
                                                 Apply coupon
                                             </div>
                                         </div>
-
-                                        <div class="flex-c-m stext-101 cl2 size-119 bg8 bor13 hov-btn3 p-lr-15 trans-04 pointer m-tb-10">
-                                            Update Cart
-                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -130,8 +126,8 @@
                                         </div>
 
                                         <div class="size-209">
-                                            - $ <span class="mtext-110 cl2" id="sub_coupon">
-									            79.65
+                                            <span class="mtext-110 cl2" id="sub_coupon">
+									            
 								            </span>
                                         </div>
                                     </div>
@@ -166,4 +162,5 @@
                                 <%- include('../includes/preview-modal.ejs') %>
                                     <%- include('../includes/script.ejs') %>
                                         <script src="/js/cart-function.js"></script>
+                                        <script src="/ajax/cartAjax.js"></script>
                                         <%- include('../includes/end.ejs') %>

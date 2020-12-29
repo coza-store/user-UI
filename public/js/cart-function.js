@@ -32,15 +32,3 @@ addToCartForm.onsubmit = checkData = (e) => {
         addToCartForm.submit();
     }
 }
-
-//kiem tra tong tien trong cart
-const totalPrice = document.getElementsByClassName('total_price');
-const subTotal = document.getElementById('sub_total');
-const cartTotal = document.getElementById('cart_total');
-
-let total = 0;
-for (let i = 0; i < totalPrice.length; i++) {
-    total = total + '+' + totalPrice[i].innerText;
-}
-subTotal.innerText = eval(total);
-cartTotal.innerText = eval(total);

@@ -4133,3 +4133,13 @@ input.num-product::-webkit-inner-spin-button {
         padding: 12px 32px;
     }
 }
+
+.how-itemcart_cart {
+    width: 60px;
+    margin-right: 20px;
+    cursor: pointer;
+}
+
+.how-itemcart_cart img {
+    width: 100%;
+}

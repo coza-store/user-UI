@@ -230,27 +230,24 @@ exports.postCart = (req, res, next) => {
 };
 
 //xoa 1 sp khoi gio hang
-exports.postDeleteCartItem = (req, res, next) => {
-    const cartItemId = req.body.cartItemId;
-    const productId = req.body.productId;
+exports.deleteCartItem = async(req, res, next) => {
+    const cartItemId = req.params.cartId;
+    const productId = req.params.productId;
     if (req.user) {
-        const cart = new Cart(req.user.cart ? req.user.cart : { items: [] });
-        Product.findById(productId)
-            .then(product => {
-                req.user
-                    .deleteCartItem(cartItemId, product)
-                    .then(result => {
-                        console.log('Remove product from cart');
-                        res.redirect('/cart');
-                    })
-                    .catch(err => console.log(err));
-            })
-            .catch(err => console.log(err));
+        const product = await Product.findById(productId);
+        req.user.deleteCartItem(cartItemId, product);
+        res.status(200).json({
+            message: 'Success !',
+            cartTotal: req.user.cart.totalPrice
+        });
     } else {
         const cart = new Cart(req.session.cart ? req.session.cart : { items: [] });
         cart.deleteCartItem(cartItemId);
         req.session.cart = cart;
-        return res.redirect('/cart');
+        res.status(200).json({
+            message: 'Success !',
+            cartTotal: req.session.cart.totalPrice
+        });
     }
 };
 
