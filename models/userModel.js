@@ -1,6 +1,7 @@
 const bcrypt = require('bcryptjs');
 const mongoose = require('mongoose');
 const Product = require('../models/productModel');
+const Cart = require('../models/cartModel');
 const Schema = mongoose.Schema;
 
 const userSchema = new Schema({
@@ -31,6 +32,22 @@ userSchema.methods.encryptPassword = function(password) {
 
 userSchema.methods.validPassword = function(password) {
     return bcrypt.compareSync(password, this.password);
+}
+
+userSchema.methods.updateCartSignIn = async function(sessionCart) {
+    try {
+        const promise = sessionCart.items.map(item => {
+            const cart = new Cart(this.cart ? this.cart : { items: [] });
+            cart.addToCart(item.productId, item.size, item.color, item.quantity);
+            this.cart = cart;
+        });
+
+        await Promise.all(promise);
+        return this.save();
+    } catch (error) {
+        console.log(error.message);
+    }
+
 }
 
 userSchema.methods.clearCart = function() {

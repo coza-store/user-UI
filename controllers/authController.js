@@ -62,16 +62,13 @@ exports.postLogIn = (req, res, next) => {
         // req / res held in closure
         req.logIn(user, function(err) {
             if (err) { return next(err); }
-            req.user.cart = req.session.cart;
+            req.user.updateCartSignIn(req.session.cart ? req.session.cart : { items: [] });
             req.session.cart = undefined;
-            req.user.save()
-                .then(result => {
-                    return req.session.save((err) => {
-                        console.log(err);
-                        res.redirect('/')
-                    });
-                })
-                .catch(err => console.log(err));
+            return req.session.save((err) => {
+                console.log(err);
+                res.redirect('/')
+            });
+
         });
 
     })(req, res, next);
