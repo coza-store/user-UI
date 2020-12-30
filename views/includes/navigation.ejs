@@ -19,7 +19,7 @@
     <!-- Icon header -->
     <div class="wrap-icon-header flex-w flex-r-m">
         <% if(path !== '/checkout' && path !== '/orders'){ %>
-            <div class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-noti js-show-cart" <% if(session.cart) { %>
+            <a href="/cart" id="cart-total" class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-noti js-show-cart" <% if(session.cart) { %>
                 data-notify="
                 <%= session.cart.totalQty%>"
                     <% } else if(user) { %>
@@ -31,7 +31,7 @@
                                         <% } else { %>data-notify="0"
                                             <% } %>>
                                                 <i class="zmdi zmdi-shopping-cart"></i>
-            </div>
+                        </a>
             <% } %>
     </div>
 </nav>

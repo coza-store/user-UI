@@ -13,7 +13,7 @@ router.get('/products/:productId', shopController.getProduct);
 
 router.get('/cart', shopController.getCart);
 
-router.post('/cart', shopController.postCart);
+router.put('/cart/:productId/:size/:color/:quantity', shopController.postCart);
 
 router.put('/cart/:cartId/:productId/:quantity', shopController.changeQuantityCartItem);
 

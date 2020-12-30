@@ -66,76 +66,75 @@
                         </p>
 
                         <!--  -->
-                        <form id="addToCart-form" action="/cart" method="post">
-                            <div class="p-t-33">
+                        <div class="p-t-33">
 
-                                <div class="flex-w flex-r-m p-b-10">
-                                    <div class="size-203 flex-c-m respon6">
-                                        Size
-                                    </div>
+                            <div class="flex-w flex-r-m p-b-10">
+                                <div class="size-203 flex-c-m respon6">
+                                    Size
+                                </div>
 
-                                    <div class="size-204 respon6-next">
-                                        <div class="rs1-select2 bor8 bg0">
-                                            <select id="productSize" class="js-select2" name="size">
+                                <div class="size-204 respon6-next">
+                                    <div class="rs1-select2 bor8 bg0">
+                                        <select id="productSize" class="js-select2" name="size">
                                                 <option>Choose an option</option>
-                                                <option name ="S" value="S">Size S</option>
-                                                <option name ="M" value="M">Size M</option>
-                                                <option name ="L" value="L">Size L</option>
-                                                <option name ="XL" value="XL">Size XL</option>
+                                                <option name ="S" value="S">S</option>
+                                                <option name ="M" value="M">M</option>
+                                                <option name ="L" value="L">L</option>
+                                                <option name ="XL" value="XL">XL</option>
                                              </select>
-                                            <div class="dropDownSelect2"></div>
-                                        </div>
+                                        <div class="dropDownSelect2"></div>
                                     </div>
                                 </div>
+                            </div>
 
-                                <div class="warning">
-                                    <p id="warning-1"></p>
+                            <div class="warning">
+                                <p id="warning-1"></p>
+                            </div>
+                            <div class="flex-w flex-r-m p-b-10">
+                                <div class="size-203 flex-c-m respon6">
+                                    Color
                                 </div>
-                                <div class="flex-w flex-r-m p-b-10">
-                                    <div class="size-203 flex-c-m respon6">
-                                        Color
-                                    </div>
 
-                                    <div class="size-204 respon6-next">
-                                        <div class="rs1-select2 bor8 bg0">
-                                            <select id="productColor" class="js-select2" name="color">
+                                <div class="size-204 respon6-next">
+                                    <div class="rs1-select2 bor8 bg0">
+                                        <select id="productColor" class="js-select2" name="color">
                                                 <option>Choose an option</option>
                                                 <option name ="red" value="Red">Red</option>
                                                 <option name ="blue" value="Blue">Blue</option>
                                                 <option name ="white" value="White">White</option>
                                                 <option name ="grey" value="Grey">Grey</option>
                                             </select>
-                                            <div class="dropDownSelect2"></div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="warning">
-                                    <p id="warning-2"></p>
-                                </div>
-                                <div class="flex-w flex-r-m p-b-10">
-                                    <div class="size-204 flex-w flex-m respon6-next">
-                                        <div class="wrap-num-product flex-w m-r-20 m-tb-10">
-                                            <div class="btn-num-product-down cl8 hov-btn3 trans-04 flex-c-m">
-                                                <i class="fs-16 zmdi zmdi-minus"></i>
-                                            </div>
-
-                                            <input class="mtext-104 cl3 txt-center num-product" type="number" name="numProduct" value="1">
-
-                                            <div class="btn-num-product-up cl8 hov-btn3 trans-04 flex-c-m">
-                                                <i class="fs-16 zmdi zmdi-plus"></i>
-                                            </div>
-                                        </div>
-
-
-                                        <button style="margin-top: 15px;" class="flex-c-m stext-101 cl0 size-101 bg1 bor1 hov-btn1 p-lr-15 trans-04 js-addcart-detail">
-                                            Add to cart
-                                        </button>
-                                        <input class="product_id" type="hidden" name="productId" value="value">
-
+                                        <div class="dropDownSelect2"></div>
                                     </div>
                                 </div>
                             </div>
-                        </form>
+                            <div class="warning">
+                                <p id="warning-2"></p>
+                            </div>
+                            <div class="flex-w flex-r-m p-b-10">
+                                <div class="size-204 flex-w flex-m respon6-next">
+                                    <div class="wrap-num-product flex-w m-r-20 m-tb-10">
+                                        <div class="btn-num-product-down cl8 hov-btn3 trans-04 flex-c-m">
+                                            <i class="fs-16 zmdi zmdi-minus"></i>
+                                        </div>
+
+                                        <input class="mtext-104 cl3 txt-center num-product" type="number" name="quantity" value="1">
+
+                                        <div class="btn-num-product-up cl8 hov-btn3 trans-04 flex-c-m">
+                                            <i class="fs-16 zmdi zmdi-plus"></i>
+                                        </div>
+                                    </div>
+
+                                    <input class="product_id" type="hidden" name="productId" value="value">
+                                    <button style="margin-top: 15px;" class="flex-c-m stext-101 cl0 size-101 bg1 bor1 hov-btn1 p-lr-15 trans-04 js-addcart-detail" onclick="addToCart(this)">
+                                            Add to cart
+                                        </button>
+
+
+                                </div>
+                            </div>
+                        </div>
+
                         <!--  -->
                         <div class="flex-w flex-m p-l-100 p-t-40 respon7">
                             <div class="flex-m bor9 p-r-10 m-r-11">

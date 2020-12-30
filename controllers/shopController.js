@@ -8,22 +8,6 @@ const ITEMS_PER_PAGE = 12;
 
 //render trang chu
 exports.getIndex = async(req, res, next) => {
-    let cartProds;
-    if (req.user) {
-        const cartFetch = await req.user
-            .populate('cart.items.productId')
-            .execPopulate()
-        if (cartFetch.cart == null) {
-            cartProds = { items: [], totalQty: 0, totalPrice: 0 };
-        }
-        cartProds = { items: cartFetch.cart.items, totalQty: req.user.cart.totalQty, totalPrice: req.user.cart.totalPrice };
-
-    } else if (req.session.cart) {
-        cartProds = req.session.cart
-    } else {
-        cartProds = { items: [], totalQty: 0, totalPrice: 0 };
-    }
-
     const topView = await Product.find().sort({ viewCount: -1 }).limit(10).exec();
     const menProducts = await Product.find({ filter: { "$regex": "men", "$options": "i" } }).limit(10).exec();
     const womenProducts = await Product.find({ filter: { "$regex": "woman", "$options": "i" } }).limit(10).exec();
@@ -34,7 +18,6 @@ exports.getIndex = async(req, res, next) => {
         topView: topView,
         menProds: menProducts,
         womenProds: womenProducts,
-        cartProds: cartProds,
         bestSold: bestSold,
         user: req.user,
         isAuthenticated: req.isAuthenticated(),
@@ -44,21 +27,6 @@ exports.getIndex = async(req, res, next) => {
 
 //render trang san pham
 exports.getProducts = async(req, res, next) => {
-    let cartProds;
-    if (req.user) {
-        const cartFetch = await req.user
-            .populate('cart.items.productId')
-            .execPopulate()
-        if (cartFetch.cart == null) {
-            cartProds = { items: [], totalQty: 0, totalPrice: 0 };
-        }
-        cartProds = { items: cartFetch.cart.items, totalQty: req.user.cart.totalQty, totalPrice: req.user.cart.totalPrice };
-
-    } else if (req.session.cart) {
-        cartProds = req.session.cart
-    } else {
-        cartProds = { items: [], totalQty: 0, totalPrice: 0 };
-    }
     const page = +req.query.page || 1;
     let totalItems;
     const nextQuery = {...req.query, page: page + 1 };
@@ -86,7 +54,6 @@ exports.getProducts = async(req, res, next) => {
                     path: '/products',
                     products: products,
                     user: req.user,
-                    cartProds: cartProds,
                     isAuthenticated: req.isAuthenticated(),
                     totaProducts: totalItems,
                     currentPage: page,
@@ -116,7 +83,6 @@ exports.getProducts = async(req, res, next) => {
                     path: '/products',
                     products: products,
                     user: req.user,
-                    cartProds: cartProds,
                     isAuthenticated: req.isAuthenticated(),
                     totaProducts: totalItems,
                     currentPage: page,
@@ -134,21 +100,6 @@ exports.getProducts = async(req, res, next) => {
 
 //render trang chi tiet san pham
 exports.getProduct = async(req, res, next) => {
-    let cartProds;
-    if (req.user) {
-        const cartFetch = await req.user
-            .populate('cart.items.productId')
-            .execPopulate()
-        if (cartFetch.cart == null) {
-            cartProds = { items: [], totalQty: 0, totalPrice: 0 };
-        }
-        cartProds = { items: cartFetch.cart.items, totalQty: req.user.cart.totalQty, totalPrice: req.user.cart.totalPrice };
-
-    } else if (req.session.cart) {
-        cartProds = req.session.cart
-    } else {
-        cartProds = { items: [], totalQty: 0, totalPrice: 0 };
-    }
     const productId = req.params.productId;
     const product = await Product.findById(productId)
     const relatedProducts = await Product.find({ $and: [{ filter: { "$regex": product.filter, "$options": "i" } }, { _id: { $ne: product._id } }] }).limit(10).exec();
@@ -159,7 +110,7 @@ exports.getProduct = async(req, res, next) => {
         relatedProducts: relatedProducts,
         title: product.filter[0].toUpperCase() + product.filter.substring(1),
         user: req.user,
-        cartProds: cartProds,
+
         isAuthenticated: req.isAuthenticated()
     });
     if (!product.viewCount) {
@@ -171,62 +122,60 @@ exports.getProduct = async(req, res, next) => {
 
 //render trang gio hang
 exports.getCart = async(req, res, next) => {
-    let cartProds;
     if (req.user) {
-        const cartFetch = await req.user
-            .populate('cart.items.productId')
-            .execPopulate()
-            .then(user => {
-                const products = user.cart.items;
-                cartProds = { items: user.cart.items, totalQty: req.user.cart.totalQty, totalPrice: req.user.cart.totalPrice };
-                res.render('shop/shopping-cart', {
-                    pageTitle: 'Shopping Cart',
-                    path: '/cart',
-                    products: products,
-                    user: req.user,
-                    cartProds: cartProds,
-                    isAuthenticated: req.isAuthenticated()
-                })
-            });
+        const cartFetch = await req.user.populate('cart.items.productId').execPopulate();
+        const products = cartFetch.cart.items;
+        return res.render('shop/shopping-cart', {
+            pageTitle: 'Shopping Cart',
+            path: '/cart',
+            products: products,
+            user: req.user,
+            isAuthenticated: req.isAuthenticated()
+        })
+
     } else {
         if (!req.session.cart) {
-            req.session.cart = { items: [] }
+            req.session.cart = { items: [], totalQty: 0, totalPrice: 0 }
         }
         const productsInCart = req.session.cart;
-        res.render('shop/shopping-cart', {
+        return res.render('shop/shopping-cart', {
             pageTitle: 'Shopping Cart',
             path: '/cart',
             products: productsInCart.items,
             user: req.user,
-            cartProds: req.session.cart,
             isAuthenticated: req.isAuthenticated()
         })
     }
 };
 
 //them san pham vao gio hang
-exports.postCart = (req, res, next) => {
-    const productId = req.body.productId;
-    const size = req.body.size;
-    const color = req.body.color;
-    const qty = req.body.numProduct;
-    Product.findById(productId)
-        .then(product => {
-            if (req.user) {
-                const cart = new Cart(req.user.cart ? req.user.cart : { items: [] });
-                cart.addToCart(product, size, color, qty);
-                req.user.cart = cart;
-                return req.user.save();
-            }
-            const cart = new Cart(req.session.cart ? req.session.cart : { items: [] });
-            cart.addToCart(product, size, color, qty);
-            req.session.cart = cart;
-        })
-        .then(result => {
-            console.log('Add new product to cart');
-            res.redirect('/products');
-        })
-        .catch(err => console.log(err));
+exports.postCart = async(req, res, next) => {
+    const productId = req.params.productId;
+    const size = req.params.size;
+    const color = req.params.color;
+    const qty = req.params.quantity;
+    const product = await Product.findById(productId)
+    if (req.user) {
+        const cart = new Cart(req.user.cart ? req.user.cart : { items: [] });
+        cart.addToCart(product, size, color, qty);
+        req.user.cart = cart;
+        req.user.save();
+        console.log('Add new product to cart');
+        res.status(200).json({
+            message: 'Success !',
+            totalQty: req.user.cart.totalQty
+        });
+    } else {
+        const cart = new Cart(req.session.cart ? req.session.cart : { items: [] });
+        cart.addToCart(product, size, color, qty);
+        req.session.cart = cart;
+        console.log('Add new product to cart');
+        res.status(200).json({
+            message: 'Success !',
+            totalQty: req.session.cart.totalQty
+        });
+    }
+
 };
 
 //xoa 1 sp khoi gio hang
@@ -241,7 +190,8 @@ exports.deleteCartItem = async(req, res, next) => {
         req.user.save();
         res.status(200).json({
             message: 'Success !',
-            cartTotal: req.user.cart.totalPrice
+            cartTotal: req.user.cart.totalPrice.toFixed(2),
+            totalQty: req.user.cart.totalQty
         });
     } else {
         const cart = new Cart(req.session.cart ? req.session.cart : { items: [] });
@@ -249,7 +199,8 @@ exports.deleteCartItem = async(req, res, next) => {
         req.session.cart = cart;
         res.status(200).json({
             message: 'Success !',
-            cartTotal: req.session.cart.totalPrice
+            cartTotal: req.session.cart.totalPrice.toFixed(2),
+            totalQty: req.session.cart.totalQty
         });
     }
 };
@@ -266,7 +217,8 @@ exports.changeQuantityCartItem = async(req, res, next) => {
         req.user.save();
         res.status(200).json({
             message: 'Success !',
-            cartTotal: req.user.cart.totalPrice
+            cartTotal: req.session.cart.totalPrice.toFixed(2),
+            totalQty: req.user.cart.totalQty
         });
     } else {
         const cart = new Cart(req.session.cart ? req.session.cart : { items: [] });
@@ -274,7 +226,8 @@ exports.changeQuantityCartItem = async(req, res, next) => {
         req.session.cart = cart;
         res.status(200).json({
             message: 'Success !',
-            cartTotal: req.session.cart.totalPrice
+            cartTotal: req.session.cart.totalPrice.toFixed(2),
+            totalQty: req.session.cart.totalQty
         });
     }
 };

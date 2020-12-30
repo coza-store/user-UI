@@ -12,7 +12,7 @@ const dotData = document.querySelectorAll('.dot-data');
 const product_id = document.querySelector('.product_id');
 const productList = document.querySelectorAll('.product-list');
 
-productList.forEach((product, index) => {
+productList.forEach(async(product, index) => {
     const quickView = product.querySelector('.js-show-modal1');
 
     const productImg = product.querySelectorAll('.product__img');
@@ -21,6 +21,7 @@ productList.forEach((product, index) => {
     const productId = product.querySelector('.productId').innerText;
 
     quickView.addEventListener('click', () => {
+        console.log(productName);
         modal.classList.add('show-modal1');
         pname.innerText = productName;
         price.innerText = productPrice;
