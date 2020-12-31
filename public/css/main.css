@@ -4243,3 +4243,7 @@ input.num-product::-webkit-inner-spin-button {
 .slick-dots .slick-active .slick-dot-overlay {
     border-color: #ccc;
 }
+
+.checkout__input .invalid {
+    border-color: red !important;
+}

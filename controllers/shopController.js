@@ -221,7 +221,7 @@ exports.changeQuantityCartItem = async(req, res, next) => {
         req.user.save();
         res.status(200).json({
             message: 'Success !',
-            cartTotal: req.session.cart.totalPrice.toFixed(2),
+            cartTotal: req.user.cart.totalPrice.toFixed(2),
             totalQty: req.user.cart.totalQty
         });
     } else {

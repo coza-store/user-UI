@@ -45,7 +45,7 @@
                     <h6 style="margin-top: 10px;font-weight: bold;">Shipping Infomation</h6>
                     <div class="shipping-detail-info">
                         <p>Total order: $
-                            <%=order.totalPrice %>
+                            <%=order.totalPrice.toFixed(2) %>
                         </p>
                         <p>Recipent Name:
                             <%=order.user.name %>

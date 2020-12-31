@@ -20,7 +20,7 @@ const orderSchema = new Schema({
         detail_address: { type: String, require: false },
         note: { type: String, require: false }
     },
-    totalPrice: { type: String, required: true },
+    totalPrice: { type: Number, required: true },
     createDate: { type: String, require: true }
 });
 
