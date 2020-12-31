@@ -377,6 +377,16 @@ Input, textarea : 14px/1.6 '', Arial, sans-serif;
     color: red;
 }
 
+.warning #warning-detail-size {
+    margin: 0px 0px 10px 110px;
+    color: red;
+}
+
+.warning #warning-detail-color {
+    margin-left: 110px;
+    color: red;
+}
+
 
 /*------------------------------------------------------------------
 [ Menu ]*/
@@ -1579,6 +1589,7 @@ Input, textarea : 14px/1.6 '', Arial, sans-serif;
 
 
 /*//////////////////////////////////////////////////////////////////
+
 [ RS Magnific-Popup ]*/
 
 .mfp-bg {
@@ -4142,4 +4153,93 @@ input.num-product::-webkit-inner-spin-button {
 
 .how-itemcart_cart img {
     width: 100%;
+}
+
+
+/*//////////////////////////////////////////////////////////////////
+[ Slick3 ]*/
+
+.wrap-slick {
+    position: relative;
+}
+
+
+/*---------------------------------------------*/
+
+.wrap-slick-arrows {
+    position: absolute;
+    z-index: 100;
+    width: 83.333333%;
+    right: 0;
+    top: calc(50% - 20px);
+}
+
+.arrow-slick {
+    font-size: 25px;
+    color: #fff;
+    position: absolute;
+    top: 0;
+    width: 40px;
+    height: 40px;
+    background-color: rgba(0, 0, 0, 0.5);
+    -webkit-transition: all 0.4s;
+    -o-transition: all 0.4s;
+    -moz-transition: all 0.4s;
+    transition: all 0.4s;
+}
+
+.arrow-slick:hover {
+    background-color: rgba(0, 0, 0, 0.9);
+}
+
+.prev-slick {
+    left: 0px;
+}
+
+.next-slick {
+    right: 0px;
+}
+
+
+/*---------------------------------------------*/
+
+.wrap-slick-dots {
+    width: 11.111111%;
+}
+
+.slick {
+    width: 83.333333%;
+}
+
+.slick-dots li {
+    display: block;
+    position: relative;
+    width: 100%;
+    margin-bottom: 27px;
+}
+
+.slick-dots li img {
+    width: 100%;
+}
+
+.slick-dot-overlay {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    cursor: pointer;
+    border: 2px solid transparent;
+    -webkit-transition: all 0.4s;
+    -o-transition: all 0.4s;
+    -moz-transition: all 0.4s;
+    transition: all 0.4s;
+}
+
+.slick-dot-overlay:hover {
+    border-color: #ccc;
+}
+
+.slick-dots .slick-active .slick-dot-overlay {
+    border-color: #ccc;
 }

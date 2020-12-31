@@ -7,5 +7,7 @@ let total = 0;
 for (let i = 0; i < TotalPrice.length; i++) {
     total = total + '+' + TotalPrice[i].innerText;
 }
-SubTotal.innerText = eval(total);
-CartTotal.innerText = eval(total);
+if (SubTotal && CartTotal) {
+    SubTotal.innerText = eval(total).toFixed(2);
+    CartTotal.innerText = eval(total).toFixed(2);
+}

@@ -42,6 +42,9 @@ class Cart {
         });
         this.totalQty = this.totalQty - +(this.items[cartItemIndex].quantity);
         this.totalPrice = this.totalPrice - +(this.items[cartItemIndex].quantity * product.price);
+        if (this.totalPrice < 0) {
+            this.totalPrice = 0;
+        }
 
         this.items[cartItemIndex].quantity = quantity;
 
@@ -58,6 +61,9 @@ class Cart {
         });
         this.totalQty = this.totalQty - +(this.items[cartItemIndex].quantity);
         this.totalPrice = this.totalPrice - +(this.items[cartItemIndex].quantity * product.price);
+        if (this.totalPrice < 0) {
+            this.totalPrice = 0;
+        }
         this.items = updatedCartItems;
     }
 }

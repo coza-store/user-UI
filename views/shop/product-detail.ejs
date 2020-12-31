@@ -44,12 +44,12 @@
                 <div class="row">
                     <div class="col-md-6 col-lg-7 p-b-30">
                         <div class="p-l-25 p-r-30 p-lr-0-lg">
-                            <div class="wrap-slick3 flex-sb flex-w">
-                                <div class="wrap-slick3-dots"></div>
-                                <div class="wrap-slick3-arrows flex-sb-m flex-w"></div>
+                            <div class="wrap-slick flex-sb flex-w">
+                                <div class="wrap-slick-dots"></div>
+                                <div class="wrap-slick-arrows flex-sb-m flex-w"></div>
 
-                                <div class="slick3 gallery-lb">
-                                    <div class="item-slick3" data-thumb="<%=product.imageUrl.detail_1 %> ">
+                                <div class="slick gallery-lb">
+                                    <div class="item-slick" data-thumb="<%=product.imageUrl.detail_1 %> ">
                                         <div class="wrap-pic-w pos-relative">
                                             <img src="<%=product.imageUrl.detail_1 %> " alt="IMG-PRODUCT" class="product__img">
 
@@ -59,7 +59,7 @@
                                         </div>
                                     </div>
 
-                                    <div class="item-slick3" data-thumb="<%=product.imageUrl.detail_2 %> ">
+                                    <div class="item-slick" data-thumb="<%=product.imageUrl.detail_2 %> ">
                                         <div class="wrap-pic-w pos-relative">
                                             <img src="<%=product.imageUrl.detail_2  %> " alt="IMG-PRODUCT" class="product__img">
 
@@ -69,7 +69,7 @@
                                         </div>
                                     </div>
 
-                                    <div class="item-slick3" data-thumb="<%=product.imageUrl.detail_3 %> ">
+                                    <div class="item-slick" data-thumb="<%=product.imageUrl.detail_3 %> ">
                                         <div class="wrap-pic-w pos-relative">
                                             <img src="<%=product.imageUrl.detail_3 %> " alt="IMG-PRODUCT" class="product__img">
 
@@ -106,7 +106,7 @@
 
                                     <div class="size-204 respon6-next">
                                         <div class="rs1-select2 bor8 bg0">
-                                            <select id="productSize" class="js-select2" name="size">
+                                            <select id="productSizeDetail" class="js-select2" name="size">
                                                         <option>Choose an option</option>
                                                         <option name ="S" value="S">S</option>
                                                         <option name ="M" value="M">M</option>
@@ -118,7 +118,7 @@
                                     </div>
                                 </div>
                                 <div class="warning">
-                                    <p id="warning-1"></p>
+                                    <p id="warning-detail-size"></p>
                                 </div>
                                 <div class="flex-w flex-r-m p-b-10">
                                     <div class="size-203 flex-c-m respon6">
@@ -127,7 +127,7 @@
 
                                     <div class="size-204 respon6-next">
                                         <div class="rs1-select2 bor8 bg0">
-                                            <select id="productColor" class="js-select2" name="color">
+                                            <select id="productColorDetail" class="js-select2" name="color">
                                                 <option>Choose an option</option>
                                                 <option name ="red" value="Red">Red</option>
                                                 <option name ="blue" value="Blue">Blue</option>
@@ -139,7 +139,7 @@
                                     </div>
                                 </div>
                                 <div class="warning">
-                                    <p id="warning-2"></p>
+                                    <p id="warning-detail-color"></p>
                                 </div>
                                 <div class="flex-w flex-r-m p-b-10">
                                     <div class="size-204 flex-w flex-m respon6-next">
@@ -148,15 +148,15 @@
                                                 <i class="fs-16 zmdi zmdi-minus"></i>
                                             </div>
 
-                                            <input class="mtext-104 cl3 txt-center num-product" type="number" name="quantity" value="1">
+                                            <input class="mtext-104 cl3 txt-center num-product" type="number" name="quantityDetail" value="1">
 
                                             <div class="btn-num-product-up cl8 hov-btn3 trans-04 flex-c-m">
                                                 <i class="fs-16 zmdi zmdi-plus"></i>
                                             </div>
                                         </div>
 
-                                        <input class="product_id" type="hidden" name="productId" value="<%=product._id%>">
-                                        <button style="margin-top: 15px;" class="flex-c-m stext-101 cl0 size-101 bg1 bor1 hov-btn1 p-lr-15 trans-04 js-addcart-detail " onclick="addToCart(this)">
+                                        <input type="hidden" name="productIdDetail" value="<%=product._id%>">
+                                        <button style="margin-top: 15px;" class="flex-c-m stext-101 cl0 size-101 bg1 bor1 hov-btn1 p-lr-15 trans-04 js-addcart-detail " onclick="addToCartDetail(this)">
                                                     Add to cart
                                             </button>
                                     </div>
@@ -409,12 +409,12 @@
 
                                     <div class="block2-txt flex-w flex-t p-t-14">
                                         <div class="block2-txt-child1 flex-col-l ">
-                                            <a href="/products/<%=p._id %>" class="stext-104 cl4 hov-cl1 trans-04 js-name-b2 p-b-6 product__name">
-                                                <%=p.name  %>
+                                            <a href="/products/<%=p._id %>" class="stext-104 cl4 hov-cl1 trans-04 js-name-b2 p-b-6">
+                                                <%=p.name%>
                                             </a>
-
+                                            <span id="product__name" hidden><%=p.name%></span>
                                             <span class="stext-105 cl3 product__price">
-                                                    <%=p.price  %>
+                                                    $ <%=p.price%>
                                                 </span>
                                         </div>
 
@@ -434,6 +434,8 @@
             <%- include('../includes/back-to-top.ejs') %>
                 <%- include('../includes/preview-modal.ejs') %>
                     <%- include('../includes/script.ejs') %>
+                        <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
                         <script src="/js/function.js"></script>
+                        <script src="/js/preview-modal.js"></script>
                         <script src="/ajax/cartAjax.js"></script>
                         <%- include('../includes/end.ejs') %>

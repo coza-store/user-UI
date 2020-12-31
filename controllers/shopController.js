@@ -9,8 +9,8 @@ const ITEMS_PER_PAGE = 12;
 //render trang chu
 exports.getIndex = async(req, res, next) => {
     const topView = await Product.find().sort({ viewCount: -1 }).limit(10).exec();
-    const menProducts = await Product.find({ filter: { "$regex": "men", "$options": "i" } }).limit(10).exec();
-    const womenProducts = await Product.find({ filter: { "$regex": "woman", "$options": "i" } }).limit(10).exec();
+    const menProducts = await Product.find({ filter: { "$regex": "men", "$options": "i" } }).limit(9).exec();
+    const womenProducts = await Product.find({ filter: { "$regex": "woman", "$options": "i" } }).limit(8).exec();
     const bestSold = await Product.find().sort({ hasSold: -1 }).limit(10).exec();
     return res.render('shop/index', {
         pageTitle: 'Home',
@@ -163,7 +163,8 @@ exports.postCart = async(req, res, next) => {
         console.log('Add new product to cart');
         res.status(200).json({
             message: 'Success !',
-            totalQty: req.user.cart.totalQty
+            totalQty: req.user.cart.totalQty,
+            productName: product.name
         });
     } else {
         const cart = new Cart(req.session.cart ? req.session.cart : { items: [] });
@@ -172,7 +173,8 @@ exports.postCart = async(req, res, next) => {
         console.log('Add new product to cart');
         res.status(200).json({
             message: 'Success !',
-            totalQty: req.session.cart.totalQty
+            totalQty: req.session.cart.totalQty,
+            productName: product.name
         });
     }
 
@@ -191,7 +193,8 @@ exports.deleteCartItem = async(req, res, next) => {
         res.status(200).json({
             message: 'Success !',
             cartTotal: req.user.cart.totalPrice.toFixed(2),
-            totalQty: req.user.cart.totalQty
+            totalQty: req.user.cart.totalQty,
+            productName: product.name
         });
     } else {
         const cart = new Cart(req.session.cart ? req.session.cart : { items: [] });
@@ -200,7 +203,8 @@ exports.deleteCartItem = async(req, res, next) => {
         res.status(200).json({
             message: 'Success !',
             cartTotal: req.session.cart.totalPrice.toFixed(2),
-            totalQty: req.session.cart.totalQty
+            totalQty: req.session.cart.totalQty,
+            productName: product.name
         });
     }
 };
