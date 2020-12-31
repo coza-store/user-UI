@@ -7,7 +7,9 @@ const warning_2 = document.getElementById('warning-2');
 const warning_size = document.getElementById('warning-detail-size');
 const warning_color = document.getElementById('warning-detail-color');
 
-const cart_total_show = document.getElementById('cart-total');
+const cart_total_desktop = document.getElementById('cart-total-desktop');
+const cart_total_mobile = document.getElementById('cart-total-mobile');
+
 const modal_popup = document.querySelector('.js-modal1');
 
 const deleteProduct = async(btn) => {
@@ -26,7 +28,8 @@ const deleteProduct = async(btn) => {
             cartElement.parentNode.removeChild(cartElement);
             subTotal.innerText = data.cartTotal;
             cartTotal.innerText = data.cartTotal;
-            cart_total_show.setAttribute('data-notify', data.totalQty);
+            cart_total_desktop.setAttribute('data-notify', data.totalQty);
+            cart_total_mobile.setAttribute('data-notify', data.totalQty);
             swal({
                 title: data.productName,
                 text: "is removed from cart",
@@ -60,7 +63,8 @@ const changeQuantityDown = async(btn) => {
                 cartTotal.innerText = data.cartTotal;
                 btn.parentNode.querySelector('[name=quantity]').value = quantity;
                 product_total.innerHTML = eval(+product_price.innerHTML * +quantity);
-                cart_total_show.setAttribute('data-notify', data.totalQty);
+                cart_total_desktop.setAttribute('data-notify', data.totalQty);
+                cart_total_mobile.setAttribute('data-notify', data.totalQty);
             })
             .catch(err => console.log(err));
     }
@@ -88,8 +92,8 @@ const changeQuantityUp = async(btn) => {
             cartTotal.innerText = data.cartTotal;
             btn.parentNode.querySelector('[name=quantity]').value = quantity;
             product_total.innerHTML = eval(+product_price.innerHTML * +quantity);
-            cart_total_show.setAttribute('data-notify', data.totalQty);
-
+            cart_total_desktop.setAttribute('data-notify', data.totalQty);
+            cart_total_mobile.setAttribute('data-notify', data.totalQty);
         })
         .catch(err => console.log(err));
 };
@@ -131,12 +135,13 @@ const addToCart = async(btn) => {
             })
             .then(data => {
                 console.log(data);
-                cart_total_show.setAttribute('data-notify', data.totalQty);
                 swal({
                     title: data.productName,
                     text: "is added to cart",
                     icon: "success",
                 });
+                cart_total_desktop.setAttribute('data-notify', data.totalQty);
+                cart_total_mobile.setAttribute('data-notify', data.totalQty);
                 if (modal_popup) {
                     modal.classList.remove('show-modal1');
                 }
@@ -184,12 +189,13 @@ const addToCartDetail = async(btn) => {
             })
             .then(data => {
                 console.log(data);
-                cart_total_show.setAttribute('data-notify', data.totalQty);
                 swal({
                     title: data.productName,
                     text: "is added to cart",
                     icon: "success",
                 });
+                cart_total_desktop.setAttribute('data-notify', data.totalQty);
+                cart_total_mobile.setAttribute('data-notify', data.totalQty);
                 if (modal_popup) {
                     modal.classList.remove('show-modal1');
                 }

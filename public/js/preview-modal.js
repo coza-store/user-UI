@@ -17,14 +17,11 @@ productList.forEach(async(product, index) => {
     const productName = product.querySelector('#product__name').innerText.trim();
     const productPrice = product.querySelector('.product__price').innerText;
     const productId = product.querySelector('.productId').innerText;
-    console.log(product.querySelector('#product__name'));
-    console.log(productName);
     quickView.addEventListener('click', () => {
         modal.classList.add('show-modal1');
         pname.innerText = productName;
         price.innerText = productPrice;
         product_id.setAttribute('value', productId.trim());
-        console.log(pname);
         for (let i = 0; i < 3; i++) {
             let img;
             if (i == 0) {
