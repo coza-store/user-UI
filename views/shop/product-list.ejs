@@ -240,6 +240,16 @@
                                             </div>
                                         </div>
                                     </div>
+                                    <% for(let size of product.size) { %>
+                                        <p class="size_arr" hidden>
+                                            <%=size %>
+                                        </p>
+                                        <% } %>
+                                            <% for(let color of product.color) { %>
+                                                <p class="color_arr" hidden>
+                                                    <%=color %>
+                                                </p>
+                                                <% } %>
                                 </div>
                             </div>
                             <% } %>

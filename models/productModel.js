@@ -33,6 +33,8 @@ const productSchema = new Schema({
         type: String,
         require: true
     },
+    size: { type: Array },
+    color: { type: Array },
     viewCount: { type: Number },
     hasSold: { type: Number }
 });

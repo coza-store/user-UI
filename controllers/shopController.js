@@ -1,3 +1,4 @@
+const { capitalize, escapeRegex } = require('../models/service/module.js');
 const queryString = require('query-string');
 const Product = require('../models/productModel');
 const Order = require('../models/orderModel');
@@ -108,7 +109,7 @@ exports.getProduct = async(req, res, next) => {
         path: '/products/productId',
         product: product,
         relatedProducts: relatedProducts,
-        title: product.filter[0].toUpperCase() + product.filter.substring(1),
+        title: capitalize(product.filter),
         user: req.user,
 
         isAuthenticated: req.isAuthenticated()
@@ -151,7 +152,10 @@ exports.getCart = async(req, res, next) => {
 //them san pham vao gio hang
 exports.postCart = async(req, res, next) => {
     const productId = req.params.productId;
-    const size = req.params.size;
+    let size = req.params.size;
+    if (size == 0) {
+        size = "";
+    }
     const color = req.params.color;
     const qty = req.params.quantity;
     const product = await Product.findById(productId)
@@ -357,7 +361,3 @@ exports.getOrderDetail = (req, res, next) => {
             })
         })
 }
-
-function escapeRegex(text) {
-    return text.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&");
-};

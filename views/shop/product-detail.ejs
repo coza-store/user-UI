@@ -88,14 +88,10 @@
                             <h4 class="mtext-105 cl2 js-name-detail p-b-14">
                                 <%=product.name %>
                             </h4>
-
+                            <span id="filter" hidden><%=product.filter %></span>
                             <span class="mtext-106 cl2">
                                     $<%=product.price  %> 
                                 </span>
-
-                            <p class="stext-102 cl3 p-t-23">
-                                <%=product.description  %>
-                            </p>
 
                             <!--  -->
                             <div class="p-t-33">
@@ -108,10 +104,9 @@
                                         <div class="rs1-select2 bor8 bg0">
                                             <select id="productSizeDetail" class="js-select2" name="size">
                                                         <option>Choose an option</option>
-                                                        <option name ="S" value="S">S</option>
-                                                        <option name ="M" value="M">M</option>
-                                                        <option name ="L" value="L">L</option>
-                                                        <option name ="XL" value="XL">XL</option>
+                                                        <% for(let p of product.size) { %> 
+                                                        <option name ="<%=p %>" value="<%=p %>"><%=p %></option>
+                                                        <% } %> 
                                                     </select>
                                             <div class="dropDownSelect2"></div>
                                         </div>
@@ -129,10 +124,9 @@
                                         <div class="rs1-select2 bor8 bg0">
                                             <select id="productColorDetail" class="js-select2" name="color">
                                                 <option>Choose an option</option>
-                                                <option name ="red" value="Red">Red</option>
-                                                <option name ="blue" value="Blue">Blue</option>
-                                                <option name ="white" value="White">White</option>
-                                                <option name ="grey" value="Grey">Grey</option>
+                                                <% for(let p of product.color) { %> 
+                                                    <option name ="<%=p %>" value="<%=p %>"><%=p %></option>
+                                                <% } %> 
                                             </select>
                                             <div class="dropDownSelect2"></div>
                                         </div>
@@ -211,9 +205,7 @@
                             <div class="tab-pane fade show active" id="description" role="tabpanel">
                                 <div class="how-pos2 p-lr-15-md">
                                     <p class="stext-102 cl6">
-                                        Aenean sit amet gravida nisi. Nam fermentum est felis, quis feugiat nunc fringilla sit amet. Ut in blandit ipsum. Quisque luctus dui at ante aliquet, in hendrerit lectus interdum. Morbi elementum sapien rhoncus pretium maximus. Nulla lectus enim, cursus
-                                        et elementum sed, sodales vitae eros. Ut ex quam, porta consequat interdum in, faucibus eu velit. Quisque rhoncus ex ac libero varius molestie. Aenean tempor sit amet orci nec iaculis. Cras sit amet nulla libero.
-                                        Curabitur dignissim, nunc nec laoreet consequat, purus nunc porta lacus, vel efficitur tellus augue in ipsum. Cras in arcu sed metus rutrum iaculis. Nulla non tempor erat. Duis in egestas nunc.
+                                        <%=product.description %>
                                     </p>
                                 </div>
                             </div>
@@ -225,52 +217,21 @@
                                         <ul class="p-lr-28 p-lr-15-sm">
                                             <li class="flex-w flex-t p-b-7">
                                                 <span class="stext-102 cl3 size-205">
-                                            Weight
-                                        </span>
+                                                    Color
+                                                </span>
 
                                                 <span class="stext-102 cl6 size-206">
-                                            0.79 kg
-                                        </span>
+                                                    <%=product.color  %> 
+                                                </span>
                                             </li>
 
                                             <li class="flex-w flex-t p-b-7">
                                                 <span class="stext-102 cl3 size-205">
-                                            Dimensions
-                                        </span>
-
+                                                    Size
+                                                </span>
                                                 <span class="stext-102 cl6 size-206">
-                                            110 x 33 x 100 cm
-                                        </span>
-                                            </li>
-
-                                            <li class="flex-w flex-t p-b-7">
-                                                <span class="stext-102 cl3 size-205">
-                                            Materials
-                                        </span>
-
-                                                <span class="stext-102 cl6 size-206">
-                                            60% cotton
-                                        </span>
-                                            </li>
-
-                                            <li class="flex-w flex-t p-b-7">
-                                                <span class="stext-102 cl3 size-205">
-                                            Color
-                                        </span>
-
-                                                <span class="stext-102 cl6 size-206">
-                                            Black, Blue, Grey, Green, Red, White
-                                        </span>
-                                            </li>
-
-                                            <li class="flex-w flex-t p-b-7">
-                                                <span class="stext-102 cl3 size-205">
-                                            Size
-                                        </span>
-
-                                                <span class="stext-102 cl6 size-206">
-                                            XL, L, M, S
-                                        </span>
+                                                    <%=product.size  %> 
+                                                </span>
                                             </li>
                                         </ul>
                                     </div>
@@ -291,16 +252,16 @@
                                                 <div class="size-207">
                                                     <div class="flex-w flex-sb-m p-b-17">
                                                         <span class="mtext-107 cl2 p-r-20">
-                                                    Ariana Grande
-                                                </span>
+                                                        Ariana Grande
+                                                    </span>
 
                                                         <span class="fs-18 cl11">
-                                                    <i class="zmdi zmdi-star"></i>
-                                                    <i class="zmdi zmdi-star"></i>
-                                                    <i class="zmdi zmdi-star"></i>
-                                                    <i class="zmdi zmdi-star"></i>
-                                                    <i class="zmdi zmdi-star-half"></i>
-                                                </span>
+                                                        <i class="zmdi zmdi-star"></i>
+                                                        <i class="zmdi zmdi-star"></i>
+                                                        <i class="zmdi zmdi-star"></i>
+                                                        <i class="zmdi zmdi-star"></i>
+                                                        <i class="zmdi zmdi-star-half"></i>
+                                                    </span>
                                                     </div>
 
                                                     <p class="stext-102 cl6">

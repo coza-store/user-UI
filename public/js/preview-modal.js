@@ -11,17 +11,36 @@ const hrefData = document.querySelectorAll('.href-data');
 const dotData = document.querySelectorAll('.dot-data');
 const product_id = document.querySelector('.product_id');
 const productList = document.querySelectorAll('.product-list');
+const size_choice = document.querySelector('#productSize');
+const color_choice = document.querySelector('#productColor');
+
 productList.forEach(async(product, index) => {
     const quickView = product.querySelector('.js-show-modal1');
     const productImg = product.querySelectorAll('.product__img');
     const productName = product.querySelector('#product__name').innerText.trim();
     const productPrice = product.querySelector('.product__price').innerText;
     const productId = product.querySelector('.productId').innerText;
+    const sizeArr = product.querySelectorAll('.size_arr')
+    const colorArr = product.querySelectorAll('.color_arr')
+
     quickView.addEventListener('click', () => {
         modal.classList.add('show-modal1');
         pname.innerText = productName;
         price.innerText = productPrice;
         product_id.setAttribute('value', productId.trim());
+
+        for (let i = 0; i < sizeArr.length; i++) {
+            let option = document.createElement('option');
+            option.innerText = sizeArr[i].innerText.trim();
+            size_choice.appendChild(option);
+        }
+
+        for (let i = 0; i < colorArr.length; i++) {
+            let option = document.createElement('option');
+            option.innerText = colorArr[i].innerText.trim();
+            color_choice.appendChild(option);
+        }
+
         for (let i = 0; i < 3; i++) {
             let img;
             if (i == 0) {

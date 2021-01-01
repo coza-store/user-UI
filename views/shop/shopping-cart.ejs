@@ -58,8 +58,10 @@
                                                 </td>
                                                 <td class="column-2">
                                                     <strong><a style="color: #333;" href="/products/<%=p.productId._id%>"><%=p.productId.name%></a></strong><br>
-                                                    <span style="font-size: 14px;">Size : <%=p.size%> </span><br>
-                                                    <span style="font-size: 14px;">Color: <%=p.color%> </span>
+                                                    <% if(p.size != "") {%>
+                                                        <span style="font-size: 14px;">Size : <%=p.size%> </span><br>
+                                                        <% } %>
+                                                            <span style="font-size: 14px;">Color: <%=p.color%> </span>
                                                 </td>
                                                 <td class="column-3">$
                                                     <span id="product_price_<%=p._id %>"><%=p.productId.price%></span>

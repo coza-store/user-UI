@@ -153,11 +153,11 @@ const addToCart = async(btn) => {
 
 const addToCartDetail = async(btn) => {
     const prodId = btn.parentNode.querySelector('[name=productIdDetail]').value;
-    const size = document.querySelector('#select2-productSizeDetail-container').innerText;
+    let size = document.querySelector('#select2-productSizeDetail-container').innerText;
     const color = document.querySelector('#select2-productColorDetail-container').innerText;
     const quantity = btn.parentNode.querySelector('[name=quantityDetail]').value;
-    console.log(prodId, size, color, quantity);
-
+    const filter = document.querySelector('#filter').innerText;
+    console.log(filter);
     let checkSize = false;
     let checkColor = false;
 
@@ -166,9 +166,10 @@ const addToCartDetail = async(btn) => {
     let productColor = document.getElementById('productColorDetail');
 
 
-    if (productSize.options[0].selected === true) {
+    if (productSize.options[0].selected === true && filter !== 'bag') {
         warning_size.innerText = "Please choose size";
     } else {
+        size = 0;
         warning_size.innerText = "";
         checkSize = true;
     }
