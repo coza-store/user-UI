@@ -29,6 +29,8 @@ productList.forEach(async(product, index) => {
         price.innerText = productPrice;
         product_id.setAttribute('value', productId.trim());
 
+        size_choice.innerHTML = "";
+        color_choice.innerHTML = "";
         for (let i = 0; i < sizeArr.length; i++) {
             let option = document.createElement('option');
             option.innerText = sizeArr[i].innerText.trim();

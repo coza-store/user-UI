@@ -30,6 +30,7 @@ exports.getIndex = async(req, res, next) => {
 exports.getProducts = async(req, res, next) => {
     const page = +req.query.page || 1;
     let totalItems;
+    let products;
     const nextQuery = {...req.query, page: page + 1 };
     const prevQuery = {...req.query, page: page - 1 };
     const currentQuery = {...req.query, page: page };
@@ -37,66 +38,49 @@ exports.getProducts = async(req, res, next) => {
     const qN = queryString.stringify(nextQuery);
     const qP = queryString.stringify(prevQuery);
 
-    if (req.query.search) {
-        const regex = new RegExp(escapeRegex(req.query.search), 'gi');
-        Product.find({ name: regex })
-            .countDocuments()
-            .then(numOfProducts => {
-                totalItems = numOfProducts;
-                return Product
-                    .find({ name: regex })
-                    .skip((page - 1) * ITEMS_PER_PAGE)
-                    .limit(ITEMS_PER_PAGE);
+    //search
+    let search = req.query.search ? req.query.search : "";
+    const regexSearch = new RegExp(escapeRegex(search), 'gi');
+    //color
+    let color = req.query.color ? req.query.color : "";
+    const regexColor = new RegExp(escapeRegex(search), 'gi');
+    console.log(req.query.color);
+    totalItems = await Product
+        .find({
+            $and: [
+                { name: regexSearch },
+                { $or: [{ color: regexColor }] },
+            ]
+        })
+        .countDocuments();
 
-            })
-            .then(products => {
-                res.render('shop/product-list', {
-                    pageTitle: 'All products',
-                    path: '/products',
-                    products: products,
-                    user: req.user,
-                    isAuthenticated: req.isAuthenticated(),
-                    totaProducts: totalItems,
-                    currentPage: page,
-                    currentPageQuery: qC,
-                    hasNextPage: ITEMS_PER_PAGE * page < totalItems,
-                    hasPrevPage: page > 1,
-                    nextPage: page + 1,
-                    nextPageQuery: qN,
-                    prevPage: page - 1,
-                    prevPageQuery: qP
-                })
-            })
-    } else {
-        Product.find()
-            .countDocuments()
-            .then(numOfProducts => {
-                totalItems = numOfProducts;
-                return Product
-                    .find()
-                    .skip((page - 1) * ITEMS_PER_PAGE)
-                    .limit(ITEMS_PER_PAGE);
 
-            })
-            .then(products => {
-                res.render('shop/product-list', {
-                    pageTitle: 'All products',
-                    path: '/products',
-                    products: products,
-                    user: req.user,
-                    isAuthenticated: req.isAuthenticated(),
-                    totaProducts: totalItems,
-                    currentPage: page,
-                    currentPageQuery: qC,
-                    hasNextPage: ITEMS_PER_PAGE * page < totalItems,
-                    hasPrevPage: page > 1,
-                    nextPage: page + 1,
-                    nextPageQuery: qN,
-                    prevPage: page - 1,
-                    prevPageQuery: qP
-                })
-            })
-    }
+    products = await Product
+        .find({
+            $and: [
+                { name: regexSearch },
+                { $or: [{ color: regexColor }] },
+            ]
+        })
+        .skip((page - 1) * ITEMS_PER_PAGE)
+        .limit(ITEMS_PER_PAGE);
+
+    return res.render('shop/product-list', {
+        pageTitle: 'All products',
+        path: '/products',
+        products: products,
+        user: req.user,
+        isAuthenticated: req.isAuthenticated(),
+        totaProducts: totalItems,
+        currentPage: page,
+        currentPageQuery: qC,
+        hasNextPage: ITEMS_PER_PAGE * page < totalItems,
+        hasPrevPage: page > 1,
+        nextPage: page + 1,
+        nextPageQuery: qN,
+        prevPage: page - 1,
+        prevPageQuery: qP
+    });
 };
 
 //render trang chi tiet san pham
@@ -111,7 +95,6 @@ exports.getProduct = async(req, res, next) => {
         relatedProducts: relatedProducts,
         title: capitalize(product.filter),
         user: req.user,
-
         isAuthenticated: req.isAuthenticated()
     });
     if (!product.viewCount) {
@@ -132,7 +115,7 @@ exports.getCart = async(req, res, next) => {
             products: products,
             user: req.user,
             isAuthenticated: req.isAuthenticated()
-        })
+        });
 
     } else {
         if (!req.session.cart) {
@@ -145,7 +128,7 @@ exports.getCart = async(req, res, next) => {
             products: productsInCart.items,
             user: req.user,
             isAuthenticated: req.isAuthenticated()
-        })
+        });
     }
 };
 
@@ -181,7 +164,6 @@ exports.postCart = async(req, res, next) => {
             productName: product.name
         });
     }
-
 };
 
 //xoa 1 sp khoi gio hang
@@ -278,22 +260,21 @@ exports.getCheckOut = (req, res, next) => {
                 products: products,
                 totalOrder: total,
                 sessionId: session.id
-            })
+            });
         })
         .catch(err => console.log(err));
 };
 
-exports.getOrders = (req, res, next) => {
-    Order.find({ "user.userId": req.user._id })
-        .then(orders => {
-            res.render('shop/order', {
-                pageTitle: 'My Orders',
-                path: '/orders',
-                isAuthenticated: req.isAuthenticated(),
-                user: req.user,
-                orders: orders
-            });
-        })
+exports.getOrders = async(req, res, next) => {
+    const orders = await Order.find({ "user.userId": req.user._id })
+    return res.render('shop/order', {
+        pageTitle: 'My Orders',
+        path: '/orders',
+        isAuthenticated: req.isAuthenticated(),
+        user: req.user,
+        orders: orders
+    });
+
 };
 
 exports.postOrder = async(req, res, next) => {
@@ -348,16 +329,14 @@ exports.postOrder = async(req, res, next) => {
         .catch(err => console.log(err));
 };
 
-exports.getOrderDetail = (req, res, next) => {
+exports.getOrderDetail = async(req, res, next) => {
     const orderId = req.params.orderId;
-    Order.findById(orderId)
-        .then(order => {
-            res.render('shop/order-detail', {
-                pageTitle: `Detail #${orderId}`,
-                path: '/orders/orderId',
-                isAuthenticated: req.isAuthenticated(),
-                user: req.user,
-                order: order
-            })
-        })
+    const order = await Order.findById(orderId)
+    return res.render('shop/order-detail', {
+        pageTitle: `Detail #${orderId}`,
+        path: '/orders/orderId',
+        isAuthenticated: req.isAuthenticated(),
+        user: req.user,
+        order: order
+    });
 }

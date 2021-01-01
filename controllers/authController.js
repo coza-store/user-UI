@@ -15,7 +15,7 @@ const transporter = nodemailer.createTransport({
 
 //render trang dang nhap
 exports.getLogIn = (req, res, next) => {
-    res.render('auth/login', {
+    return res.render('auth/login', {
         pageTitle: 'Log in',
         path: '/login',
         errorMessage: '',
@@ -76,7 +76,7 @@ exports.postLogIn = (req, res, next) => {
 
 //xu ly an dang xuat
 exports.postLogOut = (req, res, next) => {
-    req.session.destroy((err) => {
+    return req.session.destroy((err) => {
         console.log(err);
         res.redirect('/');
     })
@@ -172,7 +172,7 @@ exports.postRegister = (req, res, next) => {
 
 //render trang nhap email lay lai mk
 exports.getResetForm = (req, res, next) => {
-    res.render('auth/reset', {
+    return res.render('auth/reset', {
         pageTitle: 'Reset password',
         path: '/reset',
         errorMessage: '',
@@ -302,7 +302,7 @@ exports.postResetPassword = (req, res, next) => {
 
 //render trang thong bao nguoi dang nhap mail de xac nhan email
 exports.getConfirmRoute = (req, res, next) => {
-    res.render('auth/confirm-route', {
+    return res.render('auth/confirm-route', {
         pageTitle: 'Verify Email',
         path: '/confirm-route',
         user: req.cookies.name
@@ -424,7 +424,6 @@ exports.postResetSetting = async(req, res, next) => {
         });
     const currentPassword = req.body.currentPswd;
     const newPassword = req.body.newPswd;
-    const confirmPassword = req.body.confirmPswd;
     let errors = validationResult(req);;
     if (!req.user.validPassword(currentPassword)) {
         errors.array()[0].msg = 'Current Password is incorrect';
