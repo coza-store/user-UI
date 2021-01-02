@@ -1,5 +1,4 @@
 const { capitalize, escapeRegex } = require('../models/service/module.js');
-const queryString = require('query-string');
 const Product = require('../models/productModel');
 const Order = require('../models/orderModel');
 const Cart = require('../models/cartModel');
@@ -13,7 +12,7 @@ exports.getIndex = async(req, res, next) => {
     const menProducts = await Product.find({ filter: { "$regex": "men", "$options": "i" } }).limit(9).exec();
     const womenProducts = await Product.find({ filter: { "$regex": "woman", "$options": "i" } }).limit(8).exec();
     const bestSold = await Product.find().sort({ hasSold: -1 }).limit(10).exec();
-    return res.render('shop/index', {
+    res.render('shop/index', {
         pageTitle: 'Home',
         path: '/',
         topView: topView,
@@ -28,43 +27,103 @@ exports.getIndex = async(req, res, next) => {
 
 //render trang san pham
 exports.getProducts = async(req, res, next) => {
-    const page = +req.query.page || 1;
-    let totalItems;
-    let products;
-    const nextQuery = {...req.query, page: page + 1 };
-    const prevQuery = {...req.query, page: page - 1 };
-    const currentQuery = {...req.query, page: page };
-    const qC = queryString.stringify(currentQuery);
-    const qN = queryString.stringify(nextQuery);
-    const qP = queryString.stringify(prevQuery);
+    const page = +req.body.page || 1;
+    let totalItems = await Product.find().countDocuments();
+    let products = await Product.find().skip((page - 1) * ITEMS_PER_PAGE).limit(ITEMS_PER_PAGE);
 
-    //search
-    let search = req.query.search ? req.query.search : "";
+    res.render('shop/product-list', {
+        pageTitle: 'All products',
+        path: '/products',
+        products: products,
+        user: req.user,
+        isAuthenticated: req.isAuthenticated(),
+        totaProducts: totalItems,
+        currentPage: page,
+        hasNextPage: ITEMS_PER_PAGE * page < totalItems,
+        hasPrevPage: page > 1,
+        nextPage: page + 1,
+        prevPage: page - 1,
+        color: '',
+        tag: '',
+        low: '',
+        high: '',
+        priceRange: '',
+        sort: ''
+    });
+};
+
+exports.postProducts = async(req, res, next) => {
+    const page = +req.body.page || 1;
+
+    let search = req.body.search ? req.body.search : "";
     const regexSearch = new RegExp(escapeRegex(search), 'gi');
-    //color
-    let color = req.query.color ? req.query.color : "";
-    const regexColor = new RegExp(escapeRegex(search), 'gi');
-    console.log(req.query.color);
+    let color = req.body.color ? req.body.color : "";
+    const regexColor = new RegExp(escapeRegex(color), 'gi');
+    let tag = req.body.tag ? req.body.tag : "";
+    const regexTag = new RegExp(escapeRegex(tag), 'gi');
+    let lowest = req.body.lowestPrice ? req.body.lowestPrice : 0;
+    let highest = req.body.highestPrice ? req.body.highestPrice : 10000000000;
+    let sort = req.body.sort;
+    let totalItems, products;
+
+    //normal case
     totalItems = await Product
-        .find({
-            $and: [
-                { name: regexSearch },
-                { $or: [{ color: regexColor }] },
-            ]
-        })
+        .find({ $and: [{ name: regexSearch }, { color: regexColor }, { filter: regexTag }, { price: { $gte: lowest, $lte: highest } }, ] })
         .countDocuments();
-
-
     products = await Product
-        .find({
-            $and: [
-                { name: regexSearch },
-                { $or: [{ color: regexColor }] },
-            ]
-        })
+        .find({ $and: [{ name: regexSearch }, { color: regexColor }, { filter: regexTag }, { price: { $gte: lowest, $lte: highest } }] })
         .skip((page - 1) * ITEMS_PER_PAGE)
         .limit(ITEMS_PER_PAGE);
+    //view count sort case
+    if (sort == 'popularity') {
+        totalItems = await Product
+            .find({ $and: [{ name: regexSearch }, { color: regexColor }, { filter: regexTag }, { price: { $gte: lowest, $lte: highest } }, ] })
+            .sort({ viewCount: -1 })
+            .countDocuments();
+        products = await Product
+            .find({ $and: [{ name: regexSearch }, { color: regexColor }, { filter: regexTag }, { price: { $gte: lowest, $lte: highest } }] })
+            .sort({ viewCount: -1 })
+            .skip((page - 1) * ITEMS_PER_PAGE)
+            .limit(ITEMS_PER_PAGE);
+    } //hasSold sort case
+    if (sort == 'bestsold') {
+        totalItems = await Product
+            .find({ $and: [{ name: regexSearch }, { color: regexColor }, { filter: regexTag }, { price: { $gte: lowest, $lte: highest } }, ] })
+            .sort({ hasSold: -1 })
+            .countDocuments();
+        products = await Product
+            .find({ $and: [{ name: regexSearch }, { color: regexColor }, { filter: regexTag }, { price: { $gte: lowest, $lte: highest } }] })
+            .sort({ hasSold: -1 })
+            .skip((page - 1) * ITEMS_PER_PAGE)
+            .limit(ITEMS_PER_PAGE);
+    } //low to high price sort case
+    if (sort == 'lowtohigh') {
+        totalItems = await Product
+            .find({ $and: [{ name: regexSearch }, { color: regexColor }, { filter: regexTag }, { price: { $gte: lowest, $lte: highest } }, ] })
+            .sort({ price: 1 })
+            .countDocuments();
+        products = await Product
+            .find({ $and: [{ name: regexSearch }, { color: regexColor }, { filter: regexTag }, { price: { $gte: lowest, $lte: highest } }] })
+            .sort({ price: 1 })
+            .skip((page - 1) * ITEMS_PER_PAGE)
+            .limit(ITEMS_PER_PAGE);
+    } //high to low price sort case
+    if (sort == 'hightolow') {
+        totalItems = await Product
+            .find({ $and: [{ name: regexSearch }, { color: regexColor }, { filter: regexTag }, { price: { $gte: lowest, $lte: highest } }, ] })
+            .sort({ price: -1 })
+            .countDocuments();
+        products = await Product
+            .find({ $and: [{ name: regexSearch }, { color: regexColor }, { filter: regexTag }, { price: { $gte: lowest, $lte: highest } }] })
+            .sort({ price: -1 })
+            .skip((page - 1) * ITEMS_PER_PAGE)
+            .limit(ITEMS_PER_PAGE);
+    }
 
+    let priceRange = lowest + '-' + highest;
+    if (highest == 10000000000) {
+        priceRange = lowest;
+    }
     return res.render('shop/product-list', {
         pageTitle: 'All products',
         path: '/products',
@@ -73,15 +132,18 @@ exports.getProducts = async(req, res, next) => {
         isAuthenticated: req.isAuthenticated(),
         totaProducts: totalItems,
         currentPage: page,
-        currentPageQuery: qC,
         hasNextPage: ITEMS_PER_PAGE * page < totalItems,
         hasPrevPage: page > 1,
         nextPage: page + 1,
-        nextPageQuery: qN,
         prevPage: page - 1,
-        prevPageQuery: qP
+        color: color,
+        tag: tag,
+        low: lowest,
+        high: highest,
+        priceRange: priceRange,
+        sort: sort
     });
-};
+}
 
 //render trang chi tiet san pham
 exports.getProduct = async(req, res, next) => {

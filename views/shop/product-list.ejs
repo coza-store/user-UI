@@ -37,7 +37,7 @@
                     <!-- Search product -->
 
                     <div class="dis-none panel-search w-full p-t-10 p-b-15">
-                        <form action="/products/?<%=currentPageQuery %>" method="GET">
+                        <form action="/products" method="POST">
                             <div class="bor8 dis-flex p-l-15">
                                 <button class="size-113 flex-c-m fs-16 cl2 hov-cl1 trans-04">
                                         <i class="zmdi zmdi-search"></i>
@@ -46,140 +46,127 @@
                             </div>
                         </form>
                     </div>
-
                     <!-- Filter -->
                     <div class="dis-none panel-filter w-full p-t-10">
-                        <div class="wrap-filter flex-w bg6 w-full p-lr-40 p-t-27 p-lr-15-sm">
-                            <div class="filter-col1 p-r-15 p-b-27">
-                                <div class="mtext-102 cl2 p-b-15">
-                                    Sort By
+                        <form id="filter-form" action="/products" method="POST">
+                            <div class="wrap-filter flex-w bg6 w-full p-lr-40 p-t-27 p-lr-15-sm">
+                                <div class="filter-col1 p-r-15 p-b-27">
+                                    <div class="mtext-102 cl2 p-b-15">
+                                        Sort By
+                                    </div>
+
+                                    <ul>
+                                        <input type="text" name="sort" id="sortBody" value="<%=sort %>" hidden>
+                                        <li class="p-b-6">
+                                            <button class="filter-link stext-106 trans-04 <% if(sort === 'popularity') { %>filter-link-active<% } %>" value="popularity" onclick="getSort(this,event)">Popularity</a>
+                                        </li>
+                                        <li class="p-b-6">
+                                            <button class="filter-link stext-106 trans-04 <% if(sort === 'bestsold') { %>filter-link-active<% } %>" value="bestsold" onclick="getSort(this,event)">Best Sold</a>
+                                        </li>
+                                        <li class="p-b-6">
+                                            <button class="filter-link stext-106 trans-04  <% if(sort === 'lowtohigh') { %>filter-link-active<% } %>" value="lowtohigh" onclick="getSort(this,event)">Price: Low to High</a>
+                                        </li>
+                                        <li class="p-b-6">
+                                            <button class="filter-link stext-106 trans-04  <% if(sort === 'hightolow') { %>filter-link-active<% } %>" value="hightolow" onclick="getSort(this,event)">Price: High to Low</a>
+                                        </li>
+                                    </ul>
                                 </div>
 
-                                <ul>
-                                    <li class="p-b-6">
-                                        <a href="/products/?sortby=popularity" class="filter-link stext-106 trans-04">Popularity</a>
-                                    </li>
-                                    <li class="p-b-6">
-                                        <a href="/products/?sortby=bestsold" class="filter-link stext-106 trans-04">Best Sold</a>
-                                    </li>
-                                    <li class="p-b-6">
-                                        <a href="/products/?sortby=asc" class="filter-link stext-106 trans-04">Price: Low to High</a>
-                                    </li>
-                                    <li class="p-b-6">
-                                        <a href="/products/?sortby=desc" class="filter-link stext-106 trans-04">Price: High to Low</a>
-                                    </li>
-                                </ul>
+                                <div class="filter-col2 p-r-15 p-b-27">
+                                    <div class="mtext-102 cl2 p-b-15">
+                                        Price
+                                    </div>
+
+                                    <ul>
+                                        <input type="text" name="lowestPrice" id="lowestPriceBody" value="<%=low %>" hidden>
+                                        <input type="text" name="highestPrice" id="highestPriceBody" value="<%=high %>" hidden>
+                                        <li class="p-b-6">
+                                            <button class="filter-link stext-106 trans-04 <% if(priceRange === '0') { %>filter-link-active<% } %>" value="0" onclick="getPrice(this,event)">All</button>
+                                        </li>
+
+                                        <li class="p-b-6">
+                                            <button class="filter-link stext-106 trans-04 <% if(priceRange === '0-50') { %>filter-link-active<% } %>" value="0-50" onclick="getPrice(this,event)"> $0.00 - $50.00</button>
+                                        </li>
+
+                                        <li class="p-b-6">
+                                            <button class="filter-link stext-106 trans-04 <% if(priceRange === '50-100') { %>filter-link-active<% } %>" value="50-100" onclick="getPrice(this,event)">$50.00 - $100.00</button>
+                                        </li>
+
+                                        <li class="p-b-6">
+                                            <button class="filter-link stext-106 trans-04 <% if(priceRange === '100-150') { %>filter-link-active<% } %>" value="100-150" onclick="getPrice(this,event)">$100.00 - $150.00</button>
+                                        </li>
+
+                                        <li class="p-b-6">
+                                            <button class="filter-link stext-106 trans-04 <% if(priceRange === '150-200') { %>filter-link-active<% } %>" value="150-200" onclick="getPrice(this,event)">$150.00 - $200.00</button>
+                                        </li>
+
+                                        <li class="p-b-6">
+                                            <button class="filter-link stext-106 trans-04 <% if(priceRange === '200') { %>filter-link-active<% } %>" value="200" onclick="getPrice(this,event)">$200.00+</button>
+                                        </li>
+                                    </ul>
+                                </div>
+
+                                <div class="filter-col3 p-r-15 p-b-27">
+                                    <div class="mtext-102 cl2 p-b-15">
+                                        Color
+                                    </div>
+
+                                    <ul>
+                                        <input type="text" name="color" value="<%=color %>" id="colorBody" hidden>
+                                        <li class="p-b-6">
+                                            <span class="fs-15 lh-12 m-r-6" style="color: #222;">
+                                                <i class="zmdi zmdi-circle"></i>
+                                            </span>
+                                            <button class="filter-link stext-106 trans-04 <% if(color === 'Black') { %>filter-link-active<% } %>" onclick="getColor(this,event)">Black</button>
+                                        </li>
+                                        <li class="p-b-6">
+                                            <span class="fs-15 lh-12 m-r-6" style="color: #4272d7;">
+                                                <i class="zmdi zmdi-circle"></i>
+                                            </span>
+                                            <button class="filter-link stext-106 trans-04 <% if(color === 'Blue') { %>filter-link-active<% } %>" onclick="getColor(this,event)">Blue</button>
+                                        </li>
+                                        <li class="p-b-6">
+                                            <span class="fs-15 lh-12 m-r-6" style="color: #b3b3b3;">
+                                                <i class="zmdi zmdi-circle"></i>
+                                            </span>
+                                            <button class="filter-link stext-106 trans-04 <% if(color === 'Grey') { %>filter-link-active<% } %>" onclick="getColor(this,event)">Grey</button>
+                                        </li>
+                                        <li class="p-b-6">
+                                            <span class="fs-15 lh-12 m-r-6" style="color: #00ad5f;">
+                                                <i class="zmdi zmdi-circle"></i>
+                                            </span>
+                                            <button class="filter-link stext-106 trans-04 <% if(color === 'Green') { %>filter-link-active<% } %>" onclick="getColor(this,event)">Green</button>
+                                        </li>
+                                        <li class="p-b-6">
+                                            <span class="fs-15 lh-12 m-r-6" style="color: #fa4251;">
+                                                <i class="zmdi zmdi-circle"></i>
+                                            </span>
+                                            <button class="filter-link stext-106 trans-04 <% if(color === 'Red') { %>filter-link-active<% } %>" onclick="getColor(this,event)">Red</button>
+                                        </li>
+                                        <li class="p-b-6">
+                                            <span class="fs-15 lh-12 m-r-6" style="color: #aaa;">
+                                                <i class="zmdi zmdi-circle-o"></i>
+                                            </span>
+                                            <button class="filter-link stext-106 trans-04 <% if(color === 'White') { %>filter-link-active<% } %>" onclick="getColor(this,event)">White</button>
+                                        </li>
+                                    </ul>
+                                </div>
+
+                                <div class="filter-col4 p-b-27">
+                                    <div class="mtext-102 cl2 p-b-15">
+                                        Tags
+                                    </div>
+                                    <div class="flex-w p-t-4 m-r--5">
+                                        <input type="text" name="tag" value="<%=tag %>" id="tagBody" hidden>
+                                        <button class="flex-c-m stext-107 cl6 size-301 bor7 p-lr-15 hov-tag1 trans-04 m-r-5 m-b-5 <% if(tag === 'woman') { %>filter-tag-active<% } %>" onclick="getTag(this,event)">Women</button>
+                                        <button class="flex-c-m stext-107 cl6 size-301 bor7 p-lr-15 hov-tag1 trans-04 m-r-5 m-b-5 <% if(tag === 'men') { %>filter-tag-active<% } %>" onclick="getTag(this,event)">Men</button>
+                                        <button class="flex-c-m stext-107 cl6 size-301 bor7 p-lr-15 hov-tag1 trans-04 m-r-5 m-b-5 <% if(tag === 'jacket') { %>filter-tag-active<% } %>" onclick="getTag(this,event)">Jacket</button>
+                                        <button class="flex-c-m stext-107 cl6 size-301 bor7 p-lr-15 hov-tag1 trans-04 m-r-5 m-b-5 <% if(tag === 'bag') { %>filter-tag-active<% } %>" onclick="getTag(this,event)">Bag</button>
+                                    </div>
+                                </div>
+                                <button class="remove-filter" onclick="removeFilter(event)">Remove filter</button>
                             </div>
-
-                            <div class="filter-col2 p-r-15 p-b-27">
-                                <div class="mtext-102 cl2 p-b-15">
-                                    Price
-                                </div>
-
-                                <ul>
-                                    <li class="p-b-6">
-                                        <a href="/products" class="filter-link stext-106 trans-04 filter-link-active">All</a>
-                                    </li>
-
-                                    <li class="p-b-6">
-                                        <a href="#" class="filter-link stext-106 trans-04"> $0.00 - $50.00</a>
-                                    </li>
-
-                                    <li class="p-b-6">
-                                        <a href="#" class="filter-link stext-106 trans-04">$50.00 - $100.00</a>
-                                    </li>
-
-                                    <li class="p-b-6">
-                                        <a href="#" class="filter-link stext-106 trans-04">$100.00 - $150.00</a>
-                                    </li>
-
-                                    <li class="p-b-6">
-                                        <a href="#" class="filter-link stext-106 trans-04">$150.00 - $200.00</a>
-                                    </li>
-
-                                    <li class="p-b-6">
-                                        <a href="#" class="filter-link stext-106 trans-04">$200.00+ </a>
-                                    </li>
-                                </ul>
-                            </div>
-
-                            <div class="filter-col3 p-r-15 p-b-27">
-                                <div class="mtext-102 cl2 p-b-15">
-                                    Color
-                                </div>
-
-                                <ul>
-                                    <li class="p-b-6">
-                                        <span class="fs-15 lh-12 m-r-6" style="color: #222;">
-                                            <i class="zmdi zmdi-circle"></i>
-                                        </span>
-                                        <a href="/products/?color=Black" class="filter-link stext-106 trans-04">Black</a>
-                                    </li>
-                                    <li class="p-b-6">
-                                        <span class="fs-15 lh-12 m-r-6" style="color: #4272d7;">
-                                            <i class="zmdi zmdi-circle"></i>
-                                        </span>
-                                        <a href="/products/?color=Blue" class="filter-link stext-106 trans-04 filter-link-active">
-                                            Blue
-                                        </a>
-                                    </li>
-                                    <li class="p-b-6">
-                                        <span class="fs-15 lh-12 m-r-6" style="color: #b3b3b3;">
-                                            <i class="zmdi zmdi-circle"></i>
-                                        </span>
-                                        <a href="/products/?color=Grey" class="filter-link stext-106 trans-04">
-                                            Grey
-                                        </a>
-                                    </li>
-                                    <li class="p-b-6">
-                                        <span class="fs-15 lh-12 m-r-6" style="color: #00ad5f;">
-                                            <i class="zmdi zmdi-circle"></i>
-                                        </span>
-                                        <a href="/products/?color=Green" class="filter-link stext-106 trans-04">
-                                            Green
-                                        </a>
-                                    </li>
-                                    <li class="p-b-6">
-                                        <span class="fs-15 lh-12 m-r-6" style="color: #fa4251;">
-                                            <i class="zmdi zmdi-circle"></i>
-                                        </span>
-                                        <a href="/products/?color=Red" class="filter-link stext-106 trans-04">
-                                            Red
-                                        </a>
-                                    </li>
-                                    <li class="p-b-6">
-                                        <span class="fs-15 lh-12 m-r-6" style="color: #aaa;">
-                                            <i class="zmdi zmdi-circle-o"></i>
-                                        </span>
-                                        <a href="/products/?color=White" class="filter-link stext-106 trans-04">
-                                            White
-                                        </a>
-                                    </li>
-                                </ul>
-                            </div>
-
-                            <div class="filter-col4 p-b-27">
-                                <div class="mtext-102 cl2 p-b-15">
-                                    Tags
-                                </div>
-
-                                <div class="flex-w p-t-4 m-r--5">
-                                    <a href="#" class="flex-c-m stext-107 cl6 size-301 bor7 p-lr-15 hov-tag1 trans-04 m-r-5 m-b-5">
-                                        Women
-                                    </a>
-                                    <a href="#" class="flex-c-m stext-107 cl6 size-301 bor7 p-lr-15 hov-tag1 trans-04 m-r-5 m-b-5">
-                                        Men
-                                    </a>
-                                    <a href="#" class="flex-c-m stext-107 cl6 size-301 bor7 p-lr-15 hov-tag1 trans-04 m-r-5 m-b-5">
-                                        Jacket
-                                    </a>
-                                    <a href="#" class="flex-c-m stext-107 cl6 size-301 bor7 p-lr-15 hov-tag1 trans-04 m-r-5 m-b-5">
-                                        Bags
-                                    </a>
-
-                                </div>
-                            </div>
-                        </div>
+                        </form>
                     </div>
                 </div>
 
@@ -237,10 +224,7 @@
                         prevPage:prevPage,
                         hasPrevPage:hasPrevPage,
                         hasNextPage:hasNextPage,
-                        nextPage:nextPage,
-                        currentPageQuery:currentPageQuery,
-                        nextPageQuery:nextPageQuery,
-                        prevPageQuery:prevPageQuery}) %>
+                        nextPage:nextPage}) %>
                         <% } else { %>
                             <h1 style="text-align: center; margin-bottom: 35px;">No Product Found!</h1>
                             <% } %>
@@ -251,6 +235,8 @@
                 <%- include('../includes/preview-modal.ejs') %>
                     <%- include('../includes/script.ejs') %>
                         <script src="/js/preview-modal.js"></script>
+                        <script src="/js/filter.js"></script>
+                        <script src="/js/pagination.js"></script>
                         <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
                         <script src="/ajax/cartAjax.js"></script>
                         <%- include('../includes/end.ejs') %>
