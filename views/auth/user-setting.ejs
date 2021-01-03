@@ -19,105 +19,104 @@
             <%- include('../includes/head-mobile.ejs',{isAuthenticated:isAuthenticated,user:user}) %>
 
         </header>
-        <%- include('../includes/cart.ejs',{cartProds:cartProds}) %>
-            <div class="row">
-                <div class="col-lg-6">
-                    <form class="setting-form" action="/setting" method="POST" enctype="multipart/form-data">
-                        <div class="wrapper bg-white" style="margin-top: 100px;">
-                            <%if(errorMessage) { %>
-                                <div class="user-message user-message--error" style="margin-bottom: 40px;">
-                                    <%=errorMessage%>
+        <div class="row">
+            <div class="col-lg-6">
+                <form class="setting-form" action="/setting" method="POST" enctype="multipart/form-data">
+                    <div class="wrapper bg-white" style="margin-top: 100px;">
+                        <%if(errorMessage) { %>
+                            <div class="user-message user-message--error" style="margin-bottom: 40px;">
+                                <%=errorMessage%>
+                            </div>
+                            <% }  %>
+                                <h4 class="pb-4 border-bottom">Your Profiles</h4>
+                                <div class="d-flex align-items-start py-3 border-bottom">
+                                    <%if(user.userImage) { %>
+                                        <img src="/<%= user.userImage %>" class="img" alt="">
+                                        <% } else { %>
+                                            <img src="/images/user/guest-user.jpg" class="img" alt="">
+                                            <% }  %>
+                                                <div class="pl-sm-4 pl-2" id="img-section"> <b>Profile Photo</b>
+                                                    <p>Accepted file type .png. Less than 1MB</p>
+                                                    <input type="file" name="image" id="image" class="btn button border" style="cursor: pointer;">
+                                                </div>
                                 </div>
-                                <% }  %>
-                                    <h4 class="pb-4 border-bottom">Your Profiles</h4>
-                                    <div class="d-flex align-items-start py-3 border-bottom">
-                                        <%if(user.userImage) { %>
-                                            <img src="/<%= user.userImage %>" class="img" alt="">
-                                            <% } else { %>
-                                                <img src="/images/user/guest-user.jpg" class="img" alt="">
-                                                <% }  %>
-                                                    <div class="pl-sm-4 pl-2" id="img-section"> <b>Profile Photo</b>
-                                                        <p>Accepted file type .png. Less than 1MB</p>
-                                                        <input type="file" name="image" id="image" class="btn button border" style="cursor: pointer;">
-                                                    </div>
+                                <div class="py-2">
+                                    <div class="row py-2">
+                                        <div class="col-md-12">
+                                            <label for="firstname">User name</label>
+                                            <% if(!user.active) {%>
+                                                <input placeholder="Please verify your email to set username" disabled name="username" type="text" class="bg-light form-control">
+                                                <% } else { %>
+                                                    <input value="<%=user.username %>" name="username" type="text" class="bg-light form-control">
+                                                    <% } %>
+                                        </div>
                                     </div>
-                                    <div class="py-2">
-                                        <div class="row py-2">
-                                            <div class="col-md-12">
-                                                <label for="firstname">User name</label>
-                                                <% if(!user.active) {%>
-                                                    <input placeholder="Please verify your email to set username" disabled name="username" type="text" class="bg-light form-control">
-                                                    <% } else { %>
-                                                        <input value="<%=user.username %>" name="username" type="text" class="bg-light form-control">
-                                                        <% } %>
-                                            </div>
+                                    <div class="row py-2">
+                                        <div class="col-md-12"> <label for="firstname">Your Full Name</label>
+                                            <input type="text" class="bg-light form-control" name="name" value="<%= user.name %>">
                                         </div>
-                                        <div class="row py-2">
-                                            <div class="col-md-12"> <label for="firstname">Your Full Name</label>
-                                                <input type="text" class="bg-light form-control" name="name" value="<%= user.name %>">
-                                            </div>
-                                        </div>
-                                        <div class="row py-2">
-                                            <div class="col-md-12">
-                                                <label for="email">Email Address &nbsp;
+                                    </div>
+                                    <div class="row py-2">
+                                        <div class="col-md-12">
+                                            <label for="email">Email Address &nbsp;
                                                 <% if(!user.active) {%> 
                                                     <a style="color: red;" href="/setting-verify">Verify Email Now</a>
                                                     <% } %> 
                                             </label>
-                                                <input type="text" class="bg-light form-control" placeholder="example@email.com" name="email" value="<%= user.email %>">
-                                            </div>
-                                        </div>
-                                        <div class="row py-2">
-                                            <div class="col-md-12"> <label for="phone">Phone</label>
-                                                <input type="text" class="bg-light form-control" name="phone" value="<%= user.phone %>">
-                                            </div>
-                                        </div>
-                                        <div class="py-3 pb-4 border-bottom">
-                                            <button class="save-button ">Save Changes</button>
+                                            <input type="text" class="bg-light form-control" placeholder="example@email.com" name="email" value="<%= user.email %>">
                                         </div>
                                     </div>
-                        </div>
-                    </form>
-                </div>
-                <div class="col-lg-6">
-                    <form class="reset-form" action="/setting-password" method="POST">
-                        <div class="wrapper bg-white" style="margin-top: 100px;">
-                            <%if(errorMessage2) { %>
-                                <div class="user-message user-message--error" style="margin-bottom: 40px;">
-                                    <%=errorMessage2%>
+                                    <div class="row py-2">
+                                        <div class="col-md-12"> <label for="phone">Phone</label>
+                                            <input type="text" class="bg-light form-control" name="phone" value="<%= user.phone %>">
+                                        </div>
+                                    </div>
+                                    <div class="py-3 pb-4 border-bottom">
+                                        <button class="save-button ">Save Changes</button>
+                                    </div>
                                 </div>
-                                <% }  %>
-                                    <h4 class="pb-4 border-bottom">Reset Password</h4>
-                                    <div class="py-2">
-                                        <div class="row py-2">
-                                            <div class="col-md-12"> <label for="current-pswd">Current Password</label>
-                                                <input type="password" class="bg-light form-control" name="currentPswd">
-                                            </div>
-                                        </div>
-                                        <div class="row py-2">
-                                            <div class="col-md-12"> <label for="new-pswd">New Password</label>
-                                                <input type="password" class="bg-light form-control" name="newPswd">
-                                                <p class="hint-password-setting">*Password must have upper, lower letter, number and at least 8 characters</p>
-                                            </div>
-                                        </div>
-                                        <div class="row py-2">
-                                            <div class="col-md-12"> <label for="confirm-pswd">Confirm New Password</label>
-                                                <input type="password" class="bg-light form-control" name="confirmPswd">
-                                            </div>
-                                        </div>
-                                        <div class="py-3 pb-4 border-bottom">
-                                            <button class="save-button ">Save Changes</button>
+                    </div>
+                </form>
+            </div>
+            <div class="col-lg-6">
+                <form class="reset-form" action="/setting-password" method="POST">
+                    <div class="wrapper bg-white" style="margin-top: 100px;">
+                        <%if(errorMessage2) { %>
+                            <div class="user-message user-message--error" style="margin-bottom: 40px;">
+                                <%=errorMessage2%>
+                            </div>
+                            <% }  %>
+                                <h4 class="pb-4 border-bottom">Reset Password</h4>
+                                <div class="py-2">
+                                    <div class="row py-2">
+                                        <div class="col-md-12"> <label for="current-pswd">Current Password</label>
+                                            <input type="password" class="bg-light form-control" name="currentPswd">
                                         </div>
                                     </div>
-                        </div>
-                    </form>
-                </div>
+                                    <div class="row py-2">
+                                        <div class="col-md-12"> <label for="new-pswd">New Password</label>
+                                            <input type="password" class="bg-light form-control" name="newPswd">
+                                            <p class="hint-password-setting">*Password must have upper, lower letter, number and at least 8 characters</p>
+                                        </div>
+                                    </div>
+                                    <div class="row py-2">
+                                        <div class="col-md-12"> <label for="confirm-pswd">Confirm New Password</label>
+                                            <input type="password" class="bg-light form-control" name="confirmPswd">
+                                        </div>
+                                    </div>
+                                    <div class="py-3 pb-4 border-bottom">
+                                        <button class="save-button ">Save Changes</button>
+                                    </div>
+                                </div>
+                    </div>
+                </form>
             </div>
+        </div>
 
-            <%- include('../includes/footer.ejs') %>
-                <%- include('../includes/back-to-top.ejs') %>
-                    <%- include('../includes/preview-modal.ejs') %>
-                        <%- include('../includes/script.ejs') %>
-                            <script src="/js/preview-modal.js "></script>
-                            <script src="/js/cart-function.js "></script>
-                            <%- include('../includes/end.ejs') %>
+        <%- include('../includes/footer.ejs') %>
+            <%- include('../includes/back-to-top.ejs') %>
+                <%- include('../includes/preview-modal.ejs') %>
+                    <%- include('../includes/script.ejs') %>
+                        <script src="/js/preview-modal.js "></script>
+                        <script src="/js/cart-function.js "></script>
+                        <%- include('../includes/end.ejs') %>

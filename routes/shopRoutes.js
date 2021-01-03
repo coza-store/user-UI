@@ -13,6 +13,8 @@ router.post('/products', shopController.postProducts);
 
 router.get('/products/:productId', shopController.getProduct);
 
+router.post('/products/:productId/comment/:page', shopController.postCommentPage);
+
 router.get('/cart', shopController.getCart);
 
 router.put('/cart/:productId/:size/:color/:quantity', shopController.postCart);

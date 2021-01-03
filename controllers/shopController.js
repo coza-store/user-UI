@@ -2,9 +2,11 @@ const { capitalize, escapeRegex } = require('../models/service/module.js');
 const Product = require('../models/productModel');
 const Order = require('../models/orderModel');
 const Cart = require('../models/cartModel');
+const Comment = require('../models/commentModel');
 const stripe = require('stripe')('sk_test_51HyteKG8oVt195nhn3Q8SwnvKDqhHiYIMzhzuw2GmMRthWC4si5JZ109hu3kdMnrfeo8NnHC426xtpT4toc59kQP00gY9tJQ5D');
 
 const ITEMS_PER_PAGE = 12;
+const COMMENT_PER_PAGE = 4;
 
 //render trang chu
 exports.getIndex = async(req, res, next) => {
@@ -147,24 +149,53 @@ exports.postProducts = async(req, res, next) => {
 
 //render trang chi tiet san pham
 exports.getProduct = async(req, res, next) => {
+    const page = 1;
     const productId = req.params.productId;
     const product = await Product.findById(productId)
     const relatedProducts = await Product.find({ $and: [{ filter: { "$regex": product.filter, "$options": "i" } }, { _id: { $ne: product._id } }] }).limit(10).exec();
-    res.render('shop/product-detail', {
-        pageTitle: product.name,
-        path: '/products/productId',
-        product: product,
-        relatedProducts: relatedProducts,
-        title: capitalize(product.filter),
-        user: req.user,
-        isAuthenticated: req.isAuthenticated()
-    });
+
+    const comments = await Comment.find({ productId: product._id }).skip((page - 1) * COMMENT_PER_PAGE).limit(COMMENT_PER_PAGE).sort({ createTime: -1 });
+    const totalComment = await Comment.find({ productId: product._id }).countDocuments();
+
     if (!product.viewCount) {
         product.viewCount = 0;
     }
     product.viewCount++;
-    return product.save();
+    product.save();
+    return res.render('shop/product-detail', {
+        pageTitle: product.name,
+        path: '/products/productId',
+        product: product,
+        comments: comments,
+        relatedProducts: relatedProducts,
+        totalComment: totalComment,
+        title: capitalize(product.filter),
+        user: req.user,
+        isAuthenticated: req.isAuthenticated(),
+        currentPage: 1,
+        hasNextPage: true,
+        hasPrevPage: false,
+        nextPage: 2,
+        prevPage: 0,
+    });
 };
+
+exports.postCommentPage = async(req, res, next) => {
+    const productId = req.params.productId;
+    const page = req.params.page;
+    const comments = await Comment.find({ productId: productId }).skip((page - 1) * COMMENT_PER_PAGE).limit(COMMENT_PER_PAGE).sort({ createTime: -1 });
+    const totalComment = await Comment.find({ productId: productId }).countDocuments();
+    return res.status(200).json({
+        message: 'Success!',
+        comments: comments,
+        currentPage: page,
+        hasNextPage: COMMENT_PER_PAGE * page < totalComment,
+        hasPrevPage: page > 1,
+        nextPage: +page + +1,
+        prevPage: +page - +1,
+    })
+}
+
 
 //render trang gio hang
 exports.getCart = async(req, res, next) => {

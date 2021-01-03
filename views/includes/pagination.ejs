@@ -2,17 +2,13 @@
     <section class="pagination" style="justify-content: center;">
         <input type="text" name="page" value="" id="pageBody" hidden>
         <% if(hasPrevPage) { %>
-            <button style="border: none;" value="<%=prevPage%>" onclick="getPage(this,event)"><i class="fa fa-arrow-left"></i></button>
+            <button value="<%=prevPage%>" onclick="getPage(this,event)"><i class="fa fa-arrow-left"></i></button>
+            <button value="<%=prevPage%>" onclick="getPage(this,event)"><%=prevPage%></button>
             <% } %>
-                <% if(hasPrevPage) { %>
-                    <button value="<%=prevPage%>" onclick="getPage(this,event)"><%=prevPage%></button>
+                <button class="active" value="<%=currentPage%>" onclick="getPage(this,event)"><%=currentPage%></button>
+                <% if(hasNextPage) { %>
+                    <button value="<%=nextPage%>" onclick="getPage(this,event)"><%=nextPage%></button>
+                    <button value="<%=nextPage%>" onclick="getPage(this,event)"><i class="fa fa-arrow-right"></i></button>
                     <% } %>
-                        <button class="active" value="<%=currentPage%>" onclick="getPage(this,event)"><%=currentPage%></button>
-                        <% if(hasNextPage) { %>
-                            <button value="<%=nextPage%>" onclick="getPage(this,event)"><%=nextPage%></button>
-                            <% } %>
-                                <% if(hasNextPage) { %>
-                                    <button style="border: none;" value="<%=nextPage%>" onclick="getPage(this,event)"><i class="fa fa-arrow-right"></i></a>
-                                    <% } %>
     </section>
 </form>

@@ -1,6 +1,5 @@
-const path = require('path');
 const express = require('express');
-const app = express();
+const path = require('path');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const multer = require('multer');
@@ -9,12 +8,13 @@ const session = require('express-session');
 const flash = require('connect-flash');
 const MongoDBStore = require('connect-mongodb-session')(session);
 const passport = require('passport');
-
 const shopRoutes = require('./routes/shopRoutes');
 const authRoutes = require('./routes/authRoutes');
+const apiComment = require('./controllers/commentAPI');
 const errorHandler = require('./controllers/errorController');
 const User = require('./models/userModel');
 
+const app = express();
 const MONGODB_URL = 'mongodb+srv://admin:admincoza@cluster0.cjf9m.mongodb.net/coza-db';
 const store = new MongoDBStore({
     uri: MONGODB_URL,
@@ -41,12 +41,11 @@ const imageFilter = (req, file, callback) => {
     }
 };
 
-
-
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(multer({ storage: imageStorage, fileFilter: imageFilter }).single('image'));
 app.use('/images', express.static(path.join(__dirname, 'images')));
+app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
@@ -79,6 +78,8 @@ app.set('views', 'views');
 app.use(shopRoutes);
 
 app.use(authRoutes);
+
+app.use(apiComment);
 
 app.use(errorHandler.render404Page);
 

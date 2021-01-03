@@ -3892,8 +3892,8 @@ input.num-product::-webkit-inner-spin-button {
 }
 
 .pagination {
-    margin-top: 2rem;
-    margin-bottom: 3rem;
+    margin-top: 70px;
+    margin-bottom: 10px;
     text-align: center;
 }
 
@@ -3902,6 +3902,7 @@ input.num-product::-webkit-inner-spin-button {
     color: #000;
     padding: 5px 6px 5px 6px;
     margin: 0 6px;
+    border: none;
 }
 
 .pagination button:hover,
@@ -3910,8 +3911,32 @@ input.num-product::-webkit-inner-spin-button {
 }
 
 .pagination button.active {
-    background: #000;
-    color: white;
+    text-decoration: underline;
+    font-weight: 600;
+}
+
+.pagination-comment {
+    margin-top: 70px;
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+.pagination-comment button {
+    text-decoration: none;
+    color: #000;
+    padding: 5px 6px 5px 6px;
+    margin: 0 6px;
+    border: none;
+}
+
+.pagination-comment button:hover,
+.pagination-comment button:active {
+    text-decoration: underline;
+}
+
+.pagination-comment button.active {
+    text-decoration: underline;
+    font-weight: 600;
 }
 
 .spad {
@@ -4261,4 +4286,9 @@ input.num-product::-webkit-inner-spin-button {
 
 .remove-filter:hover {
     background-color: #999;
+}
+
+.comment-post {
+    width: 100%;
+    margin-top: 30px;
 }

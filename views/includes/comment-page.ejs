@@ -1,0 +1,9 @@
+<div style="width: 100%;" id="pagination-comment" class="<% if(count < 1) {%>dis-none<% } %>">
+    <section class="pagination-comment" style="justify-content: center;">
+        <button class="<% if(!hasPrevPage) { %>dis-none<% } %>" value="<%=prevPage%>" onclick="changePage(this)" id="prev_icon"><i class="fa fa-arrow-left"></i></button>
+        <button class="<% if(!hasPrevPage) { %>dis-none<% } %>" value="<%=prevPage%>" onclick="changePage(this)" id="prev_number"><%=prevPage%></button>
+        <button class="active" value="<%=currentPage%>" onclick="changePage(this)" id="current_number"><%=currentPage%></button>
+        <button class="<% if(!hasNextPage) { %>dis-none<% } %>" value="<%=nextPage%>" onclick="changePage(this)" id="next_number"><%=nextPage%></button>
+        <button class="<% if(!hasNextPage) { %>dis-none<% } %>" value="<%=nextPage%>" onclick="changePage(this)" id="next_icon"><i class="fa fa-arrow-right"></i></button>
+    </section>
+</div>
