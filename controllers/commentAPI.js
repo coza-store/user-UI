@@ -18,13 +18,15 @@ router.post('/comment', async(req, res, next) => {
         name: req.body.name,
         email: req.body.email,
         comment: req.body.comment,
-        rating: req.body.rating
+        rating: req.body.rating,
+        userImage: req.body.userImage
     }
     const comment = new Comment({
         productId: req.body.productId,
         name: req.body.name,
         email: req.body.email,
         comment: req.body.comment,
+        userImage: req.body.userImage,
         rating: req.body.rating,
         createTime: new Date()
     });

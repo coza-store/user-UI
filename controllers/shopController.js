@@ -172,11 +172,11 @@ exports.getProduct = async(req, res, next) => {
         title: capitalize(product.filter),
         user: req.user,
         isAuthenticated: req.isAuthenticated(),
-        currentPage: 1,
-        hasNextPage: true,
-        hasPrevPage: false,
-        nextPage: 2,
-        prevPage: 0,
+        currentPage: page,
+        hasNextPage: COMMENT_PER_PAGE * page < totalComment,
+        hasPrevPage: page > 1,
+        nextPage: page + 1,
+        prevPage: page - 1,
     });
 };
 

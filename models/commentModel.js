@@ -7,6 +7,7 @@ const commentSchema = new Schema({
     name: { type: String, required: true },
     email: { type: String, require: true },
     comment: { type: String, required: false },
+    userImage: { type: String, required: true },
     rating: { type: Number, required: true },
     createTime: { type: Date, required: true }
 });

@@ -15,13 +15,21 @@
 
 
     commentForm.addEventListener("submit", addNewComment);
+    const user_image = document.querySelector('[name=userImage]');
 
     function addNewComment(event) {
         event.preventDefault();
+        let image;
+        if (user_image == null || user_image.value == "") {
+            image = '/images/user/guest-user.jpg';
+        } else {
+            image = user_image.value;
+        }
         var newComment = {
             "productId": document.querySelector('[name=productIdDetail]').value,
             "name": document.getElementById('name').value,
             "email": document.getElementById('email').value,
+            "userImage": image,
             "comment": document.getElementById('review').value,
             "rating": document.getElementById('rating').value
         }
@@ -56,6 +64,7 @@
                 rating += `<i class="zmdi zmdi-star"></i>`
             }
             newCommentHTML = newCommentHTML.replace('{{rating}}', rating);
+            newCommentHTML = newCommentHTML.replace('{{image}}', data.userImage);
             let newCommentNode = document.createElement('div');
             newCommentNode.classList.add('flex-w', 'flex-t', 'comment-post');
             newCommentNode.innerHTML = newCommentHTML;

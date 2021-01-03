@@ -150,7 +150,10 @@
                                         </div>
 
                                         <input type="hidden" name="productIdDetail" value="<%=product._id%>">
-                                        <button style="margin-top: 15px;" class="flex-c-m stext-101 cl0 size-101 bg1 bor1 hov-btn1 p-lr-15 trans-04 js-addcart-detail " onclick="addToCartDetail(this)">
+                                        <% if(user && user.userImage){%>
+                                            <input type="hidden" name="userImage" value="/<%=user.userImage %>">
+                                            <% } %>
+                                                <button style="margin-top: 15px;" class="flex-c-m stext-101 cl0 size-101 bg1 bor1 hov-btn1 p-lr-15 trans-04 js-addcart-detail " onclick="addToCartDetail(this)">
                                                     Add to cart
                                             </button>
                                     </div>
@@ -250,11 +253,7 @@
                                                     <% for (let comment of comments) { %>
                                                         <div class="flex-w flex-t comment-post">
                                                             <div class="wrap-pic-s size-109 bor0 of-hidden m-r-18 m-t-6">
-                                                                <%if(user && user.userImage) { %>
-                                                                    <img src="/<%= user.userImage %>" class="img" alt="" id="user_img">
-                                                                    <% } else { %>
-                                                                        <img src="/images/user/guest-user.jpg" class="img" alt="">
-                                                                        <% }  %>
+                                                                <img src="<%= comment.userImage %>" class="img" alt="" id="user_img">
                                                             </div>
                                                             <div class="size-207">
                                                                 <div class="flex-w flex-sb-m p-b-17">
@@ -286,11 +285,7 @@
                                                                         <!-- script start -->
                                                                         <script id="comment-template" type="text/x-template">
                                                                             <div class="wrap-pic-s size-109 bor0 of-hidden m-r-18 m-t-6">
-                                                                                <%if(user && user.userImage) { %>
-                                                                                    <img src="/<%= user.userImage %>" class="img" alt="">
-                                                                                    <% } else { %>
-                                                                                        <img src="/images/user/guest-user.jpg" class="img" alt="" id="user_img">
-                                                                                        <% }  %>
+                                                                                <img src="{{image}}" class="img" alt="">
                                                                             </div>
                                                                             <div class="size-207">
                                                                                 <div class="flex-w flex-sb-m p-b-17">
