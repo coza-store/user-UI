@@ -66,7 +66,13 @@ exports.postLogIn = (req, res, next) => {
             req.session.cart = undefined;
             return req.session.save((err) => {
                 console.log(err);
-                res.redirect('/')
+                if (req.session.oldUrl) {
+                    let oldUrl = req.session.oldUrl;
+                    req.session.oldUrl = null;
+                    res.redirect(oldUrl);
+                } else {
+                    res.redirect('/');
+                }
             });
 
         });
@@ -347,7 +353,13 @@ exports.postConfirm = (req, res, next) => {
                 return req.session.save((err) => {
                     console.log(err);
                     console.log('Email has been verified');
-                    res.redirect('/')
+                    if (req.session.oldUrl) {
+                        let oldUrl = req.session.oldUrl;
+                        req.session.oldUrl = null;
+                        res.redirect(oldUrl);
+                    } else {
+                        res.redirect('/');
+                    }
                 });
             });
         })

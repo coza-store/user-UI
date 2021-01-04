@@ -10,6 +10,7 @@ const COMMENT_PER_PAGE = 4;
 
 //render trang chu
 exports.getIndex = async(req, res, next) => {
+    req.session.oldUrl = req.url;
     const topView = await Product.find().sort({ viewCount: -1 }).limit(10).exec();
     const menProducts = await Product.find({ filter: { "$regex": "men", "$options": "i" } }).limit(9).exec();
     const womenProducts = await Product.find({ filter: { "$regex": "woman", "$options": "i" } }).limit(8).exec();
@@ -29,6 +30,7 @@ exports.getIndex = async(req, res, next) => {
 
 //render trang san pham
 exports.getProducts = async(req, res, next) => {
+    req.session.oldUrl = req.url;
     const page = +req.body.page || 1;
     let totalItems = await Product.find().countDocuments();
     let products = await Product.find().skip((page - 1) * ITEMS_PER_PAGE).limit(ITEMS_PER_PAGE);
@@ -149,6 +151,7 @@ exports.postProducts = async(req, res, next) => {
 
 //render trang chi tiet san pham
 exports.getProduct = async(req, res, next) => {
+    req.session.oldUrl = req.url;
     const page = 1;
     const productId = req.params.productId;
     const product = await Product.findById(productId)
@@ -199,6 +202,7 @@ exports.postCommentPage = async(req, res, next) => {
 
 //render trang gio hang
 exports.getCart = async(req, res, next) => {
+    req.session.oldUrl = req.url;
     if (req.user) {
         const cartFetch = await req.user.populate('cart.items.productId').execPopulate();
         const products = cartFetch.cart.items;
