@@ -6,7 +6,7 @@ const orderSchema = new Schema({
     products: [{
         product: { type: Object, required: true },
         quantity: { type: Number, required: true },
-        size: { type: String, required: true },
+        size: { type: String, required: false },
         color: { type: String, required: true }
     }],
     user: {
@@ -19,6 +19,12 @@ const orderSchema = new Schema({
         address: { type: String, require: true },
         detail_address: { type: String, require: false },
         note: { type: String, require: false }
+    },
+    status: {
+        confirmed: { type: Boolean, default: false },
+        picked: { type: Boolean, default: false },
+        onshipping: { type: Boolean, default: false },
+        received: { type: Boolean, default: false }
     },
     totalPrice: { type: Number, required: true },
     createDate: { type: String, require: true }
