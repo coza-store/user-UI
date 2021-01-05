@@ -27,7 +27,8 @@ const orderSchema = new Schema({
         received: { type: Boolean, default: false }
     },
     totalPrice: { type: Number, required: true },
-    createDate: { type: String, require: true }
+    dateShow: { type: String, require: true },
+    dateFilter: { type: Date, required: true }
 });
 
 module.exports = mongoose.model('Order', orderSchema);

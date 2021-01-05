@@ -383,7 +383,7 @@ exports.postOrder = async(req, res, next) => {
     const shipping_address = address + ', ' + district + ', ' + city;
     const today = new Date();
     const create_moment =
-        `${today.getHours()}:${today.getMinutes()}:${today.getSeconds()} - T${today.getDay() + +1} ${today.getDate()}/${today.getMonth()}/${today.getFullYear()}`
+        `${today.getHours()}:${today.getMinutes()}:${today.getSeconds()} - T${today.getDay() + +1} ${today.getDate()}/${today.getMonth() + +1}/${today.getFullYear()}`
     let products;
     req.user
         .populate('cart.items.productId')
@@ -406,7 +406,8 @@ exports.postOrder = async(req, res, next) => {
                     note: note
                 },
                 totalPrice: user.cart.totalPrice,
-                createDate: create_moment
+                dateShow: create_moment,
+                dateFilter: new Date()
             });
             return order.save();
         })
