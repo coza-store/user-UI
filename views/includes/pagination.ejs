@@ -1,6 +1,13 @@
 <form id="paging-form" action="/products" method="POST">
     <section class="pagination" style="justify-content: center;">
         <input type="text" name="page" value="" id="pageBody" hidden>
+        <input type="text" name="sort" id="sortBody" value="<%=sort %>" hidden>
+        <input type="text" name="lowestPrice" id="lowestPriceBody" value="<%=low %>" hidden>
+        <input type="text" name="highestPrice" id="highestPriceBody" value="<%=high %>" hidden>
+        <input type="text" name="color" value="<%=color %>" id="colorBody" hidden>
+        <input type="text" name="tag" value="<%=tag %>" id="tagBody" hidden>
+
+
         <% if(hasPrevPage) { %>
             <button value="<%=prevPage%>" onclick="getPage(this,event)"><i class="fa fa-arrow-left"></i></button>
             <button value="<%=prevPage%>" onclick="getPage(this,event)"><%=prevPage%></button>

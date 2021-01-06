@@ -3,6 +3,7 @@ const Product = require('../models/productModel');
 const Order = require('../models/orderModel');
 const Cart = require('../models/cartModel');
 const Comment = require('../models/commentModel');
+const e = require('express');
 const stripe = require('stripe')('sk_test_51HyteKG8oVt195nhn3Q8SwnvKDqhHiYIMzhzuw2GmMRthWC4si5JZ109hu3kdMnrfeo8NnHC426xtpT4toc59kQP00gY9tJQ5D');
 
 const ITEMS_PER_PAGE = 12;
@@ -71,40 +72,20 @@ exports.postProducts = async(req, res, next) => {
     let totalItems, products;
 
     //normal case
-    totalItems = await Product
-        .find({ $and: [{ name: regexSearch }, { color: regexColor }, { filter: regexTag }, { price: { $gte: lowest, $lte: highest } }, ] })
-        .countDocuments();
-    products = await Product
-        .find({ $and: [{ name: regexSearch }, { color: regexColor }, { filter: regexTag }, { price: { $gte: lowest, $lte: highest } }] })
-        .skip((page - 1) * ITEMS_PER_PAGE)
-        .limit(ITEMS_PER_PAGE);
-    //view count sort case
-    if (sort == 'popularity') {
+    if (sort != "" && sort != 'lowtohigh' && sort != 'hightolow') {
         totalItems = await Product
             .find({ $and: [{ name: regexSearch }, { color: regexColor }, { filter: regexTag }, { price: { $gte: lowest, $lte: highest } }, ] })
-            .sort({ viewCount: -1 })
             .countDocuments();
         products = await Product
             .find({ $and: [{ name: regexSearch }, { color: regexColor }, { filter: regexTag }, { price: { $gte: lowest, $lte: highest } }] })
-            .sort({ viewCount: -1 })
+            .sort({
+                [sort]: -1
+            })
             .skip((page - 1) * ITEMS_PER_PAGE)
             .limit(ITEMS_PER_PAGE);
-    } //hasSold sort case
-    if (sort == 'bestsold') {
+    } else if (sort == 'lowtohigh') {
         totalItems = await Product
             .find({ $and: [{ name: regexSearch }, { color: regexColor }, { filter: regexTag }, { price: { $gte: lowest, $lte: highest } }, ] })
-            .sort({ hasSold: -1 })
-            .countDocuments();
-        products = await Product
-            .find({ $and: [{ name: regexSearch }, { color: regexColor }, { filter: regexTag }, { price: { $gte: lowest, $lte: highest } }] })
-            .sort({ hasSold: -1 })
-            .skip((page - 1) * ITEMS_PER_PAGE)
-            .limit(ITEMS_PER_PAGE);
-    } //low to high price sort case
-    if (sort == 'lowtohigh') {
-        totalItems = await Product
-            .find({ $and: [{ name: regexSearch }, { color: regexColor }, { filter: regexTag }, { price: { $gte: lowest, $lte: highest } }, ] })
-            .sort({ price: 1 })
             .countDocuments();
         products = await Product
             .find({ $and: [{ name: regexSearch }, { color: regexColor }, { filter: regexTag }, { price: { $gte: lowest, $lte: highest } }] })
@@ -112,14 +93,21 @@ exports.postProducts = async(req, res, next) => {
             .skip((page - 1) * ITEMS_PER_PAGE)
             .limit(ITEMS_PER_PAGE);
     } //high to low price sort case
-    if (sort == 'hightolow') {
+    else if (sort == 'hightolow') {
         totalItems = await Product
             .find({ $and: [{ name: regexSearch }, { color: regexColor }, { filter: regexTag }, { price: { $gte: lowest, $lte: highest } }, ] })
-            .sort({ price: -1 })
             .countDocuments();
         products = await Product
             .find({ $and: [{ name: regexSearch }, { color: regexColor }, { filter: regexTag }, { price: { $gte: lowest, $lte: highest } }] })
             .sort({ price: -1 })
+            .skip((page - 1) * ITEMS_PER_PAGE)
+            .limit(ITEMS_PER_PAGE);
+    } else {
+        totalItems = await Product
+            .find({ $and: [{ name: regexSearch }, { color: regexColor }, { filter: regexTag }, { price: { $gte: lowest, $lte: highest } }, ] })
+            .countDocuments();
+        products = await Product
+            .find({ $and: [{ name: regexSearch }, { color: regexColor }, { filter: regexTag }, { price: { $gte: lowest, $lte: highest } }] })
             .skip((page - 1) * ITEMS_PER_PAGE)
             .limit(ITEMS_PER_PAGE);
     }

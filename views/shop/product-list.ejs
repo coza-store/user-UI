@@ -20,8 +20,8 @@
         <!-- Product -->
         <div class="bg0 m-t-23">
             <div class="container">
-                <div class="flex-w flex-sb-m p-b-52">
 
+                <div class="flex-w flex-sb-m p-b-52">
                     <div class="flex-w flex-c-m m-tb-10">
                         <div class="flex-c-m stext-106 cl6 size-104 bor4 pointer hov-btn3 trans-04 m-r-8 m-tb-4 js-show-filter">
                             <i class="icon-filter cl2 m-r-6 fs-15 trans-04 zmdi zmdi-filter-list"></i>
@@ -58,10 +58,10 @@
                                     <ul>
                                         <input type="text" name="sort" id="sortBody" value="<%=sort %>" hidden>
                                         <li class="p-b-6">
-                                            <button class="filter-link stext-106 trans-04 <% if(sort === 'popularity') { %>filter-link-active<% } %>" value="popularity" onclick="getSort(this,event)">Popularity</a>
+                                            <button class="filter-link stext-106 trans-04 <% if(sort === 'viewCount') { %>filter-link-active<% } %>" value="viewCount" onclick="getSort(this,event)">Popularity</a>
                                         </li>
                                         <li class="p-b-6">
-                                            <button class="filter-link stext-106 trans-04 <% if(sort === 'bestsold') { %>filter-link-active<% } %>" value="bestsold" onclick="getSort(this,event)">Best Sold</a>
+                                            <button class="filter-link stext-106 trans-04 <% if(sort === 'hasSold') { %>filter-link-active<% } %>" value="hasSold" onclick="getSort(this,event)">Best Sold</a>
                                         </li>
                                         <li class="p-b-6">
                                             <button class="filter-link stext-106 trans-04  <% if(sort === 'lowtohigh') { %>filter-link-active<% } %>" value="lowtohigh" onclick="getSort(this,event)">Price: Low to High</a>
@@ -224,7 +224,12 @@
                         prevPage:prevPage,
                         hasPrevPage:hasPrevPage,
                         hasNextPage:hasNextPage,
-                        nextPage:nextPage}) %>
+                        nextPage:nextPage,
+                        sort:sort,
+                        low:low,
+                        high:high,
+                        color:color,
+                        tag:tag}) %>
                         <% } else { %>
                             <h1 style="text-align: center; margin-bottom: 35px;">No Product Found!</h1>
                             <% } %>
