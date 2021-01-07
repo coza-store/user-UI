@@ -7,7 +7,7 @@ const sortBody = document.getElementById('sortBody');
 
 const getColor = (btn, e) => {
     e.preventDefault();
-    if (colorBody.value == "") {
+    if (colorBody.value == "" || colorBody.value != btn.innerText) {
         colorBody.value = btn.innerText;
     } else {
         colorBody.value = "";
@@ -16,7 +16,7 @@ const getColor = (btn, e) => {
 }
 const getTag = (btn, e) => {
     e.preventDefault();
-    if (tagBody.value == "") {
+    if (tagBody.value == "" || tagBody.value != btn.innerText.toLowerCase()) {
         tagBody.value = btn.innerText.toLowerCase();
         if (btn.innerText == "Women") {
             tagBody.value = "woman";
@@ -30,7 +30,7 @@ const getTag = (btn, e) => {
 const getPrice = (btn, e) => {
     e.preventDefault();
     const range = btn.value.split("-");
-    if (lowestPrice.value == "" && highestPrice.value == "") {
+    if ((lowestPrice.value == "" && highestPrice.value == "") || (lowestPrice.value != range[0] && highestPrice.value != range[1])) {
         lowestPrice.value = range[0];
         highestPrice.value = range[1];
         if (range[1] == undefined) {
@@ -45,7 +45,7 @@ const getPrice = (btn, e) => {
 
 const getSort = (btn, e) => {
     e.preventDefault();
-    if (sortBody.value == "") {
+    if (sortBody.value == "" || sortBody.value != btn.value) {
         sortBody.value = btn.value;
     } else {
         sortBody.value = "";
