@@ -20,12 +20,7 @@ const orderSchema = new Schema({
         detail_address: { type: String, require: false },
         note: { type: String, require: false }
     },
-    status: {
-        confirmed: { type: Boolean, default: false },
-        picked: { type: Boolean, default: false },
-        onshipping: { type: Boolean, default: false },
-        received: { type: Boolean, default: false }
-    },
+    status: { type: String, default: 'unconfirmed' },
     totalPrice: { type: Number, required: true },
     dateShow: { type: String, require: true },
     dateFilter: { type: Date, required: true }
