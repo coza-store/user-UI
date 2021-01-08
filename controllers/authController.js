@@ -155,7 +155,7 @@ exports.postRegister = (req, res, next) => {
                                 font-size: 16px;
                                 border-radius: 0px;
                                 margin-left: 100px;
-                                text-decoration:none;" href="http://localhost:3000/verify/${token}">Verify now</a>
+                                text-decoration:none;" href="https://cozafashion.herokuapp.com/verify/${token}">Verify now</a>
                             <p style="margin-top: 40px;">Thanks.<br>Admin Coza Store</p>`
                         };
                         return transporter
@@ -231,7 +231,7 @@ exports.postResetForm = (req, res, next) => {
                         font-size: 16px;
                         border-radius: 0px;
                         margin-left: 100px;
-                        text-decoration:none;" href="http://localhost:3000/reset/${token}">Reset your password</a>
+                        text-decoration:none;" href="https://cozafashion.herokuapp.com/reset/${token}">Reset your password</a>
                     <p style="margin-top:30px">If you did not request a password reset, please ignore this email.<br>This password reset is only valid for the next 1 hour</p>
                     <p style="margin-top: 40px;">Thanks.<br>Admin Coza Store</p>
                     `
@@ -497,7 +497,7 @@ exports.getSettingVerify = async(req, res, next) => {
                         font-size: 16px;
                         border-radius: 0px;
                         margin-left: 100px;
-                        text-decoration:none;" href="http://localhost:3000/verify/${token}">Verify now</a>
+                        text-decoration:none;" href="https://cozafashion.herokuapp.com/verify/${token}">Verify now</a>
                     <p style="margin-top: 40px;">Thanks.<br>Admin Coza Store</p>`
                 };
                 return transporter
