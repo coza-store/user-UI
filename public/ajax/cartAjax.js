@@ -101,7 +101,7 @@ const changeQuantityUp = async(btn) => {
 
 const addToCart = async(btn) => {
     const prodId = btn.parentNode.querySelector('[name=productId]').value;
-    const size = document.querySelector('#select2-productSize-container').innerText;
+    let size = document.querySelector('#select2-productSize-container').innerText;
     const color = document.querySelector('#select2-productColor-container').innerText;
     const quantity = btn.parentNode.querySelector('[name=quantity]').value;
     const filter = document.getElementById(`filter_${prodId}`).innerText;
@@ -127,8 +127,10 @@ const addToCart = async(btn) => {
         warning_2.innerText = "";
         checkColor = true;
     }
-
     if (checkColor == true && checkSize == true) {
+        if (filter === 'bag') {
+            size = 'No size';
+        }
         const fetchData = await fetch('/cart/' + prodId + '/' + size + '/' + color + '/' + quantity, {
                 method: 'PUT'
             })
@@ -183,6 +185,9 @@ const addToCartDetail = async(btn) => {
     }
 
     if (checkColor == true && checkSize == true) {
+        if (filter === 'bag') {
+            size = 'No size';
+        }
         const fetchData = await fetch('/cart/' + prodId + '/' + size + '/' + color + '/' + quantity, {
                 method: 'PUT'
             })
