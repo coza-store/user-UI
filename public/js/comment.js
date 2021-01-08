@@ -56,30 +56,33 @@
     channel.bind('new_comment', newCommentHandler);
 
     async function newCommentHandler(data) {
-        if (current_page.value == 1) {
-            let newCommentHTML = commentTemplate.innerHTML.replace('{{name}}', data.name);
-            newCommentHTML = newCommentHTML.replace('{{comment}}', data.comment);
-            let rating = `<i class="zmdi zmdi-star"></i>`;
-            for (let i = 1; i < data.rating; i++) {
-                rating += `<i class="zmdi zmdi-star"></i>`
+        const productPathId = window.location.href.split('/')[4];
+        if (productPathId == document.querySelector('[name=productIdDetail]').value) {
+            if (current_page.value == 1) {
+                let newCommentHTML = commentTemplate.innerHTML.replace('{{name}}', data.name);
+                newCommentHTML = newCommentHTML.replace('{{comment}}', data.comment);
+                let rating = `<i class="zmdi zmdi-star"></i> `;
+                for (let i = 1; i < data.rating; i++) {
+                    rating += `<i class="zmdi zmdi-star"></i> `
+                }
+                newCommentHTML = newCommentHTML.replace('{{rating}}', rating);
+                newCommentHTML = newCommentHTML.replace('{{image}}', data.userImage);
+                let newCommentNode = document.createElement('div');
+                newCommentNode.classList.add('flex-w', 'flex-t', 'comment-post');
+                newCommentNode.innerHTML = newCommentHTML;
+                if (clear_notice) {
+                    clear_notice.innerHTML = "";
+                    paging_sec.classList.remove('dis-none');
+                }
+                totalComment.innerText = +totalComment.innerText + +1;
+                commentList.insertBefore(newCommentNode, commentList.firstChild);
+                if (commentList.childElementCount - 2 > 4) {
+                    commentList.removeChild(commentList.children[commentList.childElementCount - 3]);
+                }
+            } else {
+                const btn = { value: 1 };
+                changePage(btn, 1);
             }
-            newCommentHTML = newCommentHTML.replace('{{rating}}', rating);
-            newCommentHTML = newCommentHTML.replace('{{image}}', data.userImage);
-            let newCommentNode = document.createElement('div');
-            newCommentNode.classList.add('flex-w', 'flex-t', 'comment-post');
-            newCommentNode.innerHTML = newCommentHTML;
-            if (clear_notice) {
-                clear_notice.innerHTML = "";
-                paging_sec.classList.remove('dis-none');
-            }
-            totalComment.innerText = +totalComment.innerText + +1;
-            commentList.insertBefore(newCommentNode, commentList.firstChild);
-            if (commentList.childElementCount - 2 > 4) {
-                commentList.removeChild(commentList.children[commentList.childElementCount - 3]);
-            }
-        } else {
-            const btn = { value: 1 };
-            changePage(btn, 1);
         }
     }
 
