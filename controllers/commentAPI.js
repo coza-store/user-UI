@@ -3,14 +3,13 @@ const router = express();
 const Comment = require('../models/commentModel');
 const Pusher = require('pusher');
 const pusher = new Pusher({
-    appId: '1131784',
-    key: 'a050f5822d5da15b38a1',
-    secret: 'c9cd7423647d740022a1',
-    cluster: 'ap1',
+    appId: process.env.PUSHER_ID,
+    key: process.env.PUSHER_KEY,
+    secret: process.env.PUSHER_SECRET,
+    cluster: process.env.PUSHER_CLUSTER,
     encrypted: true
 });
 router.post('/comment', async(req, res, next) => {
-    console.log(req.body);
     if (req.body.rating == "" || req.body.rating == 0) {
         req.body.rating = 1;
     }
@@ -31,7 +30,7 @@ router.post('/comment', async(req, res, next) => {
         createTime: new Date()
     });
     const save_comment = await comment.save();
-    pusher.trigger('real-time-comment', 'new_comment', newComment);
+    pusher.trigger(process.env.PUSHER_NAME_APP, process.env.PUSHER_COMMENT_NAME, newComment);
     res.json({ created: true });
 });
 

@@ -3,8 +3,7 @@ const Product = require('../models/productModel');
 const Order = require('../models/orderModel');
 const Cart = require('../models/cartModel');
 const Comment = require('../models/commentModel');
-const e = require('express');
-const stripe = require('stripe')('sk_test_51HyteKG8oVt195nhn3Q8SwnvKDqhHiYIMzhzuw2GmMRthWC4si5JZ109hu3kdMnrfeo8NnHC426xtpT4toc59kQP00gY9tJQ5D');
+const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 
 const ITEMS_PER_PAGE = 12;
 const COMMENT_PER_PAGE = 4;

@@ -1,3 +1,4 @@
+require('dotenv').config();
 const path = require('path');
 const express = require('express');
 const bodyParser = require('body-parser');
@@ -15,9 +16,8 @@ const errorHandler = require('./controllers/errorController');
 const User = require('./models/userModel');
 
 const app = express();
-const MONGODB_URL = 'mongodb+srv://admin:admincoza@cluster0.cjf9m.mongodb.net/coza-db';
 const store = new MongoDBStore({
-    uri: MONGODB_URL,
+    uri: process.env.MONGODB_URL,
     collection: 'sessions'
 });
 
@@ -52,7 +52,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(flash());
 
 app.use(session({
-    secret: 'coza secret',
+    secret: process.env.COZA_SECRET,
     resave: false,
     saveUninitialized: false,
     store: store,
@@ -85,7 +85,7 @@ app.use(errorHandler.render404Page);
 
 
 mongoose
-    .connect(MONGODB_URL)
+    .connect(process.env.MONGODB_URL)
     .then(result => {
         app.listen(process.env.PORT || 3000);
         console.log('Connected to Database');
