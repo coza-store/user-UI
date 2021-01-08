@@ -57,7 +57,7 @@
 
     async function newCommentHandler(data) {
         const productPathId = window.location.href.split('/')[4];
-        if (productPathId == document.querySelector('[name=productIdDetail]').value) {
+        if (productPathId === data.productId) {
             if (current_page.value == 1) {
                 let newCommentHTML = commentTemplate.innerHTML.replace('{{name}}', data.name);
                 newCommentHTML = newCommentHTML.replace('{{comment}}', data.comment);

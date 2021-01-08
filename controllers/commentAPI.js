@@ -14,6 +14,7 @@ router.post('/comment', async(req, res, next) => {
         req.body.rating = 1;
     }
     const newComment = {
+        productId: req.body.productId,
         name: req.body.name,
         email: req.body.email,
         comment: req.body.comment,
