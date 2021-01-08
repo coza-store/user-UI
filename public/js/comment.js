@@ -35,7 +35,7 @@
         }
 
         var xhr = new XMLHttpRequest();
-        xhr.open("POST", "http://localhost:3000/" + "comment", true);
+        xhr.open("POST", "https://cozafashion.herokuapp.com/" + "comment", true);
         xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
         xhr.onreadystatechange = function() {
             if (xhr.readyState != 4 || xhr.status != 200) return;
