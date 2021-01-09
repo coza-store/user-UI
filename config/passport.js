@@ -50,6 +50,9 @@ passport.use('local.signin', new LocalStrategy({
         if (!user.validPassword(password)) {
             return done(null, false, { message: 'Incorrect Password' });
         }
+        if (user.lock == true) {
+            return done(null, false, { message: 'This account has been locked' });
+        }
         return done(null, user);
     });
 }));

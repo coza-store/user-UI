@@ -58,6 +58,18 @@ exports.postLogIn = (req, res, next) => {
                     validationCond: 'password'
                 });
             }
+            if (message == 'This account has been locked') {
+                return res.status(422).render('auth/login', {
+                    pageTitle: 'Login',
+                    path: '/login',
+                    errorMessage: message,
+                    oldInput: {
+                        email: email,
+                        password: password,
+                    },
+                    validationCond: ''
+                });
+            }
         }
         // req / res held in closure
         req.logIn(user, function(err) {
