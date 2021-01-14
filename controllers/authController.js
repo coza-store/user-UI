@@ -198,13 +198,20 @@ exports.getResetForm = (req, res, next) => {
 };
 
 //xu ly gui mail de xac nhan lay lai mk
-exports.postResetForm = (req, res, next) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
+exports.postResetForm = async(req, res, next) => {
+    let message;
+    const userValid = await User.findOne({ email: req.body.email });
+    if (userValid == null) {
+        message = "Email doesn't exist";
+    }
+    if (req.body.email == "") {
+        message = "Invalid email";
+    }
+    if (message) {
         return res.status(422).render('auth/reset', {
             pageTitle: 'Reset Password',
             path: '/reset',
-            errorMessage: errors.array()[0].msg,
+            errorMessage: message
         });
     }
     let userInfo;
