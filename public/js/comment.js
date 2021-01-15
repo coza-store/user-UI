@@ -61,6 +61,12 @@
             if (current_page.value == 1) {
                 let newCommentHTML = commentTemplate.innerHTML.replace('{{name}}', data.name);
                 newCommentHTML = newCommentHTML.replace('{{comment}}', data.comment);
+                if (data.purchaseConfirm == true) {
+                    newCommentHTML = newCommentHTML.replace('{{purchase}}', "Purchase Confirm");
+                } else {
+                    newCommentHTML = newCommentHTML.replace('{{purchase}}', "");
+
+                }
                 let rating = `<i class="zmdi zmdi-star"></i> `;
                 for (let i = 1; i < data.rating; i++) {
                     rating += `<i class="zmdi zmdi-star"></i> `

@@ -9,6 +9,7 @@ const commentSchema = new Schema({
     comment: { type: String, required: false },
     userImage: { type: String, required: true },
     rating: { type: Number, required: true },
+    purchaseConfirm: { type: Boolean, required: true },
     createTime: { type: Date, required: true }
 });
 
