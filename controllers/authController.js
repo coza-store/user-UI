@@ -413,13 +413,6 @@ exports.postUserSetting = async(req, res, next) => {
     const fullname = req.body.name;
     const username = req.body.username;
     const phone = req.body.phone;
-    let cartProds;
-    const cartFetch = await req.user
-        .populate('cart.items.productId')
-        .execPopulate()
-        .then(user => {
-            cartProds = { items: user.cart.items, totalQty: req.user.cart.totalQty, totalPrice: req.user.cart.totalPrice };
-        });
     if (image) {
         req.user.userImage = image.path;
     }

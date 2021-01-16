@@ -4,6 +4,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const multer = require('multer');
+const cors = require('cors');
 const mongoose = require('mongoose');
 const session = require('express-session');
 const flash = require('connect-flash');
@@ -43,6 +44,7 @@ const imageFilter = (req, file, callback) => {
 
 app.use(passport.initialize());
 app.use(passport.session());
+app.use(cors());
 app.use(multer({ storage: imageStorage, fileFilter: imageFilter }).single('image'));
 app.use('/images', express.static(path.join(__dirname, 'images')));
 app.use(bodyParser.json());
